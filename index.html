@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Top-Up Store</title>
+  <title>Catologist's Store</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Inter Font -->
@@ -42,6 +42,44 @@
     }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* Balanced & Friendly Capsule Pill Tab Design */
+    .tab-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+      padding: 0.45rem 0.95rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      line-height: 1rem;
+      font-weight: 500;
+      white-space: nowrap;
+      flex-shrink: 0;
+      border: 1px solid #27272a;
+      background: #141418;
+      color: #a1a1aa;
+      transition: all 0.2s ease-in-out;
+      user-select: none;
+      cursor: pointer;
+    }
+    .tab-btn:hover:not(.active) {
+      color: #ffffff;
+      background: #1c1c22;
+      border-color: #3f3f46;
+    }
+    .tab-btn .dot-indicator {
+      width: 0.42rem;
+      height: 0.42rem;
+      border-radius: 9999px;
+      opacity: 0.45;
+      transition: all 0.2s ease-in-out;
+    }
+    .tab-btn.active .dot-indicator {
+      opacity: 1;
+      transform: scale(1.2);
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col font-sans pb-36">
@@ -50,8 +88,8 @@
   <header class="sticky top-0 z-40 bg-[#09090b]/90 backdrop-blur-md border-b border-surface-border px-4 py-3">
     <div class="max-w-2xl mx-auto flex items-center justify-between gap-3">
       <div class="flex items-center gap-2">
-        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-        <h1 id="txt-store-title" class="text-xs sm:text-sm font-semibold tracking-wider text-white uppercase">Top-Up Catalog</h1>
+        <span class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
+        <h1 id="txt-store-title" class="text-xs sm:text-sm font-semibold tracking-wider text-white uppercase">Catologist's Store</h1>
       </div>
       
       <div class="flex items-center gap-2">
@@ -66,7 +104,7 @@
           type="button" 
           onclick="toggleLanguage()" 
           id="btn-lang"
-          class="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/80 text-[11px] font-mono text-zinc-300 transition">
+          class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-zinc-900 hover:bg-zinc-800 border border-zinc-700/80 text-[11px] font-mono text-zinc-300 transition">
           <span class="text-zinc-500">LANG:</span>
           <span id="current-lang-text" class="font-bold text-white">ENG</span>
         </button>
@@ -75,37 +113,57 @@
   </header>
 
   <!-- ================= MAIN CONTAINER ================= -->
-  <main class="max-w-2xl mx-auto w-full px-4 pt-4 flex-1">
+  <main class="max-w-2xl mx-auto w-full px-4 pt-3 flex-1">
     
     <!-- MOBILE FULFILMENT NOTICE -->
-    <div class="sm:hidden mb-3 flex items-center justify-between px-3 py-1.5 rounded-lg bg-zinc-900/80 border border-zinc-800 text-[11px] text-zinc-300">
+    <div class="sm:hidden mb-3 flex items-center justify-between px-3 py-1.5 rounded-xl bg-zinc-900/80 border border-zinc-800 text-[11px] text-zinc-300">
       <span class="text-zinc-400" id="txt-badge-label-m">Normal Fulfilment:</span>
       <span class="font-semibold text-emerald-400" id="txt-badge-val-m">5 – 30 Minutes</span>
     </div>
 
-    <!-- CATEGORY TABS (5 CATEGORIES ONLY - NO ALL ITEMS) -->
-    <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-2 border-b border-surface-border" id="category-tabs">
-      <button onclick="switchCategory('first-time')" class="cat-pill active px-3 py-1.5 rounded-lg text-xs font-medium transition whitespace-nowrap bg-zinc-100 text-zinc-900" data-cat="first-time">
-        1st-Time Sale
-      </button>
-      <button onclick="switchCategory('token')" class="cat-pill px-3 py-1.5 rounded-lg text-xs font-medium transition whitespace-nowrap text-zinc-400 hover:text-white hover:bg-zinc-800/60" data-cat="token">
-        Tokens
-      </button>
-      <button onclick="switchCategory('emblem')" class="cat-pill px-3 py-1.5 rounded-lg text-xs font-medium transition whitespace-nowrap text-zinc-400 hover:text-white hover:bg-zinc-800/60" data-cat="emblem">
-        Emblems
-      </button>
-      <button onclick="switchCategory('battlepass')" class="cat-pill px-3 py-1.5 rounded-lg text-xs font-medium transition whitespace-nowrap text-zinc-400 hover:text-white hover:bg-zinc-800/60" data-cat="battlepass">
-        Battlepass
-      </button>
-      <button onclick="switchCategory('levelup')" class="cat-pill px-3 py-1.5 rounded-lg text-xs font-medium transition whitespace-nowrap text-zinc-400 hover:text-white hover:bg-zinc-800/60" data-cat="levelup">
-        Level Up
-      </button>
+    <!-- CATEGORY TABS (SEIMBANG & ROUNDED CAPSULE PILL DESIGN) -->
+    <div class="relative py-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+      <div class="flex items-center gap-2 overflow-x-auto no-scrollbar py-1" id="category-tabs">
+        <button type="button" onclick="switchCategory('first-time')" class="tab-btn active" data-cat="first-time">
+          <span class="dot-indicator bg-emerald-400"></span>
+          <span>1st-Time Sale</span>
+        </button>
+        <button type="button" onclick="switchCategory('token')" class="tab-btn" data-cat="token">
+          <span class="dot-indicator bg-blue-400"></span>
+          <span>Tokens</span>
+        </button>
+        <button type="button" onclick="switchCategory('marketcoins')" class="tab-btn" data-cat="marketcoins">
+          <span class="dot-indicator bg-purple-400"></span>
+          <span>Market Coins</span>
+        </button>
+        <button type="button" onclick="switchCategory('clan')" class="tab-btn" data-cat="clan">
+          <span class="dot-indicator bg-cyan-400"></span>
+          <span>Clan</span>
+        </button>
+        <button type="button" onclick="switchCategory('arena')" class="tab-btn" data-cat="arena">
+          <span class="dot-indicator bg-indigo-400"></span>
+          <span>Arena</span>
+        </button>
+        <button type="button" onclick="switchCategory('emblem')" class="tab-btn" data-cat="emblem">
+          <span class="dot-indicator bg-amber-400"></span>
+          <span>Emblems</span>
+        </button>
+        <button type="button" onclick="switchCategory('battlepass')" class="tab-btn" data-cat="battlepass">
+          <span class="dot-indicator bg-red-400"></span>
+          <span>Battlepass</span>
+        </button>
+        <button type="button" onclick="switchCategory('levelup')" class="tab-btn" data-cat="levelup">
+          <span class="dot-indicator bg-pink-400"></span>
+          <span>Level Up</span>
+        </button>
+        <div class="shrink-0 w-8 h-1"></div>
+      </div>
     </div>
 
-    <!-- 1ST TIME BUYER SALE EVENT ANNOUNCEMENT BANNER -->
-    <div id="first-time-banner" class="mt-3.5 mb-2 p-3.5 rounded-xl bg-gradient-to-r from-emerald-950/40 via-zinc-900/90 to-zinc-900/90 border border-emerald-500/25">
+    <!-- 1ST TIME BUYER SALE BANNER -->
+    <div id="first-time-banner" class="mt-2 mb-3 p-3.5 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-zinc-900/90 to-zinc-900/90 border border-emerald-500/30">
       <div class="flex items-center justify-between gap-2 mb-1.5">
-        <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 uppercase tracking-wider" id="txt-event-tag">
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 uppercase tracking-wider" id="txt-event-tag">
           First-Time Buyer Sale (25% OFF)
         </span>
         <span class="text-[11px] font-mono text-zinc-400" id="txt-event-limit-note">Limit: 1 per package</span>
@@ -115,10 +173,10 @@
       </p>
     </div>
 
-    <!-- TOKENS ANNOUNCEMENT BANNER (BLUE NEON THEME) -->
-    <div id="tokens-banner" class="hidden mt-3.5 mb-2 p-3.5 rounded-xl bg-gradient-to-r from-blue-950/40 via-zinc-900/90 to-zinc-900/90 border border-blue-500/30 shadow-[0_0_15px_rgba(59,130,246,0.12)]">
+    <!-- TOKENS BANNER -->
+    <div id="tokens-banner" class="hidden mt-2 mb-3 p-3.5 rounded-2xl bg-gradient-to-r from-blue-950/40 via-zinc-900/90 to-zinc-900/90 border border-blue-500/35 shadow-[0_0_15px_rgba(59,130,246,0.12)]">
       <div class="flex items-center justify-between gap-2 mb-1.5">
-        <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-500/15 text-blue-400 border border-blue-500/30 uppercase tracking-wider" id="txt-tokens-tag">
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-blue-500/15 text-blue-400 border border-blue-500/30 uppercase tracking-wider" id="txt-tokens-tag">
           Token Packages Notice
         </span>
         <span class="text-[11px] font-mono text-blue-300/80" id="txt-tokens-ingame-tag">Refer to In-Game</span>
@@ -133,21 +191,174 @@
       </div>
     </div>
 
-    <!-- EMBLEM ANNOUNCEMENT BANNER 1: PERKS & FEATURES -->
-    <div id="emblem-banner" class="hidden mt-3.5 mb-2 p-3.5 rounded-xl bg-gradient-to-r from-amber-950/40 via-zinc-900/90 to-zinc-900/90 border border-amber-500/40 shadow-[0_0_16px_rgba(245,158,11,0.15)]">
+    <!-- MARKET COINS BANNER -->
+    <div id="marketcoins-banner" class="hidden mt-2 mb-3 p-3.5 rounded-2xl bg-gradient-to-r from-purple-950/40 via-zinc-900/90 to-zinc-900/90 border border-purple-500/35 shadow-[0_0_16px_rgba(168,85,247,0.15)]">
+      <div class="flex items-center justify-between gap-2 mb-1.5">
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-purple-500/15 text-purple-400 border border-purple-500/30 uppercase tracking-wider" id="txt-mc-tag">
+          Market Coins Info
+        </span>
+        <span class="text-[11px] font-mono text-purple-300/90" id="txt-mc-convert-pill">1:1 Convert to Tokens</span>
+      </div>
+      <div class="text-xs text-zinc-300 leading-relaxed space-y-1.5">
+        <p class="text-zinc-200" id="txt-mc-desc">
+          Market Coins are an in-game currency used to purchase weapons, clothing, and back items from other players in the Market building.
+        </p>
+        <div class="p-2 rounded-xl bg-zinc-950/70 border border-purple-500/20 text-[11px] text-purple-300 font-mono flex items-center justify-between">
+          <span id="txt-mc-convert-note">Conversion: You can convert Market Coins 1:1 to Tokens.</span>
+          <span class="text-purple-400 font-bold">1 MC = 1 Token</span>
+        </div>
+        <div class="pl-2.5 border-l-2 border-purple-500/50 space-y-0.5 text-zinc-400 font-mono text-[10.5px]">
+          <div id="txt-mc-line1">• Package A–D includes Kinjutsu + Pet | Package E includes Hairstyle</div>
+          <div id="txt-mc-refer" class="text-purple-400">Please refer to in-game for preview.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLAN BANNER -->
+    <div id="clan-banner" class="hidden mt-2 mb-3 p-3.5 rounded-2xl bg-gradient-to-r from-cyan-950/40 via-zinc-900/90 to-zinc-900/90 border border-cyan-500/40 shadow-[0_0_16px_rgba(6,182,212,0.15)]">
+      <div class="flex items-center justify-between gap-2 mb-2">
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-cyan-500/15 text-cyan-400 border border-cyan-500/40 uppercase tracking-wider" id="txt-clan-tag">
+          Clan War Energy Packs
+        </span>
+        <span class="text-[11px] font-mono text-cyan-300/80" id="txt-clan-limit-tag">Best Stamina Value</span>
+      </div>
+
+      <!-- Tab Switcher between Guide & Value Comparison -->
+      <div class="flex gap-1.5 p-1 bg-zinc-950/80 rounded-xl border border-cyan-500/20 mb-2.5">
+        <button type="button" id="btn-tab-clan-guide" onclick="switchClanInfo('guide')" class="flex-1 py-1 rounded-lg text-xs font-semibold transition bg-cyan-500 text-zinc-950">
+          Item Guide & Notes
+        </button>
+        <button type="button" id="btn-tab-clan-compare" onclick="switchClanInfo('compare')" class="flex-1 py-1 rounded-lg text-xs font-semibold transition text-zinc-400 hover:text-white">
+          Value Comparison vs Tokens
+        </button>
+      </div>
+
+      <!-- Guide Content -->
+      <div id="clan-info-guide" class="space-y-1.5 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5 text-[11px] font-mono text-zinc-300">
+          <div class="p-2 rounded-xl bg-zinc-950/70 border border-zinc-800">
+            <span class="text-cyan-400 font-bold block mb-0.5">• Stamina Roll</span>
+            <span class="text-zinc-400 text-[10px]" id="txt-clan-roll-desc">Refills 50 energy in Clan Wars.</span>
+          </div>
+          <div class="p-2 rounded-xl bg-zinc-950/70 border border-zinc-800">
+            <span class="text-cyan-400 font-bold block mb-0.5">• Twin Stamina Roll</span>
+            <span class="text-zinc-400 text-[10px]" id="txt-clan-twin-desc">Refills 100 energy in Clan Wars (2x efficiency).</span>
+          </div>
+          <div class="p-2 rounded-xl bg-zinc-950/70 border border-zinc-800">
+            <span class="text-cyan-400 font-bold block mb-0.5">• Clan Upgrade Capsule</span>
+            <span class="text-zinc-400 text-[10px]" id="txt-clan-cap-desc">Permanently increases Clan War max energy by +50.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparison Content -->
+      <div id="clan-info-compare" class="hidden space-y-2 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5 text-[11px] font-mono">
+          <div class="p-2 rounded-xl bg-zinc-950/80 border border-zinc-800">
+            <div class="text-zinc-400 font-bold">Small Clan Pack (RM 21)</div>
+            <div class="text-zinc-300 text-[10px] mt-0.5">Roll Value: 3,000 Tokens</div>
+            <div class="text-zinc-500 text-[10px]">Direct Tokens: 2,625</div>
+            <div class="text-cyan-400 font-semibold text-[10.5px] mt-1">+375 Extra Tokens</div>
+          </div>
+          <div class="p-2 rounded-xl bg-zinc-950/80 border border-zinc-800">
+            <div class="text-zinc-400 font-bold">Medium Clan Pack (RM 41)</div>
+            <div class="text-zinc-300 text-[10px] mt-0.5">Roll Value: 6,000 Tokens</div>
+            <div class="text-zinc-500 text-[10px]">Direct Tokens: 5,250</div>
+            <div class="text-cyan-400 font-semibold text-[10.5px] mt-1">+750 Extra Tokens</div>
+          </div>
+          <div class="p-2 rounded-xl bg-zinc-950/80 border border-cyan-500/40 bg-cyan-950/10">
+            <div class="text-cyan-300 font-bold">Large Clan Pack (RM 200)</div>
+            <div class="text-zinc-300 text-[10px] mt-0.5">Roll Value: 35,500 Tokens</div>
+            <div class="text-zinc-500 text-[10px]">Direct Tokens: 31,500</div>
+            <div class="text-cyan-400 font-bold text-[10.5px] mt-1">+4,000 Tokens + Capsule</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARENA BANNER -->
+    <div id="arena-banner" class="hidden mt-2 mb-3 p-3.5 rounded-2xl bg-gradient-to-r from-indigo-950/40 via-zinc-900/90 to-zinc-900/90 border border-indigo-500/40 shadow-[0_0_16px_rgba(99,102,241,0.15)]">
+      <div class="flex items-center justify-between gap-2 mb-2">
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-indigo-500/15 text-indigo-400 border border-indigo-500/40 uppercase tracking-wider" id="txt-arena-tag">
+          Ninja Arena Packs
+        </span>
+        <span class="text-[11px] font-mono text-indigo-300/80" id="txt-arena-badge-val">Best Energy Capsule Value</span>
+      </div>
+
+      <!-- Tab Switcher between Guide & Value Comparison -->
+      <div class="flex gap-1.5 p-1 bg-zinc-950/80 rounded-xl border border-indigo-500/20 mb-2.5">
+        <button type="button" id="btn-tab-arena-guide" onclick="switchArenaInfo('guide')" class="flex-1 py-1 rounded-lg text-xs font-semibold transition bg-indigo-600 text-white">
+          Item Guide & Notes
+        </button>
+        <button type="button" id="btn-tab-arena-compare" onclick="switchArenaInfo('compare')" class="flex-1 py-1 rounded-lg text-xs font-semibold transition text-zinc-400 hover:text-white">
+          Value Comparison vs Tokens
+        </button>
+      </div>
+
+      <!-- Guide Content -->
+      <div id="arena-info-guide" class="space-y-1.5 text-xs">
+        <div class="p-2 rounded-xl bg-zinc-950/70 border border-indigo-500/20 text-[11px] text-zinc-300 font-mono mb-1.5">
+          <span class="text-indigo-400 font-bold" id="txt-arena-baseline">Baseline:</span> 20 Tokens = 50 Arena Energy (1 Token = 2.5 Energy)
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5 text-[11px] font-mono text-zinc-300">
+          <div class="p-2 rounded-xl bg-zinc-950/70 border border-zinc-800">
+            <span class="text-indigo-400 font-bold block mb-0.5">• Arena Energy Capsule</span>
+            <span class="text-zinc-400 text-[10px]" id="txt-arena-cap-desc">Restores 50 energy in Ninja Arena.</span>
+          </div>
+          <div class="p-2 rounded-xl bg-zinc-950/70 border border-zinc-800">
+            <span class="text-indigo-400 font-bold block mb-0.5">• Big Energy Capsule</span>
+            <span class="text-zinc-400 text-[10px]" id="txt-arena-bigcap-desc">Restores 100 energy in Ninja Arena.</span>
+          </div>
+          <div class="p-2 rounded-xl bg-zinc-950/70 border border-zinc-800">
+            <span class="text-indigo-400 font-bold block mb-0.5">• Arena Upgrade Capsule</span>
+            <span class="text-zinc-400 text-[10px]" id="txt-arena-upcap-desc">Increases Ninja Arena max energy by +50 (Current season).</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Comparison Content -->
+      <div id="arena-info-compare" class="hidden space-y-2 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-1.5 text-[11px] font-mono">
+          <div class="p-2 rounded-xl bg-zinc-950/80 border border-zinc-800">
+            <div class="text-zinc-400 font-bold">Small (~RM 20.50)</div>
+            <div class="text-zinc-300 text-[10px] mt-0.5">15,000 Energy = 6,000 Tokens</div>
+            <div class="text-zinc-500 text-[10px]">Direct: 2,625 Tokens</div>
+            <div class="text-indigo-400 font-semibold text-[10.5px] mt-1">+3,375 Extra Tokens (+128.6%)</div>
+          </div>
+          <div class="p-2 rounded-xl bg-zinc-950/80 border border-zinc-800">
+            <div class="text-zinc-400 font-bold">Medium (RM 41.00)</div>
+            <div class="text-zinc-300 text-[10px] mt-0.5">30,000 Energy = 12,000 Tokens</div>
+            <div class="text-zinc-500 text-[10px]">Direct: 5,250 Tokens</div>
+            <div class="text-indigo-400 font-semibold text-[10.5px] mt-1">+6,750 Extra Tokens (+128.6%)</div>
+          </div>
+          <div class="p-2 rounded-xl bg-zinc-950/80 border border-indigo-500/40 bg-indigo-950/15">
+            <div class="text-indigo-300 font-bold">Large (RM 200.00)</div>
+            <div class="text-zinc-300 text-[10px] mt-0.5">177,500 Energy = 71,000 Tokens</div>
+            <div class="text-zinc-500 text-[10px]">Direct: 31,500 Tokens</div>
+            <div class="text-indigo-400 font-bold text-[10.5px] mt-1">+39,500 Extra Tokens + Capsule (+125.4%)</div>
+          </div>
+        </div>
+        <p class="text-[10px] text-zinc-400 italic" id="txt-arena-season-note">
+          *Large Arena Pack includes 1x Arena Upgrade Capsule (+50 max energy for current season).
+        </p>
+      </div>
+    </div>
+
+    <!-- EMBLEM BANNER 1: PERKS & FEATURES -->
+    <div id="emblem-banner" class="hidden mt-2 mb-3 p-3.5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-zinc-900/90 to-zinc-900/90 border border-amber-500/40 shadow-[0_0_16px_rgba(245,158,11,0.15)]">
       <div class="flex items-center justify-between gap-2 mb-2.5">
-        <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/40 uppercase tracking-wider" id="txt-emblem-tag">
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/40 uppercase tracking-wider" id="txt-emblem-tag">
           Emblem & Emblem+ Perks
         </span>
         <span class="text-[11px] font-mono text-amber-300/80" id="txt-emblem-limit-tag">Limit: 1 per package</span>
       </div>
 
       <!-- Tab Switcher between Emblem & Emblem+ -->
-      <div class="flex gap-1.5 p-1 bg-zinc-950/80 rounded-lg border border-amber-500/20 mb-3">
-        <button type="button" id="btn-tab-emblem" onclick="switchEmblemInfo('emblem')" class="flex-1 py-1 rounded text-xs font-semibold transition bg-amber-500 text-zinc-950">
+      <div class="flex gap-1.5 p-1 bg-zinc-950/80 rounded-xl border border-amber-500/20 mb-3">
+        <button type="button" id="btn-tab-emblem" onclick="switchEmblemInfo('emblem')" class="flex-1 py-1 rounded-lg text-xs font-semibold transition bg-amber-500 text-zinc-950">
           Emblem Tier
         </button>
-        <button type="button" id="btn-tab-emblemplus" onclick="switchEmblemInfo('emblemplus')" class="flex-1 py-1 rounded text-xs font-semibold transition text-zinc-400 hover:text-white">
+        <button type="button" id="btn-tab-emblemplus" onclick="switchEmblemInfo('emblemplus')" class="flex-1 py-1 rounded-lg text-xs font-semibold transition text-zinc-400 hover:text-white">
           Emblem+ Tier
         </button>
       </div>
@@ -158,22 +369,22 @@
           Essential privileges and daily bonuses for character growth:
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11px] text-zinc-300 font-mono">
-          <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 3 Elements:</span> Master up to 3 elements (default is 2)</div>
-          <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• Free Wisdom Scroll:</span> Instantly master Lv 1–100 skills</div>
-          <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 10 Free Tokens Daily:</span> Claim every day</div>
-          <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• +30 PvE Energy & +10 Event Stamina:</span> Extra capacities</div>
-          <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• Exclusive Talents & Combat Skills:</span> Unique skill trees</div>
-          <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 6 Character Slots & Bonus XP Limit 50</span></div>
-          <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 3x Daily Party Control:</span> Take control in PvE runs</div>
-          <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 2 Daily Wishes & 2 Lucky Spins</span></div>
-          <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 3 Pet Villa Slots & 6 Daily Scratch Cards</span></div>
-          <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• Perks & Discounts:</span> Missions, shop discounts & resets</div>
+          <div class="p-2 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 3 Elements:</span> Master up to 3 elements (default is 2)</div>
+          <div class="p-2 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• Free Wisdom Scroll:</span> Instantly master Lv 1–100 skills</div>
+          <div class="p-2 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 10 Free Tokens Daily:</span> Claim every day</div>
+          <div class="p-2 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• +30 PvE Energy & +10 Event Stamina:</span> Extra capacities</div>
+          <div class="p-2 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• Exclusive Talents & Combat Skills:</span> Unique skill trees</div>
+          <div class="p-2 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 6 Character Slots & Bonus XP Limit 50</span></div>
+          <div class="p-2 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 3x Daily Party Control:</span> Take control in PvE runs</div>
+          <div class="p-2 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 2 Daily Wishes & 2 Lucky Spins</span></div>
+          <div class="p-2 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 3 Pet Villa Slots & 6 Daily Scratch Cards</span></div>
+          <div class="p-2 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• Perks & Discounts:</span> Missions, shop discounts & resets</div>
         </div>
       </div>
 
       <!-- Emblem+ Benefits Content -->
       <div id="emblem-info-plus" class="hidden space-y-2.5 text-xs">
-        <div class="p-2 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11px] font-semibold flex items-center justify-between">
+        <div class="p-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11px] font-semibold flex items-center justify-between">
           <span id="txt-emblem-plus-tierbonus">★ Tier Bonus: Inherits ALL base Emblem benefits automatically</span>
         </div>
 
@@ -182,12 +393,12 @@
           <div>
             <div class="text-[10px] uppercase tracking-wider font-semibold text-amber-400 mb-1" id="txt-sec-core">Core System & Customization</div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11px] font-mono text-zinc-300">
-              <div class="p-1.5 rounded bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 5 Elements:</span> Master all 5 elements</div>
-              <div class="p-1.5 rounded bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 50 Preset Loadouts:</span> Instant fast switching</div>
-              <div class="p-1.5 rounded bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 2x Daily Tokens:</span> Double token claims</div>
-              <div class="p-1.5 rounded bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• Bonus XP 100 Cap & Free Fast Travel</span></div>
-              <div class="p-1.5 rounded bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• Gear/Skill Search & Item Bookmarks</span></div>
-              <div class="p-1.5 rounded bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• Exclusive Free Set:</span> Outfit / Gear (in-game)</div>
+              <div class="p-1.5 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 5 Elements:</span> Master all 5 elements</div>
+              <div class="p-1.5 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 50 Preset Loadouts:</span> Instant fast switching</div>
+              <div class="p-1.5 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 2x Daily Tokens:</span> Double token claims</div>
+              <div class="p-1.5 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• Bonus XP 100 Cap & Free Fast Travel</span></div>
+              <div class="p-1.5 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• Gear/Skill Search & Item Bookmarks</span></div>
+              <div class="p-1.5 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• Exclusive Free Set:</span> Outfit / Gear (in-game)</div>
             </div>
           </div>
 
@@ -195,11 +406,11 @@
           <div>
             <div class="text-[10px] uppercase tracking-wider font-semibold text-amber-400 mb-1" id="txt-sec-multipliers">Multipliers & Energy Upgrades</div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11px] font-mono text-zinc-300">
-              <div class="p-1.5 rounded bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 3x Gold & 3x XP Gains:</span> Triple progression</div>
-              <div class="p-1.5 rounded bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 2x Battle Rewards & Recruit Any Level</span></div>
-              <div class="p-1.5 rounded bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• Unlimited Party Control:</span> Unrestricted PvE</div>
-              <div class="p-1.5 rounded bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• Energy:</span> +50 Clan, +50 Crew, +30 PvE, +30 PvP</div>
-              <div class="p-1.5 rounded bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• +20 Event Stamina & Exclusive Talents</span></div>
+              <div class="p-1.5 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 3x Gold & 3x XP Gains:</span> Triple progression</div>
+              <div class="p-1.5 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 2x Battle Rewards & Recruit Any Level</span></div>
+              <div class="p-1.5 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• Unlimited Party Control:</span> Unrestricted PvE</div>
+              <div class="p-1.5 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• Energy:</span> +50 Clan, +50 Crew, +30 PvE, +30 PvP</div>
+              <div class="p-1.5 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• +20 Event Stamina & Exclusive Talents</span></div>
             </div>
           </div>
 
@@ -207,90 +418,84 @@
           <div>
             <div class="text-[10px] uppercase tracking-wider font-semibold text-amber-400 mb-1" id="txt-sec-daily">Daily Activities & Pet Villa</div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11px] font-mono text-zinc-300">
-              <div class="p-1.5 rounded bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 3 Daily Wishes & 3 Lucky Spins</span></div>
-              <div class="p-1.5 rounded bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 8 Daily Scratch Cards & Exclusive Pets</span></div>
-              <div class="p-1.5 rounded bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 5 Pet Villa Slots & -50% Training Time</span></div>
+              <div class="p-1.5 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 3 Daily Wishes & 3 Lucky Spins</span></div>
+              <div class="p-1.5 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 8 Daily Scratch Cards & Exclusive Pets</span></div>
+              <div class="p-1.5 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 5 Pet Villa Slots & -50% Training Time</span></div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- EMBLEM ANNOUNCEMENT BANNER 2: 2,200 BONUS TOKEN POLICY -->
-    <div id="emblem-bonus-banner" class="hidden mt-2 mb-3 p-3.5 rounded-xl bg-gradient-to-r from-amber-950/30 via-zinc-900/90 to-zinc-900/90 border border-amber-500/35 shadow-[0_0_12px_rgba(245,158,11,0.1)]">
+    <!-- EMBLEM BANNER 2: 2,200 BONUS TOKEN POLICY -->
+    <div id="emblem-bonus-banner" class="hidden mt-2 mb-3 p-3.5 rounded-2xl bg-gradient-to-r from-amber-950/30 via-zinc-900/90 to-zinc-900/90 border border-amber-500/35 shadow-[0_0_12px_rgba(245,158,11,0.1)]">
       <div class="flex items-center justify-between gap-2 mb-2">
-        <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/40 uppercase tracking-wider" id="txt-bonus-badge">
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/40 uppercase tracking-wider" id="txt-bonus-badge">
           2,200 Bonus Tokens Policy
         </span>
         <span class="text-[11px] font-mono text-amber-400/90 font-medium" id="txt-bonus-highlight">First Upgrade Only</span>
       </div>
       <p class="text-xs text-zinc-200 leading-relaxed mb-2" id="txt-bonus-desc">
-        The 2,200 Bonus Tokens reward is exclusively available for first-time upgrades directly from Free status.
+        The 2,200 Bonus Tokens reward is exclusively available for first-time upgrades directly from Free status. Upgrading from an existing Emblem to Emblem+ does not include bonus tokens.
       </p>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11px] font-mono">
-        <div class="p-2 rounded-lg bg-zinc-950/70 border border-emerald-500/30 text-zinc-200">
+        <div class="p-2 rounded-xl bg-zinc-950/70 border border-emerald-500/30 text-zinc-200">
           <span class="text-emerald-400 font-bold">✓ Free ➔ Emblem / Emblem+:</span>
           <div class="text-[10px] text-zinc-400 mt-0.5" id="txt-bonus-rule-eligible">Eligible for 2,200 Bonus Tokens (1st Upgrade)</div>
         </div>
-        <div class="p-2 rounded-lg bg-zinc-950/70 border border-zinc-800 text-zinc-300">
+        <div class="p-2 rounded-xl bg-zinc-950/70 border border-zinc-800 text-zinc-300">
           <span class="text-amber-400 font-bold">✕ Emblem ➔ Emblem+:</span>
           <div class="text-[10px] text-zinc-400 mt-0.5" id="txt-bonus-rule-ineligible">Not eligible for bonus tokens</div>
         </div>
       </div>
     </div>
 
-    <!-- LEVEL UP ANNOUNCEMENT BANNER 1: REWARDS BREAKDOWN (PURPLE NEON THEME) -->
-    <div id="levelup-banner-desc" class="hidden mt-3.5 mb-2 p-3.5 rounded-xl bg-gradient-to-r from-purple-950/40 via-zinc-900/90 to-zinc-900/90 border border-purple-500/35 shadow-[0_0_16px_rgba(168,85,247,0.15)]">
+    <!-- LEVEL UP BANNER 1: REWARDS BREAKDOWN (PINK BLOSSOM NEON) -->
+    <div id="levelup-banner-desc" class="hidden mt-2 mb-3 p-3.5 rounded-2xl bg-gradient-to-r from-pink-950/40 via-zinc-900/90 to-zinc-900/90 border border-pink-500/35 shadow-[0_0_16px_rgba(236,72,153,0.15)]">
       <div class="flex items-center justify-between gap-2 mb-2">
-        <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-purple-500/15 text-purple-400 border border-purple-500/40 uppercase tracking-wider" id="txt-lv-rewards-tag">
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-pink-500/15 text-pink-400 border border-pink-500/40 uppercase tracking-wider" id="txt-lv-rewards-tag">
           Level Up Bundle Rewards
         </span>
-        <span class="text-[11px] font-mono text-purple-300/80" id="txt-lv-rewards-ingame-tag">Refer to In-Game</span>
+        <span class="text-[11px] font-mono text-pink-300/80" id="txt-lv-rewards-ingame-tag">Refer to In-Game</span>
       </div>
       <p class="text-xs text-zinc-200 leading-relaxed mb-2" id="txt-lv-rewards-desc">
         Each Starter Pack includes its own dedicated clothing outfit, weapon, exclusive combat skills, hairstyle, back item, accessory, a unique pet, and bonus Tokens.
       </p>
-      <div class="p-2 rounded-lg bg-zinc-950/70 border border-purple-500/20 text-[11px] text-zinc-300 font-mono flex items-center gap-1.5">
-        <span class="text-purple-400 font-bold">•</span>
+      <div class="p-2 rounded-xl bg-zinc-950/70 border border-pink-500/20 text-[11px] text-zinc-300 font-mono flex items-start gap-1.5">
+        <span class="text-pink-400 font-bold">•</span>
         <span id="txt-lv-rewards-note">Please check in-game to inspect item models, pet abilities, and skill previews for each level.</span>
       </div>
     </div>
 
-    <!-- LEVEL UP ANNOUNCEMENT BANNER 2: PURCHASE & DUPLICATE NOTES -->
-    <div id="levelup-banner-notes" class="hidden mt-2 mb-3 p-3.5 rounded-xl bg-gradient-to-r from-purple-950/30 via-zinc-900/90 to-zinc-900/90 border border-purple-500/35 shadow-[0_0_12px_rgba(168,85,247,0.1)]">
+    <!-- LEVEL UP BANNER 2: PURCHASE & DUPLICATE NOTES -->
+    <div id="levelup-banner-notes" class="hidden mt-2 mb-3 p-3.5 rounded-2xl bg-gradient-to-r from-pink-950/30 via-zinc-900/90 to-zinc-900/90 border border-pink-500/35 shadow-[0_0_12px_rgba(236,72,153,0.1)]">
       <div class="flex items-center justify-between gap-2 mb-2">
-        <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-purple-500/15 text-purple-400 border border-purple-500/40 uppercase tracking-wider" id="txt-lv-notes-tag">
+        <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-pink-500/15 text-pink-400 border border-pink-500/40 uppercase tracking-wider" id="txt-lv-notes-tag">
           Purchase & Duplicate Policy
         </span>
-        <span class="text-[11px] font-mono text-purple-400 font-medium" id="txt-lv-notes-limit-tag">1 Per Character Slot</span>
+        <span class="text-[11px] font-mono text-pink-400 font-medium" id="txt-lv-notes-limit-tag">1 Per Character Slot</span>
       </div>
       <p class="text-xs text-zinc-200 leading-relaxed mb-2" id="txt-lv-notes-desc">
         Each package can only be purchased once per character slot. If you already own items included in the pack, they are automatically converted into Tokens:
       </p>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-1.5 text-[11px] font-mono">
-        <div class="p-2 rounded-lg bg-zinc-950/70 border border-purple-500/30 text-zinc-200">
-          <span class="text-purple-400 font-bold">★ Skill Replacement:</span>
+        <div class="p-2 rounded-xl bg-zinc-950/70 border border-pink-500/30 text-zinc-200">
+          <span class="text-pink-400 font-bold">★ Skill Replacement:</span>
           <div class="text-[10px] text-zinc-300 mt-0.5" id="txt-lv-dup-skill">Owned Skill ➔ Replaced with 500 Tokens</div>
         </div>
-        <div class="p-2 rounded-lg bg-zinc-950/70 border border-purple-500/30 text-zinc-200">
-          <span class="text-purple-400 font-bold">★ Cosmetic Replacement:</span>
+        <div class="p-2 rounded-xl bg-zinc-950/70 border border-pink-500/30 text-zinc-200">
+          <span class="text-pink-400 font-bold">★ Cosmetic Replacement:</span>
           <div class="text-[10px] text-zinc-300 mt-0.5" id="txt-lv-dup-cosmetic">Owned Clothing / Hairstyle ➔ Replaced with 100 Tokens each</div>
         </div>
       </div>
     </div>
 
-    <!-- CATEGORY META CAPTION (FOR NON-1ST-TIME) -->
-    <div id="category-caption" class="hidden mt-3 mb-2 flex items-center justify-between text-xs text-zinc-400 px-1">
-      <span id="caption-text"></span>
-      <span class="text-[11px] text-zinc-500 font-mono" id="txt-no-server-tag">No server required</span>
-    </div>
-
     <!-- BATTLEPASS ANNOUNCEMENT & INTERACTIVE PICKER -->
     <div id="bp-customizer" class="hidden mb-4 space-y-3">
       <!-- BATTLEPASS REWARDS INFO HEADER (RED NEON THEME) -->
-      <div id="bp-rewards-banner" class="p-3.5 rounded-xl bg-gradient-to-r from-red-950/40 via-zinc-900/90 to-zinc-900/90 border border-red-500/35 shadow-[0_0_16px_rgba(239,68,68,0.15)]">
+      <div id="bp-rewards-banner" class="p-3.5 rounded-2xl bg-gradient-to-r from-red-950/40 via-zinc-900/90 to-zinc-900/90 border border-red-500/35 shadow-[0_0_16px_rgba(239,68,68,0.15)]">
         <div class="flex items-center justify-between gap-2 mb-2">
-          <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-red-500/15 text-red-400 border border-red-500/40 uppercase tracking-wider" id="txt-bp-rewards-tag">
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-red-500/15 text-red-400 border border-red-500/40 uppercase tracking-wider" id="txt-bp-rewards-tag">
             Battlepass Rewards Info
           </span>
           <span class="text-[11px] font-mono text-red-400/90" id="txt-bp-rewards-ingame-tag">Refer to In-Game</span>
@@ -298,36 +503,36 @@
         <p class="text-xs text-zinc-200 leading-relaxed mb-2" id="txt-bp-rewards-desc">
           Each Battlepass includes exclusive skills, tokens, talent training potions, weapons, back items, and accessories.
         </p>
-        <div class="p-2 rounded-lg bg-zinc-950/70 border border-red-500/20 text-[11px] text-zinc-300 font-mono flex items-center gap-1.5">
+        <div class="p-2 rounded-xl bg-zinc-950/70 border border-red-500/20 text-[11px] text-zinc-300 font-mono flex items-start gap-1.5">
           <span class="text-red-400 font-bold">•</span>
           <span id="txt-bp-rewards-note">To preview the full seasonal reward track and gear models, please check the in-game Battlepass tab.</span>
         </div>
       </div>
 
       <!-- Announcement Rates Banner -->
-      <div class="p-3.5 rounded-xl bg-zinc-900/90 border border-zinc-800">
+      <div class="p-3.5 rounded-2xl bg-zinc-900/90 border border-zinc-800">
         <div class="flex items-center justify-between gap-2 mb-2">
-          <span class="px-2 py-0.5 rounded text-[10px] font-semibold bg-zinc-800 text-zinc-300 uppercase tracking-wider" id="txt-bp-rate-badge">
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-zinc-800 text-zinc-300 uppercase tracking-wider" id="txt-bp-rate-badge">
             Pricing Structure
           </span>
           <div class="flex items-center gap-2">
-            <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-400 border border-zinc-700/60" id="txt-bp-limit-note">Limit: 1 per season</span>
+            <span class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700/60" id="txt-bp-limit-note">Limit: 1 per season</span>
             <span class="text-xs font-semibold text-white" id="txt-bp-banner-title">Season Battlepass Rates</span>
           </div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px]">
-          <div class="p-2 rounded-lg bg-zinc-950/70 border border-zinc-800">
+          <div class="p-2 rounded-xl bg-zinc-950/70 border border-zinc-800">
             <div class="text-zinc-400 font-medium" id="txt-bp-b1-title">Seasons 1 – 11</div>
             <div class="text-emerald-400 font-mono font-semibold mt-0.5">RM 11.00 <span class="text-zinc-500 font-normal">/</span> RM 16.00 <span class="text-[10px] text-zinc-500">(Maxed)</span></div>
           </div>
-          <div class="p-2 rounded-lg bg-zinc-950/70 border border-zinc-800">
+          <div class="p-2 rounded-xl bg-zinc-950/70 border border-zinc-800">
             <div class="text-zinc-400 font-medium" id="txt-bp-b2-title">Seasons 12 – 21</div>
             <div class="text-emerald-400 font-mono font-semibold mt-0.5">RM 21.00 <span class="text-zinc-500 font-normal">/</span> RM 31.00 <span class="text-[10px] text-zinc-500">(Maxed)</span></div>
           </div>
-          <div class="p-2 rounded-lg bg-zinc-950/70 border border-amber-500/30 ring-1 ring-amber-500/10">
+          <div class="p-2 rounded-xl bg-zinc-950/70 border border-amber-500/30 ring-1 ring-amber-500/10">
             <div class="text-amber-300 font-medium flex items-center justify-between">
               <span id="txt-bp-b3-title">Season 22</span>
-              <span class="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300" id="txt-bp-latest-tag">LATEST</span>
+              <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-300" id="txt-bp-latest-tag">LATEST</span>
             </div>
             <div class="text-amber-400 font-mono font-semibold mt-0.5">RM 41.00 <span class="text-zinc-500 font-normal">/</span> RM 61.00 <span class="text-[10px] text-zinc-500">(Maxed)</span></div>
           </div>
@@ -335,15 +540,15 @@
       </div>
 
       <!-- Interactive Season Picker Card -->
-      <div class="p-4 rounded-xl bg-surface-card border border-surface-border">
+      <div class="p-4 rounded-2xl bg-surface-card border border-surface-border">
         <!-- Tier Toggle -->
         <div class="flex items-center justify-between mb-3">
           <label class="text-xs font-medium text-zinc-300" id="txt-bp-tier-label">Choose Tier</label>
-          <div class="grid grid-cols-2 gap-1 bg-surface-input p-1 rounded-lg border border-surface-border text-xs w-52">
-            <button type="button" id="btn-bp-normal" onclick="setBpTier('Normal')" class="py-1 rounded font-medium transition bg-red-600 text-white shadow-[0_0_8px_rgba(239,68,68,0.35)]">
+          <div class="grid grid-cols-2 gap-1 bg-surface-input p-1 rounded-xl border border-surface-border text-xs w-52">
+            <button type="button" id="btn-bp-normal" onclick="setBpTier('Normal')" class="py-1 rounded-lg font-medium transition bg-red-600 text-white shadow-[0_0_8px_rgba(239,68,68,0.35)]">
               Normal
             </button>
-            <button type="button" id="btn-bp-maxed" onclick="setBpTier('Maxed')" class="py-1 rounded font-medium transition text-zinc-400 hover:text-white">
+            <button type="button" id="btn-bp-maxed" onclick="setBpTier('Maxed')" class="py-1 rounded-lg font-medium transition text-zinc-400 hover:text-white">
               Maxed
             </button>
           </div>
@@ -365,7 +570,7 @@
           type="button" 
           id="bp-add-btn"
           onclick="addBattlepassToCart()"
-          class="w-full py-2.5 px-3.5 rounded-lg bg-red-600 hover:bg-red-500 active:scale-[0.99] text-xs font-semibold text-white flex items-center justify-between border border-red-400/50 shadow-[0_0_14px_rgba(239,68,68,0.35)] transition">
+          class="w-full py-2.5 px-3.5 rounded-xl bg-red-600 hover:bg-red-500 active:scale-[0.99] text-xs font-semibold text-white flex items-center justify-between border border-red-400/50 shadow-[0_0_14px_rgba(239,68,68,0.35)] transition">
           <span id="bp-add-button-label">+ Add Season 1 [Normal]</span>
           <span id="bp-add-button-price" class="font-mono font-bold text-red-100">RM 11.00</span>
         </button>
@@ -425,9 +630,9 @@
       <div class="p-4 border-b border-surface-border flex items-center justify-between">
         <div class="flex items-center gap-2">
           <h3 class="text-sm font-semibold text-white" id="txt-drawer-title">Selected Packages</h3>
-          <span id="drawer-count-pill" class="text-[11px] font-mono px-2 py-0.5 rounded bg-zinc-800 text-zinc-300">0</span>
+          <span id="drawer-count-pill" class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300">0</span>
         </div>
-        <button type="button" onclick="toggleCartDrawer()" class="text-zinc-400 hover:text-white text-xs px-2 py-1 rounded bg-zinc-800/60">
+        <button type="button" onclick="toggleCartDrawer()" class="text-zinc-400 hover:text-white text-xs px-2.5 py-1 rounded-full bg-zinc-800/60">
           ✕
         </button>
       </div>
@@ -476,7 +681,7 @@
   </div>
 
   <!-- ================= MINIMAL TOAST ================= -->
-  <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-zinc-900 border border-zinc-700/80 text-zinc-100 text-xs px-3.5 py-2 rounded-lg shadow-xl opacity-0 pointer-events-none transition-all duration-200">
+  <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-zinc-900 border border-zinc-700/80 text-zinc-100 text-xs px-3.5 py-2 rounded-full shadow-xl opacity-0 pointer-events-none transition-all duration-200">
     Copied to clipboard
   </div>
 
@@ -485,7 +690,7 @@
     /* ---------------- I18N STRINGS ---------------- */
     const I18N = {
       en: {
-        storeTitle: "TOP-UP CATALOG",
+        storeTitle: "CATOLOGIST'S STORE",
         fulfilmentLabel: "Normal Fulfilment:",
         fulfilmentVal: "5 – 30 Minutes",
         eventTag: "First-Time Buyer Sale (25% OFF)",
@@ -497,6 +702,27 @@
         tokensLine1: "• Package 1, 2, 3, 4 / A, B, C, D (Kinjutsu + Pet)",
         tokensLine2: "• Package 5 / E (Hairstyle)",
         tokensReferText: "Please refer to in-game.",
+        mcTag: "Market Coins Info",
+        mcConvertPill: "1:1 Convert to Tokens",
+        mcDesc: "Market Coins are an in-game currency used to purchase weapons, clothing, and back items from other players in the Market building.",
+        mcConvertNote: "Conversion: You can convert Market Coins 1:1 to Tokens.",
+        mcLine1: "• Package A–D includes Kinjutsu + Pet | Package E includes Hairstyle",
+        mcRefer: "Please refer to in-game for preview.",
+        clanTag: "Clan War Energy Packs",
+        clanLimitTag: "Best Stamina Value",
+        clanTabGuide: "Item Guide & Notes",
+        clanTabCompare: "Value Comparison vs Tokens",
+        clanRollDesc: "Refills 50 energy in Clan Wars.",
+        clanTwinDesc: "Refills 100 energy in Clan Wars (2x efficiency).",
+        clanCapDesc: "Permanently increases Clan War max energy by +50.",
+        arenaTag: "Ninja Arena Packs",
+        arenaBadgeVal: "Best Energy Capsule Value",
+        arenaTabGuide: "Item Guide & Notes",
+        arenaTabCompare: "Value Comparison vs Tokens",
+        arenaBaseline: "Baseline:",
+        arenaCapDesc: "Restores 50 energy in Ninja Arena.",
+        arenaBigcapDesc: "Restores 100 energy in Ninja Arena.",
+        arenaUpcapDesc: "Increases Ninja Arena max energy by +50 (Current season).",
         bpRewardsTag: "Battlepass Rewards Info",
         bpRewardsIngameTag: "Refer to In-Game",
         bpRewardsDesc: "Each Battlepass includes exclusive skills, tokens, talent training potions, weapons, back items, and accessories.",
@@ -522,7 +748,6 @@
         lvNotesDesc: "Each package can only be purchased once per character slot. If you already own items included in the pack, they are automatically converted into Tokens:",
         lvDupSkill: "Owned Skill ➔ Replaced with 500 Tokens",
         lvDupCosmetic: "Owned Clothing / Hairstyle ➔ Replaced with 100 Tokens each",
-        noServerTag: "No server required",
         bpRateBadge: "Pricing Structure",
         bpLimitNote: "Limit: 1 per season",
         bpBannerTitle: "Season Battlepass Rates",
@@ -555,7 +780,7 @@
         toastCopied: "Copied to clipboard"
       },
       bm: {
-        storeTitle: "KATALOG TOP-UP",
+        storeTitle: "KEDAI CATOLOGIST",
         fulfilmentLabel: "Masa Proses Biasa:",
         fulfilmentVal: "5 – 30 Minit",
         eventTag: "Jualan Pembeli Pertama (Diskaun 25%)",
@@ -567,6 +792,27 @@
         tokensLine1: "• Pakej 1, 2, 3, 4 / A, B, C, D (Kinjutsu + Pet)",
         tokensLine2: "• Pakej 5 / E (Gaya Rambut)",
         tokensReferText: "Sila rujuk di dalam game.",
+        mcTag: "Info Market Coins",
+        mcConvertPill: "Tukar 1:1 kepada Token",
+        mcDesc: "Market Coins adalah mata wang dalam game yang digunakan untuk membeli senjata, pakaian, dan barangan belakang dari pemain lain di bangunan Market.",
+        mcConvertNote: "Penukaran: Anda boleh menukar Market Coins 1:1 kepada Token.",
+        mcLine1: "• Pakej A–D termasuk Kinjutsu + Pet | Pakej E termasuk Gaya Rambut",
+        mcRefer: "Sila rujuk dalam game untuk pratonton.",
+        clanTag: "Pakej Tenaga Clan War",
+        clanLimitTag: "Nilai Stamina Terbaik",
+        clanTabGuide: "Panduan Item & Nota",
+        clanTabCompare: "Perbandingan Nilai vs Token",
+        clanRollDesc: "Mengisi semula 50 tenaga dalam Clan Wars.",
+        clanTwinDesc: "Mengisi semula 100 tenaga dalam Clan Wars (2x ganda).",
+        clanCapDesc: "Meningkatkan kapasiti maksimum tenaga Clan Wars secara kekal sebanyak +50.",
+        arenaTag: "Pakej Ninja Arena",
+        arenaBadgeVal: "Nilai Kapsul Tenaga Terbaik",
+        arenaTabGuide: "Panduan Item & Nota",
+        arenaTabCompare: "Perbandingan Nilai vs Token",
+        arenaBaseline: "Asas:",
+        arenaCapDesc: "Memulihkan 50 tenaga di Ninja Arena.",
+        arenaBigcapDesc: "Memulihkan 100 tenaga di Ninja Arena.",
+        arenaUpcapDesc: "Meningkatkan maksimum tenaga Ninja Arena sebanyak +50 (Musim semasa).",
         bpRewardsTag: "Info Ganjaran Battlepass",
         bpRewardsIngameTag: "Rujuk Dalam Game",
         bpRewardsDesc: "Setiap Battlepass merangkumi skil eksklusif, token, ramuan latihan talent (training potion), senjata, barangan belakang (back item), dan aksesori.",
@@ -592,7 +838,6 @@
         lvNotesDesc: "Setiap pakej hanya boleh dibeli sekali sahaja bagi setiap slot watak. Jika anda sudah memiliki item dalam pakej, ia akan digantikan dengan Token:",
         lvDupSkill: "Skil Sedia Ada ➔ Diganti dengan 500 Token",
         lvDupCosmetic: "Pakaian / Gaya Rambut Sedia Ada ➔ Diganti dengan 100 Token setiap satu",
-        noServerTag: "Tiada server diperlukan",
         bpRateBadge: "Struktur Harga",
         bpLimitNote: "Had: 1 setiap musim",
         bpBannerTitle: "Kadar Battlepass Musim",
@@ -631,156 +876,44 @@
     /* ---------------- CATALOG DATA ---------------- */
     const CATALOG = [
       /* FIRST-TIME BUYER SALE (25% OFF) */
-      { 
-        id: "ft-1", 
-        category: "first-time", 
-        name: "Package 1", 
-        desc: "31,500 Tokens + 100 Stamina Rolls + Kinjutsu + Pet", 
-        price: 150.00, 
-        oldPrice: 200.00, 
-        limit: 1 
-      },
-      { 
-        id: "ft-2", 
-        category: "first-time", 
-        name: "Package 2", 
-        desc: "14,175 Tokens + 40 Stamina Rolls + Kinjutsu + Pet", 
-        price: 75.75, 
-        oldPrice: 101.00, 
-        limit: 1 
-      },
-      { 
-        id: "ft-3", 
-        category: "first-time", 
-        name: "Package 3", 
-        desc: "5,250 Tokens + 20 Stamina Rolls + Kinjutsu + Pet", 
-        price: 30.75, 
-        oldPrice: 41.00, 
-        limit: 1 
-      },
-      { 
-        id: "ft-4", 
-        category: "first-time", 
-        name: "Package 4", 
-        desc: "2,310 Tokens + Kinjutsu + Pet", 
-        price: 15.75, 
-        oldPrice: 21.00, 
-        limit: 1 
-      },
-      { 
-        id: "ft-5", 
-        category: "first-time", 
-        name: "Package 5", 
-        desc: "315 Tokens + Hairstyle", 
-        price: 4.00, 
-        oldPrice: 5.00, 
-        limit: 1 
-      },
-      { 
-        id: "ft-m1", 
-        category: "first-time", 
-        name: "Gacha Materials", 
-        desc: "Material Package (6-9)", 
-        price: 7.00, 
-        oldPrice: 9.00, 
-        limit: 1 
-      },
-      { 
-        id: "ft-m2", 
-        category: "first-time", 
-        name: "Anniversary Materials", 
-        desc: "Material Package (6-9)", 
-        price: 7.00, 
-        oldPrice: 9.00, 
-        limit: 1 
-      },
-      { 
-        id: "ft-m3", 
-        category: "first-time", 
-        name: "Anniversary Part II Materials", 
-        desc: "Material Package (6-9)", 
-        price: 7.00, 
-        oldPrice: 9.00, 
-        limit: 1 
-      },
+      { id: "ft-1", category: "first-time", name: "Package 1", desc: "31,500 Tokens + 100 Stamina Rolls + Kinjutsu + Pet", price: 150.00, oldPrice: 200.00, limit: 1 },
+      { id: "ft-2", category: "first-time", name: "Package 2", desc: "14,175 Tokens + 40 Stamina Rolls + Kinjutsu + Pet", price: 75.75, oldPrice: 101.00, limit: 1 },
+      { id: "ft-3", category: "first-time", name: "Package 3", desc: "5,250 Tokens + 20 Stamina Rolls + Kinjutsu + Pet", price: 30.75, oldPrice: 41.00, limit: 1 },
+      { id: "ft-4", category: "first-time", name: "Package 4", desc: "2,310 Tokens + Kinjutsu + Pet", price: 15.75, oldPrice: 21.00, limit: 1 },
+      { id: "ft-5", category: "first-time", name: "Package 5", desc: "315 Tokens + Hairstyle", price: 4.00, oldPrice: 5.00, limit: 1 },
+      { id: "ft-m1", category: "first-time", name: "Gacha Materials", desc: "Material Package (6-9)", price: 7.00, oldPrice: 9.00, limit: 1 },
+      { id: "ft-m2", category: "first-time", name: "Anniversary Materials", desc: "Material Package (6-9)", price: 7.00, oldPrice: 9.00, limit: 1 },
+      { id: "ft-m3", category: "first-time", name: "Anniversary Part II Materials", desc: "Material Package (6-9)", price: 7.00, oldPrice: 9.00, limit: 1 },
 
-      /* TOKENS (Standard Prices, Identical Contents) */
-      { 
-        id: "tk-a", 
-        category: "token", 
-        name: "Package A", 
-        desc: "31,500 Tokens + 100 Stamina Rolls + Kinjutsu + Pet", 
-        price: 200.00, 
-        oldPrice: null, 
-        limit: 99 
-      },
-      { 
-        id: "tk-b", 
-        category: "token", 
-        name: "Package B", 
-        desc: "14,175 Tokens + 40 Stamina Rolls + Kinjutsu + Pet", 
-        price: 101.00, 
-        oldPrice: null, 
-        limit: 99 
-      },
-      { 
-        id: "tk-c", 
-        category: "token", 
-        name: "Package C", 
-        desc: "5,250 Tokens + 20 Stamina Rolls + Kinjutsu + Pet", 
-        price: 41.00, 
-        oldPrice: null, 
-        limit: 99 
-      },
-      { 
-        id: "tk-d", 
-        category: "token", 
-        name: "Package D", 
-        desc: "2,310 Tokens + Kinjutsu + Pet", 
-        price: 21.00, 
-        oldPrice: null, 
-        limit: 99 
-      },
-      { 
-        id: "tk-e", 
-        category: "token", 
-        name: "Package E", 
-        desc: "315 Tokens + Hairstyle", 
-        price: 5.00, 
-        oldPrice: null, 
-        limit: 99 
-      },
+      /* TOKENS */
+      { id: "tk-a", category: "token", name: "Package A", desc: "31,500 Tokens + 100 Stamina Rolls + Kinjutsu + Pet", price: 200.00, oldPrice: null, limit: 99 },
+      { id: "tk-b", category: "token", name: "Package B", desc: "14,175 Tokens + 40 Stamina Rolls + Kinjutsu + Pet", price: 101.00, oldPrice: null, limit: 99 },
+      { id: "tk-c", category: "token", name: "Package C", desc: "5,250 Tokens + 20 Stamina Rolls + Kinjutsu + Pet", price: 41.00, oldPrice: null, limit: 99 },
+      { id: "tk-d", category: "token", name: "Package D", desc: "2,310 Tokens + Kinjutsu + Pet", price: 21.00, oldPrice: null, limit: 99 },
+      { id: "tk-e", category: "token", name: "Package E", desc: "315 Tokens + Hairstyle", price: 5.00, oldPrice: null, limit: 99 },
 
-      /* EMBLEMS (Polished, Clear Descriptions - Limit 1 per package) */
-      { 
-        id: "em-1", 
-        category: "emblem", 
-        name: "Free -> Emblem", 
-        desc: "Unlock 3 Elements, 2,200 Bonus Tokens (1st Upgrade), Free Wisdom Scroll & Daily Tokens", 
-        price: 21.00, 
-        oldPrice: null, 
-        limit: 1 
-      },
-      { 
-        id: "em-2", 
-        category: "emblem", 
-        name: "Emblem -> Emblem+", 
-        desc: "Upgrade to 5 Elements, 3x XP/Gold, Unlimited Party Control & All Emblem+ Perks (No Bonus Tokens)", 
-        price: 21.00, 
-        oldPrice: null, 
-        limit: 1 
-      },
-      { 
-        id: "em-3", 
-        category: "emblem", 
-        name: "Free -> Emblem+", 
-        desc: "Full Unlock: 5 Elements, 2,200 Bonus Tokens (1st Upgrade), 3x Multipliers & Emblem+ Perks", 
-        price: 41.00, 
-        oldPrice: null, 
-        limit: 1 
-      },
+      /* MARKET COINS */
+      { id: "mc-a", category: "marketcoins", name: "Market Coins Pack A", desc: "31,500 Market Coins + 100 Stamina Rolls + Kinjutsu + Pet", price: 200.00, oldPrice: null, limit: 99 },
+      { id: "mc-b", category: "marketcoins", name: "Market Coins Pack B", desc: "14,175 Market Coins + 40 Stamina Rolls + Kinjutsu + Pet", price: 101.00, oldPrice: null, limit: 99 },
+      { id: "mc-c", category: "marketcoins", name: "Market Coins Pack C", desc: "5,250 Market Coins + 20 Stamina Rolls + Kinjutsu + Pet", price: 41.00, oldPrice: null, limit: 99 },
+      { id: "mc-d", category: "marketcoins", name: "Market Coins Pack D", desc: "2,310 Market Coins + Kinjutsu + Pet", price: 21.00, oldPrice: null, limit: 99 },
+      { id: "mc-e", category: "marketcoins", name: "Market Coins Pack E", desc: "315 Market Coins + Hairstyle", price: 5.00, oldPrice: null, limit: 99 },
 
-      /* LEVEL UP PACKAGES (Limit 1 per character slot - Exact Tokens & Bundle Items) */
+      /* CLAN PACKAGES */
+      { id: "cl-sm", category: "clan", name: "Small Clan Pack", desc: "150 Stamina Rolls + 75 Twin Stamina Rolls + Pet", price: 21.00, oldPrice: null, limit: 99 },
+      { id: "cl-md", category: "clan", name: "Medium Clan Pack", desc: "500 Stamina Rolls + 50 Twin Stamina Rolls + Pet", price: 41.00, oldPrice: null, limit: 99 },
+      { id: "cl-lg", category: "clan", name: "Large Clan Pack", desc: "3,000 Stamina Rolls + 275 Twin Stamina Rolls + Clan Upgrade Capsule (+50 Energy) + Pet", price: 200.00, oldPrice: null, limit: 99 },
+
+      /* ARENA PACKAGES */
+      { id: "ar-sm", category: "arena", name: "Small Arena Pack", desc: "200 Arena Energy Capsules + 50 Big Arena Energy Capsules", price: 41.00, oldPrice: null, limit: 99 },
+      { id: "ar-lg", category: "arena", name: "Large Arena Pack", desc: "1,400 Arena Energy Capsules + 150 Big Energy Capsules + Arena Capsule Upgrade (+50 Energy) + Pet", price: 200.00, oldPrice: null, limit: 99 },
+
+      /* EMBLEMS */
+      { id: "em-1", category: "emblem", name: "Free -> Emblem", desc: "Unlock 3 Elements, 2,200 Bonus Tokens (1st Upgrade), Free Wisdom Scroll & Daily Tokens", price: 21.00, oldPrice: null, limit: 1 },
+      { id: "em-2", category: "emblem", name: "Emblem -> Emblem+", desc: "Upgrade to 5 Elements, 3x XP/Gold, Unlimited Party Control & All Emblem+ Perks (No Bonus Tokens)", price: 21.00, oldPrice: null, limit: 1 },
+      { id: "em-3", category: "emblem", name: "Free -> Emblem+", desc: "Full Unlock: 5 Elements, 2,200 Bonus Tokens (1st Upgrade), 3x Multipliers & Emblem+ Perks", price: 41.00, oldPrice: null, limit: 1 },
+
+      /* LEVEL UP PACKAGES */
       { id: "lv-10", category: "levelup", name: "Lv10 Starter Pack", desc: "700 Tokens + Outfit, Weapon, Skills, Hairstyle, Back Item, Accessory & Pet", price: 9.00, oldPrice: null, limit: 1 },
       { id: "lv-20", category: "levelup", name: "Lv20 Starter Pack", desc: "2,000 Tokens + Outfit, Weapon, Skills, Hairstyle, Back Item, Accessory & Pet", price: 13.00, oldPrice: null, limit: 1 },
       { id: "lv-30", category: "levelup", name: "Lv30 Starter Pack", desc: "2,500 Tokens + Outfit, Weapon, Skills, Hairstyle, Back Item, Accessory & Pet", price: 17.00, oldPrice: null, limit: 1 },
@@ -804,7 +937,7 @@
     window.addEventListener("DOMContentLoaded", () => {
       buildBattlepassGrid();
       updateLanguageUI();
-      renderItems();
+      switchCategory(currentCategory);
       updateCartSummary();
     });
 
@@ -840,6 +973,27 @@
       setText("txt-tokens-line1", t.tokensLine1);
       setText("txt-tokens-line2", t.tokensLine2);
       setText("txt-tokens-refer-text", t.tokensReferText);
+      setText("txt-mc-tag", t.mcTag);
+      setText("txt-mc-convert-pill", t.mcConvertPill);
+      setText("txt-mc-desc", t.mcDesc);
+      setText("txt-mc-convert-note", t.mcConvertNote);
+      setText("txt-mc-line1", t.mcLine1);
+      setText("txt-mc-refer", t.mcRefer);
+      setText("txt-clan-tag", t.clanTag);
+      setText("txt-clan-limit-tag", t.clanLimitTag);
+      setText("btn-tab-clan-guide", t.clanTabGuide);
+      setText("btn-tab-clan-compare", t.clanTabCompare);
+      setText("txt-clan-roll-desc", t.clanRollDesc);
+      setText("txt-clan-twin-desc", t.clanTwinDesc);
+      setText("txt-clan-cap-desc", t.clanCapDesc);
+      setText("txt-arena-tag", t.arenaTag);
+      setText("txt-arena-badge-val", t.arenaBadgeVal);
+      setText("btn-tab-arena-guide", t.arenaTabGuide);
+      setText("btn-tab-arena-compare", t.arenaTabCompare);
+      setText("txt-arena-baseline", t.arenaBaseline);
+      setText("txt-arena-cap-desc", t.arenaCapDesc);
+      setText("txt-arena-bigcap-desc", t.arenaBigcapDesc);
+      setText("txt-arena-upcap-desc", t.arenaUpcapDesc);
       setText("txt-bp-rewards-tag", t.bpRewardsTag);
       setText("txt-bp-rewards-ingame-tag", t.bpRewardsIngameTag);
       setText("txt-bp-rewards-desc", t.bpRewardsDesc);
@@ -865,7 +1019,6 @@
       setText("txt-lv-notes-desc", t.lvNotesDesc);
       setText("txt-lv-dup-skill", t.lvDupSkill);
       setText("txt-lv-dup-cosmetic", t.lvDupCosmetic);
-      setText("txt-no-server-tag", t.noServerTag);
       setText("txt-bp-rate-badge", t.bpRateBadge);
       setText("txt-bp-limit-note", t.bpLimitNote);
       setText("txt-bp-banner-title", t.bpBannerTitle);
@@ -890,99 +1043,100 @@
       setText("txt-modal-close-btn", t.modalClose);
     }
 
-    /* ---------------- CATEGORY SWITCHING ---------------- */
+    /* ---------------- CATEGORY SWITCHING (HARMONIZED PILL STYLES) ---------------- */
+    const CATEGORY_STYLES = {
+      'first-time': {
+        activeClass: 'active text-emerald-300 bg-emerald-950/40 border-emerald-500/70 shadow-[0_0_12px_rgba(16,185,129,0.3)] font-semibold'
+      },
+      'token': {
+        activeClass: 'active text-blue-300 bg-blue-950/40 border-blue-500/70 shadow-[0_0_12px_rgba(59,130,246,0.3)] font-semibold'
+      },
+      'marketcoins': {
+        activeClass: 'active text-purple-300 bg-purple-950/40 border-purple-500/70 shadow-[0_0_12px_rgba(168,85,247,0.3)] font-semibold'
+      },
+      'clan': {
+        activeClass: 'active text-cyan-300 bg-cyan-950/40 border-cyan-500/70 shadow-[0_0_12px_rgba(6,182,212,0.3)] font-semibold'
+      },
+      'arena': {
+        activeClass: 'active text-indigo-300 bg-indigo-950/40 border-indigo-500/70 shadow-[0_0_12px_rgba(99,102,241,0.3)] font-semibold'
+      },
+      'emblem': {
+        activeClass: 'active text-amber-300 bg-amber-950/40 border-amber-500/70 shadow-[0_0_12px_rgba(245,158,11,0.3)] font-semibold'
+      },
+      'battlepass': {
+        activeClass: 'active text-red-300 bg-red-950/40 border-red-500/70 shadow-[0_0_12px_rgba(239,68,68,0.3)] font-semibold'
+      },
+      'levelup': {
+        activeClass: 'active text-pink-300 bg-pink-950/40 border-pink-500/70 shadow-[0_0_12px_rgba(236,72,153,0.3)] font-semibold'
+      }
+    };
+
     function switchCategory(cat) {
       currentCategory = cat;
 
-      document.querySelectorAll(".cat-pill").forEach(btn => {
-        if (btn.dataset.cat === cat) {
-          if (cat === 'token') {
-            btn.className = "cat-pill active px-3 py-1.5 rounded-lg text-xs font-semibold transition whitespace-nowrap bg-blue-600 text-white shadow-[0_0_12px_rgba(37,99,235,0.45)] border border-blue-400/40";
-          } else if (cat === 'emblem') {
-            btn.className = "cat-pill active px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap bg-amber-500 text-zinc-950 shadow-[0_0_14px_rgba(245,158,11,0.5)] border border-amber-300";
-          } else if (cat === 'battlepass') {
-            btn.className = "cat-pill active px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap bg-red-600 text-white shadow-[0_0_14px_rgba(239,68,68,0.5)] border border-red-400/50";
-          } else if (cat === 'levelup') {
-            btn.className = "cat-pill active px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap bg-purple-600 text-white shadow-[0_0_14px_rgba(168,85,247,0.5)] border border-purple-400/50";
-          } else {
-            btn.className = "cat-pill active px-3 py-1.5 rounded-lg text-xs font-medium transition whitespace-nowrap bg-zinc-100 text-zinc-900";
-          }
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        const btnCat = btn.dataset.cat;
+        if (btnCat === cat) {
+          const cfg = CATEGORY_STYLES[cat];
+          btn.className = `tab-btn ${cfg.activeClass}`;
+          btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         } else {
-          btn.className = "cat-pill px-3 py-1.5 rounded-lg text-xs font-medium transition whitespace-nowrap text-zinc-400 hover:text-white hover:bg-zinc-800/60";
+          btn.className = "tab-btn";
         }
       });
 
       const ftBanner = document.getElementById("first-time-banner");
       const tkBanner = document.getElementById("tokens-banner");
+      const mcBanner = document.getElementById("marketcoins-banner");
+      const clBanner = document.getElementById("clan-banner");
+      const arBanner = document.getElementById("arena-banner");
       const emBanner = document.getElementById("emblem-banner");
       const emBonusBanner = document.getElementById("emblem-bonus-banner");
       const bpBox = document.getElementById("bp-customizer");
-      const captionBox = document.getElementById("category-caption");
       const lvDescBanner = document.getElementById("levelup-banner-desc");
       const lvNotesBanner = document.getElementById("levelup-banner-notes");
 
+      const hideAll = () => {
+        if (ftBanner) ftBanner.classList.add("hidden");
+        if (tkBanner) tkBanner.classList.add("hidden");
+        if (mcBanner) mcBanner.classList.add("hidden");
+        if (clBanner) clBanner.classList.add("hidden");
+        if (arBanner) arBanner.classList.add("hidden");
+        if (emBanner) emBanner.classList.add("hidden");
+        if (emBonusBanner) emBonusBanner.classList.add("hidden");
+        if (bpBox) bpBox.classList.add("hidden");
+        if (lvDescBanner) lvDescBanner.classList.add("hidden");
+        if (lvNotesBanner) lvNotesBanner.classList.add("hidden");
+      };
+
+      hideAll();
+
       if (cat === "first-time") {
-        ftBanner.classList.remove("hidden");
-        if (tkBanner) tkBanner.classList.add("hidden");
-        if (emBanner) emBanner.classList.add("hidden");
-        if (emBonusBanner) emBonusBanner.classList.add("hidden");
-        if (lvDescBanner) lvDescBanner.classList.add("hidden");
-        if (lvNotesBanner) lvNotesBanner.classList.add("hidden");
-        bpBox.classList.add("hidden");
-        captionBox.classList.add("hidden");
+        if (ftBanner) ftBanner.classList.remove("hidden");
       } else if (cat === "token") {
-        ftBanner.classList.add("hidden");
         if (tkBanner) tkBanner.classList.remove("hidden");
-        if (emBanner) emBanner.classList.add("hidden");
-        if (emBonusBanner) emBonusBanner.classList.add("hidden");
-        if (lvDescBanner) lvDescBanner.classList.add("hidden");
-        if (lvNotesBanner) lvNotesBanner.classList.add("hidden");
-        bpBox.classList.add("hidden");
-        captionBox.classList.add("hidden");
+      } else if (cat === "marketcoins") {
+        if (mcBanner) mcBanner.classList.remove("hidden");
+      } else if (cat === "clan") {
+        if (clBanner) clBanner.classList.remove("hidden");
+      } else if (cat === "arena") {
+        if (arBanner) arBanner.classList.remove("hidden");
       } else if (cat === "emblem") {
-        ftBanner.classList.add("hidden");
-        if (tkBanner) tkBanner.classList.add("hidden");
         if (emBanner) emBanner.classList.remove("hidden");
         if (emBonusBanner) emBonusBanner.classList.remove("hidden");
-        if (lvDescBanner) lvDescBanner.classList.add("hidden");
-        if (lvNotesBanner) lvNotesBanner.classList.add("hidden");
-        bpBox.classList.add("hidden");
-        captionBox.classList.add("hidden");
       } else if (cat === "battlepass") {
-        ftBanner.classList.add("hidden");
-        if (tkBanner) tkBanner.classList.add("hidden");
-        if (emBanner) emBanner.classList.add("hidden");
-        if (emBonusBanner) emBonusBanner.classList.add("hidden");
-        if (lvDescBanner) lvDescBanner.classList.add("hidden");
-        if (lvNotesBanner) lvNotesBanner.classList.add("hidden");
-        bpBox.classList.remove("hidden");
-        captionBox.classList.add("hidden");
+        if (bpBox) bpBox.classList.remove("hidden");
         buildBattlepassGrid();
         syncBattlepassUI();
       } else if (cat === "levelup") {
-        ftBanner.classList.add("hidden");
-        if (tkBanner) tkBanner.classList.add("hidden");
-        if (emBanner) emBanner.classList.add("hidden");
-        if (emBonusBanner) emBonusBanner.classList.add("hidden");
         if (lvDescBanner) lvDescBanner.classList.remove("hidden");
         if (lvNotesBanner) lvNotesBanner.classList.remove("hidden");
-        bpBox.classList.add("hidden");
-        captionBox.classList.add("hidden");
-      } else {
-        ftBanner.classList.add("hidden");
-        if (tkBanner) tkBanner.classList.add("hidden");
-        if (emBanner) emBanner.classList.add("hidden");
-        if (emBonusBanner) emBonusBanner.classList.add("hidden");
-        if (lvDescBanner) lvDescBanner.classList.add("hidden");
-        if (lvNotesBanner) lvNotesBanner.classList.add("hidden");
-        bpBox.classList.add("hidden");
-        captionBox.classList.remove("hidden");
       }
 
       renderItems();
     }
 
-    /* ---------------- EMBLEM INFO TOGGLE ---------------- */
+    /* ---------------- SUB-SECTION TAB SWITCHERS ---------------- */
     function switchEmblemInfo(tier) {
       const basicBox = document.getElementById("emblem-info-basic");
       const plusBox = document.getElementById("emblem-info-plus");
@@ -992,13 +1146,51 @@
       if (tier === 'emblem') {
         basicBox.classList.remove("hidden");
         plusBox.classList.add("hidden");
-        btnBasic.className = "flex-1 py-1 rounded text-xs font-semibold transition bg-amber-500 text-zinc-950";
-        btnPlus.className = "flex-1 py-1 rounded text-xs font-semibold transition text-zinc-400 hover:text-white";
+        btnBasic.className = "flex-1 py-1 rounded-lg text-xs font-semibold transition bg-amber-500 text-zinc-950";
+        btnPlus.className = "flex-1 py-1 rounded-lg text-xs font-semibold transition text-zinc-400 hover:text-white";
       } else {
         basicBox.classList.add("hidden");
         plusBox.classList.remove("hidden");
-        btnPlus.className = "flex-1 py-1 rounded text-xs font-semibold transition bg-amber-500 text-zinc-950";
-        btnBasic.className = "flex-1 py-1 rounded text-xs font-semibold transition text-zinc-400 hover:text-white";
+        btnPlus.className = "flex-1 py-1 rounded-lg text-xs font-semibold transition bg-amber-500 text-zinc-950";
+        btnBasic.className = "flex-1 py-1 rounded-lg text-xs font-semibold transition text-zinc-400 hover:text-white";
+      }
+    }
+
+    function switchClanInfo(view) {
+      const guideBox = document.getElementById("clan-info-guide");
+      const compareBox = document.getElementById("clan-info-compare");
+      const btnGuide = document.getElementById("btn-tab-clan-guide");
+      const btnCompare = document.getElementById("btn-tab-clan-compare");
+
+      if (view === 'guide') {
+        guideBox.classList.remove("hidden");
+        compareBox.classList.add("hidden");
+        btnGuide.className = "flex-1 py-1 rounded-lg text-xs font-semibold transition bg-cyan-500 text-zinc-950";
+        btnCompare.className = "flex-1 py-1 rounded-lg text-xs font-semibold transition text-zinc-400 hover:text-white";
+      } else {
+        guideBox.classList.add("hidden");
+        compareBox.classList.remove("hidden");
+        btnCompare.className = "flex-1 py-1 rounded-lg text-xs font-semibold transition bg-cyan-500 text-zinc-950";
+        btnGuide.className = "flex-1 py-1 rounded-lg text-xs font-semibold transition text-zinc-400 hover:text-white";
+      }
+    }
+
+    function switchArenaInfo(view) {
+      const guideBox = document.getElementById("arena-info-guide");
+      const compareBox = document.getElementById("arena-info-compare");
+      const btnGuide = document.getElementById("btn-tab-arena-guide");
+      const btnCompare = document.getElementById("btn-tab-arena-compare");
+
+      if (view === 'guide') {
+        guideBox.classList.remove("hidden");
+        compareBox.classList.add("hidden");
+        btnGuide.className = "flex-1 py-1 rounded-lg text-xs font-semibold transition bg-indigo-600 text-white";
+        btnCompare.className = "flex-1 py-1 rounded-lg text-xs font-semibold transition text-zinc-400 hover:text-white";
+      } else {
+        guideBox.classList.add("hidden");
+        compareBox.classList.remove("hidden");
+        btnCompare.className = "flex-1 py-1 rounded-lg text-xs font-semibold transition bg-indigo-600 text-white";
+        btnGuide.className = "flex-1 py-1 rounded-lg text-xs font-semibold transition text-zinc-400 hover:text-white";
       }
     }
 
@@ -1025,7 +1217,7 @@
         const isSelected = s === bpSeason;
         const inCartForSeason = Object.keys(cart).find(k => k.startsWith(`bp-s${s}-`));
 
-        let baseClasses = "relative py-1.5 rounded-lg text-xs font-mono font-medium transition border ";
+        let baseClasses = "relative py-1.5 rounded-xl text-xs font-mono font-medium transition border ";
         if (isSelected) {
           baseClasses += "bg-red-600 text-white border-red-400 shadow-[0_0_10px_rgba(239,68,68,0.45)] font-bold";
         } else if (inCartForSeason) {
@@ -1054,11 +1246,11 @@
       const btnMax = document.getElementById("btn-bp-maxed");
 
       if (tier === "Normal") {
-        btnNorm.className = "py-1 rounded font-medium transition bg-red-600 text-white shadow-[0_0_8px_rgba(239,68,68,0.35)]";
-        btnMax.className = "py-1 rounded font-medium transition text-zinc-400 hover:text-white";
+        btnNorm.className = "py-1 rounded-lg font-medium transition bg-red-600 text-white shadow-[0_0_8px_rgba(239,68,68,0.35)]";
+        btnMax.className = "py-1 rounded-lg font-medium transition text-zinc-400 hover:text-white";
       } else {
-        btnMax.className = "py-1 rounded font-medium transition bg-red-600 text-white shadow-[0_0_8px_rgba(239,68,68,0.35)]";
-        btnNorm.className = "py-1 rounded font-medium transition text-zinc-400 hover:text-white";
+        btnMax.className = "py-1 rounded-lg font-medium transition bg-red-600 text-white shadow-[0_0_8px_rgba(239,68,68,0.35)]";
+        btnNorm.className = "py-1 rounded-lg font-medium transition text-zinc-400 hover:text-white";
       }
       syncBattlepassUI();
     }
@@ -1101,7 +1293,6 @@
       const isEn = currentLang === 'en';
       const sWord = isEn ? "Season" : "Musim";
 
-      // Enforce strict limit 1 per season (switch tier if changing)
       const existingSeasonKey = Object.keys(cart).find(k => k.startsWith(`bp-s${bpSeason}-`));
       if (existingSeasonKey) {
         if (existingSeasonKey === bpId) {
@@ -1138,6 +1329,9 @@
 
       const items = CATALOG.filter(item => item.category === currentCategory);
       const isTokenTheme = currentCategory === "token";
+      const isMarketTheme = currentCategory === "marketcoins";
+      const isClanTheme = currentCategory === "clan";
+      const isArenaTheme = currentCategory === "arena";
       const isEmblemTheme = currentCategory === "emblem";
       const isLevelUpTheme = currentCategory === "levelup";
 
@@ -1152,53 +1346,83 @@
           cardStyle = inCartQty > 0 
             ? 'bg-blue-950/25 border-blue-500/60 shadow-[0_0_14px_rgba(59,130,246,0.15)]' 
             : 'bg-surface-card border-surface-border hover:border-blue-500/40 hover:shadow-[0_0_10px_rgba(59,130,246,0.08)]';
+        } else if (isMarketTheme) {
+          cardStyle = inCartQty > 0 
+            ? 'bg-purple-950/30 border-purple-500/70 shadow-[0_0_16px_rgba(168,85,247,0.2)]' 
+            : 'bg-surface-card border-surface-border hover:border-purple-500/40 hover:shadow-[0_0_12px_rgba(168,85,247,0.1)]';
+        } else if (isClanTheme) {
+          cardStyle = inCartQty > 0 
+            ? 'bg-cyan-950/30 border-cyan-500/70 shadow-[0_0_16px_rgba(6,182,212,0.2)]' 
+            : 'bg-surface-card border-surface-border hover:border-cyan-500/40 hover:shadow-[0_0_12px_rgba(6,182,212,0.1)]';
+        } else if (isArenaTheme) {
+          cardStyle = inCartQty > 0 
+            ? 'bg-indigo-950/30 border-indigo-500/70 shadow-[0_0_16px_rgba(99,102,241,0.2)]' 
+            : 'bg-surface-card border-surface-border hover:border-indigo-500/40 hover:shadow-[0_0_12px_rgba(99,102,241,0.1)]';
         } else if (isEmblemTheme) {
           cardStyle = inCartQty > 0 
             ? 'bg-amber-950/30 border-amber-500/70 shadow-[0_0_16px_rgba(245,158,11,0.2)]' 
             : 'bg-surface-card border-surface-border hover:border-amber-500/40 hover:shadow-[0_0_12px_rgba(245,158,11,0.1)]';
         } else if (isLevelUpTheme) {
           cardStyle = inCartQty > 0 
-            ? 'bg-purple-950/30 border-purple-500/70 shadow-[0_0_16px_rgba(168,85,247,0.2)]' 
-            : 'bg-surface-card border-surface-border hover:border-purple-500/40 hover:shadow-[0_0_12px_rgba(168,85,247,0.1)]';
+            ? 'bg-pink-950/30 border-pink-500/70 shadow-[0_0_16px_rgba(236,72,153,0.2)]' 
+            : 'bg-surface-card border-surface-border hover:border-pink-500/40 hover:shadow-[0_0_12px_rgba(236,72,153,0.1)]';
         } else {
           cardStyle = inCartQty > 0 
-            ? 'bg-zinc-900/90 border-zinc-600' 
-            : 'bg-surface-card border-surface-border hover:border-zinc-750';
+            ? 'bg-emerald-950/25 border-emerald-500/60 shadow-[0_0_14px_rgba(16,185,129,0.15)]' 
+            : 'bg-surface-card border-surface-border hover:border-zinc-700';
         }
 
-        row.className = `p-3 rounded-xl border transition flex items-center justify-between gap-3 ${cardStyle}`;
+        row.className = `p-3 rounded-2xl border transition flex items-center justify-between gap-3 ${cardStyle}`;
 
         const priceColor = isTokenTheme 
           ? 'text-blue-400 drop-shadow-[0_0_8px_rgba(96,165,250,0.35)]' 
+          : isMarketTheme
+          ? 'text-purple-400 drop-shadow-[0_0_8px_rgba(192,132,252,0.4)]'
+          : isClanTheme
+          ? 'text-cyan-400 drop-shadow-[0_0_8px_rgba(6,182,212,0.4)]'
+          : isArenaTheme
+          ? 'text-indigo-400 drop-shadow-[0_0_8px_rgba(129,140,248,0.4)]'
           : isEmblemTheme 
           ? 'text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.4)]'
           : isLevelUpTheme
-          ? 'text-purple-400 drop-shadow-[0_0_8px_rgba(192,132,252,0.4)]'
+          ? 'text-pink-400 drop-shadow-[0_0_8px_rgba(244,114,182,0.4)]'
           : 'text-emerald-400';
 
         const addBtnStyle = isTokenTheme
           ? 'bg-blue-600 hover:bg-blue-500 active:scale-95 text-white shadow-[0_0_10px_rgba(37,99,235,0.35)]'
+          : isMarketTheme
+          ? 'bg-purple-600 hover:bg-purple-500 active:scale-95 text-white font-semibold shadow-[0_0_12px_rgba(168,85,247,0.4)]'
+          : isClanTheme
+          ? 'bg-cyan-500 hover:bg-cyan-400 active:scale-95 text-zinc-950 font-semibold shadow-[0_0_12px_rgba(6,182,212,0.4)]'
+          : isArenaTheme
+          ? 'bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-semibold shadow-[0_0_12px_rgba(99,102,241,0.4)]'
           : isEmblemTheme
           ? 'bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 font-semibold shadow-[0_0_12px_rgba(245,158,11,0.4)]'
           : isLevelUpTheme
-          ? 'bg-purple-600 hover:bg-purple-500 active:scale-95 text-white font-semibold shadow-[0_0_12px_rgba(168,85,247,0.4)]'
-          : 'bg-zinc-800 hover:bg-zinc-700 active:scale-95 text-white';
+          ? 'bg-pink-600 hover:bg-pink-500 active:scale-95 text-white font-semibold shadow-[0_0_12px_rgba(236,72,153,0.4)]'
+          : 'bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white';
 
         const stepperBg = isTokenTheme
           ? 'bg-blue-950/40 border-blue-500/40'
+          : isMarketTheme
+          ? 'bg-purple-950/40 border-purple-500/40'
+          : isClanTheme
+          ? 'bg-cyan-950/40 border-cyan-500/40'
+          : isArenaTheme
+          ? 'bg-indigo-950/40 border-indigo-500/40'
           : isEmblemTheme
           ? 'bg-amber-950/40 border-amber-500/40'
           : isLevelUpTheme
-          ? 'bg-purple-950/40 border-purple-500/40'
+          ? 'bg-pink-950/40 border-pink-500/40'
           : 'bg-zinc-950 border-zinc-700';
 
         row.innerHTML = `
           <div class="flex-1 min-w-0 pr-1">
             <div class="flex items-center gap-2">
               <span class="text-xs font-semibold text-white truncate">${item.name}</span>
-              ${item.limit === 1 ? `<span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-400 border border-zinc-700/60">${I18N[currentLang].limit1Badge}</span>` : ''}
+              ${item.limit === 1 ? `<span class="text-[9px] font-mono px-1.5 py-0.2 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700/60">${I18N[currentLang].limit1Badge}</span>` : ''}
             </div>
-            <p class="text-[11px] text-zinc-400 truncate mt-0.5">${item.desc}</p>
+            <p class="text-[11px] text-zinc-400 leading-snug break-words mt-0.5">${item.desc}</p>
           </div>
 
           <div class="flex items-center gap-3 shrink-0">
@@ -1214,15 +1438,15 @@
               <button 
                 type="button" 
                 onclick="addToCart('${item.id}')"
-                class="px-3 py-1.5 rounded-lg active:scale-95 text-xs font-medium transition ${addBtnStyle}">
+                class="px-3.5 py-1.5 rounded-xl active:scale-95 text-xs font-medium transition ${addBtnStyle}">
                 + Add
               </button>
             ` : `
-              <div class="flex items-center gap-1.5 ${stepperBg} border rounded-lg p-1">
+              <div class="flex items-center gap-1.5 ${stepperBg} border rounded-xl p-1">
                 <button 
                   type="button" 
                   onclick="changeQty('${item.id}', -1)" 
-                  class="w-6 h-6 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 rounded text-xs transition">
+                  class="w-6 h-6 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg text-xs transition">
                   -
                 </button>
                 <span class="w-5 text-center font-mono text-xs font-bold text-white">${inCartQty}</span>
@@ -1230,7 +1454,7 @@
                   type="button" 
                   onclick="changeQty('${item.id}', 1)" 
                   ${isLimitReached ? 'disabled' : ''}
-                  class="w-6 h-6 flex items-center justify-center rounded text-xs transition ${
+                  class="w-6 h-6 flex items-center justify-center rounded-lg text-xs transition ${
                     isLimitReached 
                       ? 'text-zinc-600 cursor-not-allowed' 
                       : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
