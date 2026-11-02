@@ -152,6 +152,16 @@
           <span id="current-palette-text" class="font-bold text-violet-300 tracking-wide">REFINED</span>
         </button>
 
+        <!-- Store Announcement Button -->
+        <button 
+          type="button" 
+          onclick="openAnnouncementModal()" 
+          title="Store Announcement & Notices"
+          class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#111116] hover:bg-[#181820] border border-zinc-700/80 text-[11px] font-mono text-zinc-300 transition shadow-sm active:scale-95">
+          <span class="text-rose-400">📢</span>
+          <span class="hidden sm:inline" id="txt-header-notice-btn">Notice</span>
+        </button>
+
         <!-- Language Switcher -->
         <button 
           type="button" 
@@ -166,7 +176,7 @@
   </header>
 
   <!-- ================= MAIN CONTAINER ================= -->
-  <main class="max-w-5xl mx-auto w-full px-4 pt-3 flex-1">
+  <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 pt-3 flex-1">
     
     <!-- MOBILE FULFILMENT NOTICE -->
     <div class="sm:hidden mb-3 flex items-center justify-between px-3.5 py-2 rounded-xl bg-[#111116] border border-zinc-800/90 text-[11px] text-zinc-300 shadow-sm">
@@ -683,30 +693,31 @@
     </div>
 
     <!-- PRODUCT LIST / ROWS (RESPONSIVE 2-COLUMN GRID ON DESKTOP) -->
-    <div id="product-list" class="grid grid-cols-1 md:grid-cols-2 gap-2.5 mt-2">
+    <div id="product-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-2">
       <!-- Items dynamically populated -->
     </div>
   </main>
 
-  <!-- ================= STICKY BOTTOM ORDER BAR ================= -->
-  <aside class="fixed bottom-0 inset-x-0 z-50 bg-[#09090c]/92 backdrop-blur-xl border-t border-surface-border/90 p-3 sm:p-4 shadow-[0_-8px_30px_rgba(0,0,0,0.5)]">
-    <div class="max-w-5xl mx-auto flex flex-col gap-2.5">
+  <!-- ================= STICKY BOTTOM ORDER BAR (RESPONSIVE WIDE LAYOUT) ================= -->
+  <aside class="fixed bottom-0 inset-x-0 z-50 bg-[#09090c]/94 backdrop-blur-xl border-t border-surface-border/90 p-3 sm:p-3.5 shadow-[0_-8px_30px_rgba(0,0,0,0.5)]">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
       
       <!-- Cart Summary & Toggle -->
-      <div class="flex items-center justify-between text-xs">
+      <div class="flex items-center justify-between sm:justify-start gap-3 sm:gap-4 text-xs">
         <button type="button" onclick="toggleCartDrawer()" class="flex items-center gap-2 text-zinc-400 hover:text-white transition group">
           <span id="cart-item-count-badge" class="px-2.5 py-0.5 rounded-full bg-zinc-800 text-zinc-300 font-mono font-semibold text-[11px] group-hover:bg-zinc-700">0 items</span>
           <span id="txt-cart-view-label" class="underline underline-offset-4 decoration-zinc-600 group-hover:decoration-white font-medium">View Order List</span>
         </button>
-        <div class="text-right flex items-baseline gap-1.5">
+        <div class="h-4 w-[1px] bg-zinc-800 hidden sm:block"></div>
+        <div class="flex items-baseline gap-1.5">
           <span class="text-zinc-500 text-xs" id="txt-total-label">Total:</span>
           <span id="cart-subtotal" class="text-base sm:text-lg font-bold font-mono text-emerald-400 tracking-tight">RM 0.00</span>
         </div>
       </div>
 
       <!-- Character ID & Copy Button -->
-      <div class="flex flex-col sm:flex-row gap-2">
-        <div class="relative flex-1">
+      <div class="flex items-center gap-2 w-full sm:w-auto">
+        <div class="relative flex-1 sm:w-64 md:w-72">
           <input 
             type="text" 
             id="char-id-input" 
@@ -814,13 +825,25 @@
 
       <div class="flex justify-between items-center gap-2 pt-1 border-t border-zinc-800/50">
         <span class="text-[11px] text-zinc-500 font-mono" id="txt-modal-footer-note">Copied to clipboard</span>
-        <button 
-          type="button" 
-          onclick="closeTicketModal()" 
-          class="px-4 py-2 rounded-xl bg-white hover:bg-zinc-100 text-zinc-950 text-xs font-bold transition shadow-sm" 
-          id="txt-modal-close-btn">
-          Done
-        </button>
+        <div class="flex items-center gap-2">
+          <button 
+            type="button" 
+            onclick="handleWhatsAppOrder()" 
+            class="px-3 py-2 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-zinc-950 text-xs font-bold transition shadow-sm flex items-center gap-1.5"
+            title="Send pre-filled order via WhatsApp">
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+              <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.196 8.196 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.03-1.25-.75-.67-1.26-1.5-1.41-1.75-.15-.25-.02-.39.11-.51.11-.11.25-.29.37-.43.13-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.34-.76-1.84-.2-.49-.4-.42-.56-.43h-.47c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.44.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29z"/>
+            </svg>
+            <span>Order via WhatsApp</span>
+          </button>
+          <button 
+            type="button" 
+            onclick="closeTicketModal()" 
+            class="px-4 py-2 rounded-xl bg-white hover:bg-zinc-100 text-zinc-950 text-xs font-bold transition shadow-sm" 
+            id="txt-modal-close-btn">
+            Done
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -932,6 +955,16 @@
       <div class="flex gap-2 pt-1">
         <button 
           type="button" 
+          onclick="handleWhatsAppOrder()" 
+          class="flex-1 py-2 px-3 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] active:scale-[0.98] text-zinc-950 text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm"
+          title="Send order and notify via WhatsApp">
+          <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24">
+            <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.196 8.196 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.03-1.25-.75-.67-1.26-1.5-1.41-1.75-.15-.25-.02-.39.11-.51.11-.11.25-.29.37-.43.13-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.34-.76-1.84-.2-.49-.4-.42-.56-.43h-.47c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.44.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29z"/>
+          </svg>
+          <span>Order via WhatsApp</span>
+        </button>
+        <button 
+          type="button" 
           onclick="copyOrderAndReceiptText()" 
           class="flex-1 py-2 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 active:scale-[0.98] text-white text-xs font-semibold transition flex items-center justify-center gap-1.5"
           id="btn-qr-copy-all">
@@ -940,9 +973,94 @@
         <button 
           type="button" 
           onclick="closeQrModal()" 
-          class="py-2 px-5 rounded-xl bg-white hover:bg-zinc-100 active:scale-[0.98] text-zinc-950 text-xs font-bold transition shadow-sm"
+          class="py-2 px-4 rounded-xl bg-white hover:bg-zinc-100 active:scale-[0.98] text-zinc-950 text-xs font-bold transition shadow-sm"
           id="btn-qr-done">
           Done
+        </button>
+      </div>
+    </div>
+  </div>
+
+    <!-- ================= WELCOME ANNOUNCEMENT MODAL ================= -->
+  <div id="announcement-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-[#121217] border border-surface-border w-full max-w-lg rounded-2xl p-5 sm:p-6 shadow-2xl space-y-4 my-auto relative max-h-[92vh] overflow-y-auto custom-scroll">
+      
+      <!-- Top Tag & Controls -->
+      <div class="flex items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-bold tracking-wider bg-rose-500/15 text-rose-300 border border-rose-500/30 uppercase flex items-center gap-1.5" id="txt-anno-tag">
+            <span class="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse"></span>
+            📢 IMPORTANT ANNOUNCEMENT (EN)
+          </span>
+        </div>
+        <div class="flex items-center gap-2">
+          <!-- Quick Lang Toggle Inside Modal -->
+          <button 
+            type="button" 
+            onclick="toggleLanguage()" 
+            class="px-2.5 py-1 rounded-full bg-[#181820] hover:bg-[#22222c] border border-zinc-700/80 text-[10px] font-mono text-zinc-300 hover:text-white transition shadow-sm active:scale-95"
+            id="btn-anno-lang-toggle">
+            LANG: ENG
+          </button>
+          <!-- Close Button -->
+          <button 
+            type="button" 
+            onclick="closeAnnouncementModal()" 
+            class="text-zinc-400 hover:text-white text-xs w-6 h-6 flex items-center justify-center rounded-full bg-zinc-800/80 transition">
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <!-- Greeting & Apology Note -->
+      <div class="space-y-2">
+        <h3 class="text-sm sm:text-base font-bold text-white tracking-tight" id="txt-anno-greeting">
+          Welcome and thank you for visiting my shop!
+        </h3>
+        <p class="text-xs sm:text-[13px] text-zinc-300 leading-relaxed font-normal" id="txt-anno-apology">
+          Please accept my apologies in advance if there are occasional delays in processing your orders. This typically happens when my reseller panel balance runs low, requiring me to contact my <span class="text-emerald-400 font-bold">USDT</span> supplier to complete a refill.
+        </p>
+      </div>
+
+      <!-- Estimated Processing Time Card -->
+      <div class="p-3.5 sm:p-4 rounded-xl bg-zinc-950/80 border border-zinc-800 space-y-2 font-mono text-xs">
+        <div class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider" id="txt-anno-est-title">
+          Estimated processing time:
+        </div>
+        <div class="space-y-1.5 pl-1 text-[11.5px] sm:text-xs">
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 font-bold">•</span>
+            <span class="text-zinc-200" id="txt-anno-est-line1">Balance available: <strong class="text-emerald-400 font-semibold">5 – 30 minutes</strong></span>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 font-bold">•</span>
+            <span class="text-zinc-200" id="txt-anno-est-line2"><span class="text-emerald-400 font-bold">USDT</span> refill needed: <strong class="text-amber-300 font-semibold">Around 30 minutes – 2 hours</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Friendly Understanding & No Pressure Note -->
+      <div class="p-3 rounded-xl bg-[#16161d] border border-zinc-800/80 space-y-2 text-xs sm:text-[12.5px] text-zinc-300 leading-relaxed">
+        <p id="txt-anno-rush-note">
+          There is absolutely no pressure to buy from me—if you are in a rush or need your order urgently, please feel free to check with other resellers instead.
+        </p>
+        <p class="text-zinc-200 font-medium" id="txt-anno-closing-note">
+          Either way, I will always do my best to get things done as fast as I can. Thank you so much for your patience and kind understanding! :3
+        </p>
+      </div>
+
+      <!-- Don't show again toggle & Enter Store button -->
+      <div class="pt-2 border-t border-zinc-800/80 flex items-center justify-between gap-3">
+        <label class="flex items-center gap-2 cursor-pointer select-none text-[11px] text-zinc-400 hover:text-zinc-300 transition">
+          <input type="checkbox" id="chk-dont-show-anno" class="rounded border-zinc-700 bg-zinc-900 text-rose-500 focus:ring-0 w-3.5 h-3.5 cursor-pointer" />
+          <span id="txt-anno-chk-label">Don't show again today</span>
+        </label>
+        <button 
+          type="button" 
+          onclick="closeAnnouncementModal()" 
+          class="px-5 py-2.5 rounded-xl bg-white hover:bg-zinc-100 active:scale-[0.98] text-zinc-950 text-xs font-bold transition shadow-sm"
+          id="btn-anno-confirm">
+          Enter Store
         </button>
       </div>
     </div>
@@ -960,6 +1078,18 @@
     const I18N = {
       en: {
         storeTitle: "CATOLOGIST'S STORE",
+        headerNoticeBtn: "Notice",
+        annoTag: "📢 IMPORTANT ANNOUNCEMENT (EN)",
+        annoLangToggle: "LANG: ENG",
+        annoGreeting: "Welcome and thank you for visiting my shop!",
+        annoApologyHtml: "Please accept my apologies in advance if there are occasional delays in processing your orders. This typically happens when my reseller panel balance runs low, requiring me to contact my <span class=\"text-emerald-400 font-bold\">USDT</span> supplier to complete a refill.",
+        annoEstTitle: "Estimated processing time:",
+        annoEstLine1Html: "Balance available: <strong class=\"text-emerald-400 font-semibold\">5 – 30 minutes</strong>",
+        annoEstLine2Html: "<span class=\"text-emerald-400 font-bold\">USDT</span> refill needed: <strong class=\"text-amber-300 font-semibold\">Around 30 minutes – 2 hours</strong>",
+        annoRushNote: "There is absolutely no pressure to buy from me—if you are in a rush or need your order urgently, please feel free to check with other resellers instead.",
+        annoClosingNote: "Either way, I will always do my best to get things done as fast as I can. Thank you so much for your patience and kind understanding! :3",
+        annoChkLabel: "Don't show again today",
+        annoConfirmBtn: "Enter Store",
         fulfilmentLabel: "Normal Fulfilment:",
         fulfilmentVal: "5 – 30 Minutes",
         eventTag: "First-Time Buyer Sale (25% OFF)",
@@ -1050,6 +1180,18 @@
       },
       bm: {
         storeTitle: "KEDAI CATOLOGIST",
+        headerNoticeBtn: "Notis",
+        annoTag: "📢 NOTIS PENTING KEPADA CUSTOMER (MY)",
+        annoLangToggle: "LANG: BM",
+        annoGreeting: "Hai, terima kasih sudi singgah kedai saya!",
+        annoApologyHtml: "Minta maaf awal-awal ya kalau ada masa order korang lambat sikit diproses. Kadang-kadang baki dekat panel reseller saya dah habis, jadi saya kena contact supplier <span class=\"text-emerald-400 font-bold\">USDT</span> dulu untuk refill.",
+        annoEstTitle: "Anggaran masa proses:",
+        annoEstLine1Html: "Baki panel ada: <strong class=\"text-emerald-400 font-semibold\">5 minit – 30 minit siap</strong>",
+        annoEstLine2Html: "Kena refill <span class=\"text-emerald-400 font-bold\">USDT</span>: <strong class=\"text-amber-300 font-semibold\">Ambik masa sekitar 30 minit – 2 jam</strong>",
+        annoRushNote: "Tiada paksaan untuk beli dari saya, kalau korang tengah rush atau perlukan barang cepat sangat, boleh terus cari atau berurusan dengan reseller lain dulu.",
+        annoClosingNote: "Apa-apa pun, saya sentiasa cuba buat secepat mungkin. Terima kasih banyak atas kesabaran dan kefahaman korang! :3",
+        annoChkLabel: "Jangan tunjuk lagi hari ini",
+        annoConfirmBtn: "Masuk Kedai",
         fulfilmentLabel: "Masa Proses Biasa:",
         fulfilmentVal: "5 – 30 Minit",
         eventTag: "Jualan Pembeli Pertama (Diskaun 25%)",
@@ -1215,6 +1357,7 @@
       applyPalette();
       switchCategory(currentCategory);
       updateCartSummary();
+      checkAnnouncementOnLoad();
     });
 
     /* ---------------- LANGUAGE TOGGLE ---------------- */
@@ -1317,6 +1460,26 @@
       setText("txt-modal-success-title", t.modalSuccessTitle);
       setText("txt-modal-success-sub", t.modalSuccessSub);
       setText("txt-modal-close-btn", t.modalClose);
+      setText("txt-header-notice-btn", t.headerNoticeBtn);
+      setText("txt-anno-tag", t.annoTag);
+      setText("btn-anno-lang-toggle", t.annoLangToggle);
+      setText("txt-anno-greeting", t.annoGreeting);
+      
+      const elApology = document.getElementById("txt-anno-apology");
+      if (elApology) elApology.innerHTML = t.annoApologyHtml;
+
+      setText("txt-anno-est-title", t.annoEstTitle);
+
+      const elLine1 = document.getElementById("txt-anno-est-line1");
+      if (elLine1) elLine1.innerHTML = t.annoEstLine1Html;
+
+      const elLine2 = document.getElementById("txt-anno-est-line2");
+      if (elLine2) elLine2.innerHTML = t.annoEstLine2Html;
+
+      setText("txt-anno-rush-note", t.annoRushNote);
+      setText("txt-anno-closing-note", t.annoClosingNote);
+      setText("txt-anno-chk-label", t.annoChkLabel);
+      setText("btn-anno-confirm", t.annoConfirmBtn);
 
       const palCfg = PALETTE_CONFIGS[currentPaletteMode];
       const palText = document.getElementById("current-palette-text");
@@ -2087,6 +2250,78 @@
     }
 
     /* ---------------- COPY & MODAL HANDLER ---------------- */
+    
+    function handleWhatsAppOrder() {
+      const charId = document.getElementById("char-id-input").value.trim();
+      const t = I18N[currentLang];
+
+      if (!charId) {
+        showToast(t.toastCharRequired);
+        document.getElementById("char-id-input").focus();
+        return;
+      }
+
+      if (Object.keys(cart).length === 0) {
+        showToast(t.toastCartEmpty);
+        return;
+      }
+
+      const ticketText = generateCleanOrderTicket(charId);
+
+      // Copy to clipboard as convenient backup
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(ticketText).catch(() => fallbackCopy(ticketText));
+      } else {
+        fallbackCopy(ticketText);
+      }
+
+      // Open WhatsApp directly with encoded message
+      const targetPhone = (typeof WHATSAPP_PHONE_NUMBER !== 'undefined' && WHATSAPP_PHONE_NUMBER) ? WHATSAPP_PHONE_NUMBER : "601121354481";
+      const waUrl = `https://wa.me/${targetPhone}?text=${encodeURIComponent(ticketText)}`;
+      window.open(waUrl, '_blank');
+
+      showToast(currentLang === 'en' ? 'Opening WhatsApp with your order...' : 'Membuka WhatsApp bersama pesanan anda...');
+    }
+
+    
+    /* ---------------- ANNOUNCEMENT MODAL LOGIC ---------------- */
+    function checkAnnouncementOnLoad() {
+      try {
+        const dismissed = localStorage.getItem('catologist_anno_dismissed');
+        const today = new Date().toISOString().slice(0, 10);
+        if (dismissed === today) {
+          return;
+        }
+      } catch(e) {}
+
+      setTimeout(() => {
+        openAnnouncementModal();
+      }, 350);
+    }
+
+    function openAnnouncementModal() {
+      const modal = document.getElementById("announcement-modal");
+      if (modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+      }
+    }
+
+    function closeAnnouncementModal() {
+      const modal = document.getElementById("announcement-modal");
+      const chk = document.getElementById("chk-dont-show-anno");
+      if (chk && chk.checked) {
+        try {
+          const today = new Date().toISOString().slice(0, 10);
+          localStorage.setItem('catologist_anno_dismissed', today);
+        } catch(e) {}
+      }
+      if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
+    }
+
     function handleCopyOrder() {
       const charId = document.getElementById("char-id-input").value.trim();
       const t = I18N[currentLang];
@@ -2137,6 +2372,12 @@
     }
 
     
+    /* =====================================================================
+       STORE OWNER SETTINGS (WHATSAPP & PAYMENT QR)
+       ===================================================================== */
+    // Change to your Malaysian WhatsApp number without '+' or spaces (e.g. 60123456789)
+    const WHATSAPP_PHONE_NUMBER = "601121354481";
+
     /* ------------------------------------------------------------------
        MY QR CODE IMAGES (PASTE YOUR BASE64, IMAGE URL OR PATH HERE)
        ------------------------------------------------------------------
