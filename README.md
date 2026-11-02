@@ -1,55 +1,65 @@
-Catologist's Store
+Catologist's Store — Ninja Rift Top-Up Catalog
 
-An ultra-lightweight, single-file interactive top-up catalog and order builder designed for game communities. Built with vanilla JavaScript and Tailwind CSS, it enables players to browse packages, compare token values, configure custom battlepass tiers, and copy a standardized order ticket to chat with administrators.
+A fast, mobile-friendly, single-file catalog and order ticket generator for Ninja Rift packages, tokens, and battlepasses. Built with Tailwind CSS and vanilla JavaScript, hosted on GitHub Pages.
 
-🌟 Key Features
+🔗 Live Site: https://aweirdcat.github.io/Catologist-Ninja-Rift-Store/
 
-1. 8 Curated Categories with Color-Coded Themes
+⚡ What It Does
 
-Each section features a distinct neon aesthetic and dedicated banner guides:
+Browse Packages: View prices, contents, and limit rules across 8 color-coded categories.
 
-1st-Time Sale (Emerald): Displays 25% off event pricing with a strict 1-item purchase limit.
+Value Calculators: Interactive token-value comparisons for Clan & Arena packs.
 
-Tokens (Blue): Standard token packages (Package A–E) with in-game preview notices for pets and kinjutsu.
+Battlepass Picker: Select seasons (1–22) and tiers (Normal vs. Maxed) with automatic price calculations.
 
-Market Coins (Purple): In-game trading currency details with a 1:1 token conversion explanation.
+Copy-to-Chat Flow: Users enter their Character ID, build a cart, and click to copy a formatted order ticket ready to paste directly into WhatsApp or Discord.
 
-Clan Packs (Cyan): Stamina rolls and energy capsules with an interactive Value Comparison vs Tokens tab.
+Bilingual: One-click toggle between English (ENG) and Bahasa Melayu (BM).
 
-Ninja Arena (Sapphire / Indigo): Arena energy supplies featuring comparative efficiency tables (+128.6% bonus value).
+🛍️ Categories Included
 
-Emblems (Golden Amber): Interactive perk breakdown between Emblem and Emblem+ tiers, plus the 2,200 Bonus Tokens policy for first-time upgrades.
+1st-Time Sale (Emerald) — 25% off intro packages (Limit 1).
 
-Battlepass (Red): Interactive 22-season grid selector with dynamic bracket pricing (S1–11, S12–21, S22) and Normal/Maxed tier toggles.
+Tokens (Blue) — Packages A through E.
 
-Level Up Starter Packs (Pink Blossom): Level 10 through 100 milestone packs with item specifications and duplicate-to-token conversion rules.
+Market Coins (Purple) — 1:1 token-equivalent trade currency.
 
-2. Multi-Item Cart & Purchase Rules
+Clan Packs (Cyan) — Stamina rolls with token value comparison.
 
-Interactive [-] [qty] [+] steppers for item adjustments.
+Arena Packs (Sapphire) — Energy capsules with efficiency breakdown.
 
-Built-in limit enforcement (e.g., maximum 1 unit for First-Time Sales, Emblems, Level Up milestones, and individual Battlepass seasons).
+Emblems (Amber) — Free to Emblem / Emblem+ perks & 2,200 token policy.
 
-Slide-up cart drawer allowing users to review selected items, inspect breakdowns, or clear selections.
+Battlepass (Red) — Seasons 1–22 dynamic pricing picker.
 
-3. Clean, Plain-Text Order Ticket
+Level Up (Pink Blossom) — Milestone packs (Lv10–Lv100) with duplicate compensation rules.
 
-Formats the complete order without emojis or cluttered symbols for readability.
+🚀 How to Run or Edit
 
-Validates the required Character ID before generation.
+No installation, build tools, or Node.js required. Everything lives in index.html.
 
-One-click copy action with clipboard API support and fallback handling.
+Run Locally
 
-Instant modal preview displaying the exact text to be pasted into customer service chats.
+Open index.html directly in any web browser.
 
-4. Bilingual Engine (ENG / BM)
+Edit Items & Pricing
 
-Instant toggle between English and Bahasa Melayu located at the top-right of the header.
+Open index.html in a text editor and search for:
 
-Dynamically translates all UI headings, product descriptions, event notices, comparison tables, cart summaries, and generated order tickets.
+CATALOG array — Update prices, names, and descriptions.
 
-5. GitHub Pages & Static Host Friendly
+getBpPrice() — Change Battlepass season/tier pricing.
 
-Operates entirely client-side with no backend or database required.
+I18N — Update English or Malay translations.
 
-Does not collect payment details or process transactions directly on-site, serving as an order generator and catalog calculator suitable for static hosting.
+Deploy to GitHub Pages
+
+Push index.html to your main branch.
+
+Go to Settings > Pages > select Deploy from a branch (main / / root).
+
+Save, and your changes will deploy automatically.
+
+📄 License
+
+Open-source under the MIT License.
