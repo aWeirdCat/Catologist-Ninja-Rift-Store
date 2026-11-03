@@ -1,32 +1,2575 @@
-name: Deploy to GitHub Pages
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Catologist's Store</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-on:
-  push:
-    branches: ["main"]
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            surface: {
+              base: '#09090c',
+              card: '#121217',
+              cardHover: '#17171e',
+              border: '#23232b',
+              borderHover: '#33333e',
+              input: '#0d0d12'
+            }
+          }
+        }
+      }
+    }
+  </script>
 
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
+  <style>
+    body {
+      background-color: #09090c;
+      color: #f4f4f6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    /* Modern Pill Navigation */
+    .tab-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      letter-spacing: -0.01em;
+      line-height: 1rem;
+      font-weight: 500;
+      white-space: nowrap;
+      flex-shrink: 0;
+      border: 1px solid #23232b;
+      background: #111116;
+      color: #9393a2;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+      cursor: pointer;
+    }
+    .tab-btn:hover:not(.active) {
+      color: #ffffff;
+      background: #181820;
+      border-color: #353542;
+      transform: translateY(-1px);
+    }
+    .tab-btn .dot-indicator {
+      width: 0.38rem;
+      height: 0.38rem;
+      border-radius: 9999px;
+      opacity: 0.45;
+      transition: all 0.22s ease-in-out;
+    }
+    .tab-btn.active .dot-indicator {
+      opacity: 1;
+      transform: scale(1.3);
+      filter: drop-shadow(0 0 3px currentColor);
+    }
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.' # Uses your root repository folder
+    /* Subtle Glassmorphism Card Glows */
+    .catalog-card {
+      position: relative;
+      background: #121217;
+      border: 1px solid #23232b;
+      border-radius: 1rem;
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .catalog-card:hover {
+      border-color: #32323e;
+      transform: translateY(-1px);
+    }
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    steps:
-      - name: Deploy to GitHub Pages
-        uses: actions/deploy-pages@v4
+    /* Custom scrollbar for modals & preview */
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #09090c;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #272732;
+      border-radius: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: #3f3f50;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans pb-36 selection:bg-zinc-800 selection:text-white">
+
+  <!-- ================= TOP HEADER ================= -->
+  <header class="sticky top-0 z-40 bg-[#09090c]/85 backdrop-blur-xl border-b border-surface-border/80 px-4 py-3">
+    <div class="max-w-5xl mx-auto flex items-center justify-between gap-3">
+      <div class="flex items-center gap-2.5">
+        <span class="relative flex h-2.5 w-2.5">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.9)]"></span>
+        </span>
+        <div class="flex flex-col">
+          <h1 id="txt-store-title" class="text-xs sm:text-sm font-bold tracking-wider text-white uppercase flex items-center gap-1.5">
+            Catologist's Store
+            <span class="hidden md:inline-block px-1.5 py-0.2 rounded text-[9px] font-mono font-medium tracking-normal bg-zinc-800/80 text-zinc-400 border border-zinc-700/50">v2.4</span>
+          </h1>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-2.5">
+        <!-- Fulfilment Badge -->
+        <div class="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full bg-[#111116] border border-zinc-800 text-[11px] text-zinc-300 shadow-sm">
+          <span class="text-zinc-400 font-medium" id="txt-badge-label">Normal Fulfilment:</span>
+          <span class="font-semibold text-emerald-400 tracking-tight" id="txt-badge-val">5 – 30 Minutes</span>
+        </div>
+
+        <!-- Palette Preset Switcher -->
+        <button 
+          type="button" 
+          onclick="cyclePaletteMode()" 
+          id="btn-palette"
+          title="Toggle color palette mode (Refined / Eye-Care / Vivid)"
+          class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#111116] hover:bg-[#181820] border border-zinc-700/80 text-[11px] font-mono text-zinc-300 transition shadow-sm active:scale-95">
+          <span class="text-zinc-500 font-normal">PALETTE:</span>
+          <span id="current-palette-text" class="font-bold text-violet-300 tracking-wide">REFINED</span>
+        </button>
+
+        <!-- Store Announcement Button -->
+        <button 
+          type="button" 
+          onclick="openAnnouncementModal()" 
+          title="Store Announcement & Notices"
+          class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#111116] hover:bg-[#181820] border border-zinc-700/80 text-[11px] font-mono text-zinc-300 transition shadow-sm active:scale-95">
+          <span class="text-rose-400">📢</span>
+          <span class="hidden sm:inline" id="txt-header-notice-btn">Notice</span>
+        </button>
+
+        <!-- Language Switcher -->
+        <button 
+          type="button" 
+          onclick="toggleLanguage()" 
+          id="btn-lang"
+          class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#111116] hover:bg-[#181820] border border-zinc-700/80 text-[11px] font-mono text-zinc-300 transition shadow-sm active:scale-95">
+          <span class="text-zinc-500 font-normal">LANG:</span>
+          <span id="current-lang-text" class="font-bold text-white tracking-wide">ENG</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ================= MAIN CONTAINER ================= -->
+  <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 pt-3 flex-1">
+    
+    <!-- MOBILE FULFILMENT NOTICE -->
+    <div class="sm:hidden mb-3 flex items-center justify-between px-3.5 py-2 rounded-xl bg-[#111116] border border-zinc-800/90 text-[11px] text-zinc-300 shadow-sm">
+      <span class="text-zinc-400 font-medium" id="txt-badge-label-m">Normal Fulfilment:</span>
+      <span class="font-semibold text-emerald-400" id="txt-badge-val-m">5 – 30 Minutes</span>
+    </div>
+
+    <!-- CATEGORY TABS (CAPSULE PILL GRID & SCROLLBAR-FREE BAR) -->
+    <div class="relative py-2 -mx-4 px-4 sm:mx-0 sm:px-0">
+      <div class="flex items-center md:justify-center gap-2 overflow-x-auto no-scrollbar py-1" id="category-tabs">
+        <button type="button" onclick="switchCategory('first-time')" class="tab-btn active" data-cat="first-time">
+          <span class="dot-indicator bg-emerald-400" id="dot-first-time"></span>
+          <span>1st-Time Sale</span>
+        </button>
+        <button type="button" onclick="switchCategory('token')" class="tab-btn" data-cat="token">
+          <span class="dot-indicator bg-sky-400" id="dot-token"></span>
+          <span>Tokens</span>
+        </button>
+        <button type="button" onclick="switchCategory('marketcoins')" class="tab-btn" data-cat="marketcoins">
+          <span class="dot-indicator bg-violet-400" id="dot-marketcoins"></span>
+          <span>Market Coins</span>
+        </button>
+        <button type="button" onclick="switchCategory('clan')" class="tab-btn" data-cat="clan">
+          <span class="dot-indicator bg-teal-400" id="dot-clan"></span>
+          <span>Clan</span>
+        </button>
+        <button type="button" onclick="switchCategory('arena')" class="tab-btn" data-cat="arena">
+          <span class="dot-indicator bg-indigo-400" id="dot-arena"></span>
+          <span>Arena</span>
+        </button>
+        <button type="button" onclick="switchCategory('emblem')" class="tab-btn" data-cat="emblem">
+          <span class="dot-indicator bg-amber-400" id="dot-emblem"></span>
+          <span>Emblems</span>
+        </button>
+        <button type="button" onclick="switchCategory('battlepass')" class="tab-btn" data-cat="battlepass">
+          <span class="dot-indicator bg-rose-400" id="dot-battlepass"></span>
+          <span>Battlepass</span>
+        </button>
+        <button type="button" onclick="switchCategory('levelup')" class="tab-btn" data-cat="levelup">
+          <span class="dot-indicator bg-pink-400" id="dot-levelup"></span>
+          <span>Level Up</span>
+        </button>
+        <div class="shrink-0 w-6 h-1 md:hidden"></div>
+      </div>
+    </div>
+
+    <!-- 1ST TIME BUYER SALE BANNER -->
+    <div id="first-time-banner" class="mt-2 mb-3 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-950/40 via-[#111116] to-[#121217] border border-emerald-500/30 shadow-[0_0_24px_rgba(16,185,129,0.06)]">
+      <div class="flex items-center justify-between gap-2 mb-2">
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 uppercase" id="txt-event-tag">
+          First-Time Buyer Sale (25% OFF)
+        </span>
+        <span class="text-[11px] font-mono text-zinc-400 font-medium" id="txt-event-limit-note">Limit: 1 per package</span>
+      </div>
+      <p class="text-xs sm:text-[13px] text-zinc-300 leading-relaxed font-normal" id="txt-event-announcement">
+        During this event, for every and only FIRST purchase of the following packages, players will get 25% off Discount.
+      </p>
+    </div>
+
+    <!-- TOKENS BANNER (REFINED SAPPHIRE / SKY) -->
+    <div id="tokens-banner" class="hidden mt-2 mb-3 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-sky-950/30 via-[#111116] to-[#121217] border border-sky-500/25 shadow-sm">
+      <div class="flex items-center justify-between gap-2 mb-2">
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-sky-500/15 text-sky-300 border border-sky-500/25 uppercase flex items-center gap-1.5" id="txt-tokens-tag">
+          Token Packages Notice
+        </span>
+        <span class="text-[11px] font-mono text-sky-300/80 font-medium" id="txt-tokens-ingame-tag">Refer to In-Game</span>
+      </div>
+      <div class="text-xs sm:text-[13px] text-zinc-300 leading-relaxed space-y-2">
+        <p class="text-zinc-200" id="txt-tokens-notice-head">In this catalog we don't have the detailed jutsu and pet that packaged with:</p>
+        <div class="pl-3 border-l-2 border-sky-500/40 space-y-1 text-zinc-300 font-mono text-[11px]">
+          <div id="txt-tokens-line1">• Package 1, 2, 3, 4 / A, B, C, D (Kinjutsu + Pet)</div>
+          <div id="txt-tokens-line2">• Package 5 / E (Hairstyle)</div>
+        </div>
+        <p class="text-[11px] text-sky-300 font-semibold pt-0.5 tracking-wide" id="txt-tokens-refer-text">Please refer to in-game.</p>
+      </div>
+    </div>
+
+    <!-- MARKET COINS BANNER (SOFT AMETHYST / VIOLET) -->
+    <div id="marketcoins-banner" class="hidden mt-2 mb-3 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-violet-950/30 via-[#111116] to-[#121217] border border-violet-500/25 shadow-sm">
+      <div class="flex items-center justify-between gap-2 mb-2">
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-violet-500/15 text-violet-300 border border-violet-500/25 uppercase" id="txt-mc-tag">
+          Market Coins Info
+        </span>
+        <span class="text-[11px] font-mono text-violet-300/90 font-medium" id="txt-mc-convert-pill">1:1 Convert to Tokens</span>
+      </div>
+      <div class="text-xs sm:text-[13px] text-zinc-300 leading-relaxed space-y-2">
+        <p class="text-zinc-200" id="txt-mc-desc">
+          Market Coins are an in-game currency used to purchase weapons, clothing, and back items from other players in the Market building.
+        </p>
+        <div class="p-2.5 rounded-xl bg-zinc-950/80 border border-violet-500/20 text-[11px] text-violet-200 font-mono flex items-center justify-between">
+          <span id="txt-mc-convert-note">Conversion: You can convert Market Coins 1:1 to Tokens.</span>
+          <span class="text-violet-300 font-bold px-2 py-0.5 rounded bg-violet-500/10 border border-violet-500/25">1 MC = 1 Token</span>
+        </div>
+        <div class="pl-3 border-l-2 border-violet-500/40 space-y-0.5 text-zinc-400 font-mono text-[11px]">
+          <div id="txt-mc-line1">• Package A–D includes Kinjutsu + Pet | Package E includes Hairstyle</div>
+          <div id="txt-mc-refer" class="text-violet-300 font-medium">Please refer to in-game for preview.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CLAN BANNER -->
+    <div id="clan-banner" class="hidden mt-2 mb-3 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-teal-950/30 via-[#111116] to-[#121217] border border-teal-500/25 shadow-sm">
+      <div class="flex items-center justify-between gap-2 mb-2.5">
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-teal-500/15 text-teal-300 border border-teal-500/25 uppercase" id="txt-clan-tag">
+          Clan War Energy Packs
+        </span>
+        <span class="text-[11px] font-mono text-teal-300/90 font-medium" id="txt-clan-limit-tag">Best Stamina Value</span>
+      </div>
+
+      <div class="flex gap-1.5 p-1 bg-zinc-950/90 rounded-xl border border-teal-500/20 mb-3">
+        <button type="button" id="btn-tab-clan-guide" onclick="switchClanInfo('guide')" class="flex-1 py-1.5 rounded-lg text-xs font-semibold transition bg-teal-600 text-white shadow-sm">
+          Item Guide & Notes
+        </button>
+        <button type="button" id="btn-tab-clan-compare" onclick="switchClanInfo('compare')" class="flex-1 py-1.5 rounded-lg text-xs font-semibold transition text-zinc-400 hover:text-white">
+          Value Comparison vs Tokens
+        </button>
+      </div>
+
+      <div id="clan-info-guide" class="space-y-1.5 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-[11px] font-mono text-zinc-300">
+          <div class="p-3 rounded-xl bg-zinc-950/70 border border-zinc-800">
+            <span class="text-teal-300 font-bold block mb-1 text-xs">• Stamina Roll</span>
+            <span class="text-zinc-400 text-[10.5px] leading-relaxed block" id="txt-clan-roll-desc">Refills 50 energy in Clan Wars.</span>
+          </div>
+          <div class="p-3 rounded-xl bg-zinc-950/70 border border-zinc-800">
+            <span class="text-teal-300 font-bold block mb-1 text-xs">• Twin Stamina Roll</span>
+            <span class="text-zinc-400 text-[10.5px] leading-relaxed block" id="txt-clan-twin-desc">Refills 100 energy in Clan Wars (2x efficiency).</span>
+          </div>
+          <div class="p-3 rounded-xl bg-zinc-950/70 border border-zinc-800">
+            <span class="text-teal-300 font-bold block mb-1 text-xs">• Clan Upgrade Capsule</span>
+            <span class="text-zinc-400 text-[10.5px] leading-relaxed block" id="txt-clan-cap-desc">Permanently increases Clan War max energy by +50.</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="clan-info-compare" class="hidden space-y-2 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-[11px] font-mono">
+          <div class="p-3 rounded-xl bg-zinc-950/80 border border-zinc-800 flex flex-col justify-between">
+            <div>
+              <div class="text-zinc-200 font-bold">Small Clan Pack (RM 21)</div>
+              <div class="text-zinc-400 text-[10.5px] mt-1">Roll Value: 3,000 Tokens</div>
+              <div class="text-zinc-500 text-[10.5px]">Direct Tokens: 2,625</div>
+            </div>
+            <div class="text-teal-300 font-semibold text-[11px] mt-2 pt-1.5 border-t border-zinc-800/80">+375 Extra Tokens</div>
+          </div>
+          <div class="p-3 rounded-xl bg-zinc-950/80 border border-zinc-800 flex flex-col justify-between">
+            <div>
+              <div class="text-zinc-200 font-bold">Medium Clan Pack (RM 41)</div>
+              <div class="text-zinc-400 text-[10.5px] mt-1">Roll Value: 6,000 Tokens</div>
+              <div class="text-zinc-500 text-[10.5px]">Direct Tokens: 5,250</div>
+            </div>
+            <div class="text-teal-300 font-semibold text-[11px] mt-2 pt-1.5 border-t border-zinc-800/80">+750 Extra Tokens</div>
+          </div>
+          <div class="p-3 rounded-xl bg-zinc-950/80 border border-teal-500/30 bg-teal-950/20 flex flex-col justify-between shadow-sm">
+            <div>
+              <div class="text-teal-200 font-bold">Large Clan Pack (RM 200)</div>
+              <div class="text-zinc-300 text-[10.5px] mt-1">Roll Value: 35,500 Tokens</div>
+              <div class="text-zinc-500 text-[10.5px]">Direct Tokens: 31,500</div>
+            </div>
+            <div class="text-teal-300 font-bold text-[11px] mt-2 pt-1.5 border-t border-teal-500/30">+4,000 Tokens + Capsule</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARENA BANNER -->
+    <div id="arena-banner" class="hidden mt-2 mb-3 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-indigo-950/40 via-[#111116] to-[#121217] border border-indigo-500/35 shadow-[0_0_24px_rgba(99,102,241,0.08)]">
+      <div class="flex items-center justify-between gap-2 mb-2.5">
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-indigo-500/15 text-indigo-400 border border-indigo-500/30 uppercase" id="txt-arena-tag">
+          Ninja Arena Packs
+        </span>
+        <span class="text-[11px] font-mono text-indigo-300/90 font-medium" id="txt-arena-badge-val">Best Energy Capsule Value</span>
+      </div>
+
+      <div class="flex gap-1.5 p-1 bg-zinc-950/90 rounded-xl border border-indigo-500/20 mb-3">
+        <button type="button" id="btn-tab-arena-guide" onclick="switchArenaInfo('guide')" class="flex-1 py-1.5 rounded-lg text-xs font-semibold transition bg-indigo-600 text-white shadow-sm">
+          Item Guide & Notes
+        </button>
+        <button type="button" id="btn-tab-arena-compare" onclick="switchArenaInfo('compare')" class="flex-1 py-1.5 rounded-lg text-xs font-semibold transition text-zinc-400 hover:text-white">
+          Value Comparison vs Tokens
+        </button>
+      </div>
+
+      <div id="arena-info-guide" class="space-y-2 text-xs">
+        <div class="p-2.5 rounded-xl bg-zinc-950/70 border border-indigo-500/20 text-[11px] text-zinc-300 font-mono mb-2">
+          <span class="text-indigo-400 font-bold" id="txt-arena-baseline">Baseline:</span> 20 Tokens = 50 Arena Energy (1 Token = 2.5 Energy)
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-[11px] font-mono text-zinc-300">
+          <div class="p-3 rounded-xl bg-zinc-950/70 border border-zinc-800">
+            <span class="text-indigo-400 font-bold block mb-1 text-xs">• Arena Energy Capsule</span>
+            <span class="text-zinc-400 text-[10.5px] leading-relaxed block" id="txt-arena-cap-desc">Restores 50 energy in Ninja Arena.</span>
+          </div>
+          <div class="p-3 rounded-xl bg-zinc-950/70 border border-zinc-800">
+            <span class="text-indigo-400 font-bold block mb-1 text-xs">• Big Energy Capsule</span>
+            <span class="text-zinc-400 text-[10.5px] leading-relaxed block" id="txt-arena-bigcap-desc">Restores 100 energy in Ninja Arena.</span>
+          </div>
+          <div class="p-3 rounded-xl bg-zinc-950/70 border border-zinc-800">
+            <span class="text-indigo-400 font-bold block mb-1 text-xs">• Arena Upgrade Capsule</span>
+            <span class="text-zinc-400 text-[10.5px] leading-relaxed block" id="txt-arena-upcap-desc">Increases Ninja Arena max energy by +50 (Current season).</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="arena-info-compare" class="hidden space-y-2 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-[11px] font-mono">
+          <div class="p-3 rounded-xl bg-zinc-950/80 border border-zinc-800 flex flex-col justify-between">
+            <div>
+              <div class="text-zinc-200 font-bold">Small (~RM 20.50)</div>
+              <div class="text-zinc-400 text-[10.5px] mt-1">15,000 Energy = 6,000 Tokens</div>
+              <div class="text-zinc-500 text-[10.5px]">Direct: 2,625 Tokens</div>
+            </div>
+            <div class="text-indigo-400 font-semibold text-[11px] mt-2 pt-1.5 border-t border-zinc-800/80">+3,375 Extra Tokens (+128.6%)</div>
+          </div>
+          <div class="p-3 rounded-xl bg-zinc-950/80 border border-zinc-800 flex flex-col justify-between">
+            <div>
+              <div class="text-zinc-200 font-bold">Medium (RM 41.00)</div>
+              <div class="text-zinc-400 text-[10.5px] mt-1">30,000 Energy = 12,000 Tokens</div>
+              <div class="text-zinc-500 text-[10.5px]">Direct: 5,250 Tokens</div>
+            </div>
+            <div class="text-indigo-400 font-semibold text-[11px] mt-2 pt-1.5 border-t border-zinc-800/80">+6,750 Extra Tokens (+128.6%)</div>
+          </div>
+          <div class="p-3 rounded-xl bg-zinc-950/80 border border-indigo-500/40 bg-indigo-950/15 flex flex-col justify-between shadow-[0_0_15px_rgba(99,102,241,0.1)]">
+            <div>
+              <div class="text-indigo-300 font-bold">Large (RM 200.00)</div>
+              <div class="text-zinc-300 text-[10.5px] mt-1">177,500 Energy = 71,000 Tokens</div>
+              <div class="text-zinc-500 text-[10.5px]">Direct: 31,500 Tokens</div>
+            </div>
+            <div class="text-indigo-400 font-bold text-[11px] mt-2 pt-1.5 border-t border-indigo-500/30">+39,500 Extra Tokens + Capsule (+125.4%)</div>
+          </div>
+        </div>
+        <p class="text-[10.5px] text-zinc-400 italic font-mono pt-1" id="txt-arena-season-note">
+          *Large Arena Pack includes 1x Arena Upgrade Capsule (+50 max energy for current season).
+        </p>
+      </div>
+    </div>
+
+    <!-- EMBLEM BANNER 1 -->
+    <div id="emblem-banner" class="hidden mt-2 mb-3 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-950/40 via-[#111116] to-[#121217] border border-amber-500/35 shadow-[0_0_24px_rgba(245,158,11,0.08)]">
+      <div class="flex items-center justify-between gap-2 mb-2.5">
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-amber-500/15 text-amber-400 border border-amber-500/30 uppercase" id="txt-emblem-tag">
+          Emblem & Emblem+ Perks
+        </span>
+        <span class="text-[11px] font-mono text-amber-300/90 font-medium" id="txt-emblem-limit-tag">Limit: 1 per package</span>
+      </div>
+
+      <div class="flex gap-1.5 p-1 bg-zinc-950/90 rounded-xl border border-amber-500/20 mb-3">
+        <button type="button" id="btn-tab-emblem" onclick="switchEmblemInfo('emblem')" class="flex-1 py-1.5 rounded-lg text-xs font-semibold transition bg-amber-500 text-zinc-950 shadow-sm">
+          Emblem Tier
+        </button>
+        <button type="button" id="btn-tab-emblemplus" onclick="switchEmblemInfo('emblemplus')" class="flex-1 py-1.5 rounded-lg text-xs font-semibold transition text-zinc-400 hover:text-white">
+          Emblem+ Tier
+        </button>
+      </div>
+
+      <div id="emblem-info-basic" class="space-y-2 text-xs">
+        <div class="text-xs text-zinc-300 leading-relaxed font-medium" id="txt-emblem-basic-intro">
+          Essential privileges and daily bonuses for character growth:
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5 text-[11px] text-zinc-300 font-mono">
+          <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 3 Elements:</span> Master up to 3 elements (default is 2)</div>
+          <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• Free Wisdom Scroll:</span> Instantly master Lv 1–100 skills</div>
+          <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 10 Free Tokens Daily:</span> Claim every day</div>
+          <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• +30 PvE Energy & +10 Event Stamina:</span> Extra capacities</div>
+          <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• Exclusive Talents & Combat Skills:</span> Unique skill trees</div>
+          <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 6 Character Slots & Bonus XP Limit 50</span></div>
+          <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 3x Daily Party Control:</span> Take control in PvE runs</div>
+          <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 2 Daily Wishes & 2 Lucky Spins</span></div>
+          <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 3 Pet Villa Slots & 6 Daily Scratch Cards</span></div>
+          <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80 sm:col-span-2 md:col-span-3"><span class="text-amber-400 font-bold">• Perks & Discounts:</span> Missions, shop discounts & resets</div>
+        </div>
+      </div>
+
+      <div id="emblem-info-plus" class="hidden space-y-2.5 text-xs">
+        <div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11px] font-semibold flex items-center justify-between">
+          <span id="txt-emblem-plus-tierbonus">★ Tier Bonus: Inherits ALL base Emblem benefits automatically</span>
+        </div>
+
+        <div class="space-y-3">
+          <div>
+            <div class="text-[10px] uppercase tracking-wider font-semibold text-amber-400 mb-1.5" id="txt-sec-core">Core System & Customization</div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-[11px] font-mono text-zinc-300">
+              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 5 Elements:</span> Master all 5 elements</div>
+              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 50 Preset Loadouts:</span> Instant fast switching</div>
+              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 2x Daily Tokens:</span> Double token claims</div>
+              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• Bonus XP 100 Cap & Free Fast Travel</span></div>
+              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• Gear/Skill Search & Item Bookmarks</span></div>
+              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• Exclusive Free Set:</span> Outfit / Gear (in-game)</div>
+            </div>
+          </div>
+
+          <div>
+            <div class="text-[10px] uppercase tracking-wider font-semibold text-amber-400 mb-1.5" id="txt-sec-multipliers">Multipliers & Energy Upgrades</div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-[11px] font-mono text-zinc-300">
+              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 3x Gold & 3x XP Gains:</span> Triple progression</div>
+              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 2x Battle Rewards & Recruit Any Level</span></div>
+              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• Unlimited Party Control:</span> Unrestricted PvE</div>
+              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• Energy:</span> +50 Clan, +50 Crew, +30 PvE, +30 PvP</div>
+              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80 sm:col-span-2 md:col-span-2"><span class="text-amber-300 font-bold">• +20 Event Stamina & Exclusive Talents</span></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="text-[10px] uppercase tracking-wider font-semibold text-amber-400 mb-1.5" id="txt-sec-daily">Daily Activities & Pet Villa</div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] font-mono text-zinc-300">
+              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 3 Daily Wishes & 3 Lucky Spins</span></div>
+              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 8 Daily Scratch Cards & Exclusive Pets</span></div>
+              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 5 Pet Villa Slots & -50% Training Time</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EMBLEM BANNER 2: 2,200 BONUS TOKEN POLICY -->
+    <div id="emblem-bonus-banner" class="hidden mt-2 mb-3 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-950/30 via-[#111116] to-[#121217] border border-amber-500/30 shadow-[0_0_20px_rgba(245,158,11,0.06)]">
+      <div class="flex items-center justify-between gap-2 mb-2">
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-amber-500/15 text-amber-400 border border-amber-500/30 uppercase" id="txt-bonus-badge">
+          2,200 Bonus Tokens Policy
+        </span>
+        <span class="text-[11px] font-mono text-amber-400 font-semibold" id="txt-bonus-highlight">First Upgrade Only</span>
+      </div>
+      <p class="text-xs sm:text-[13px] text-zinc-200 leading-relaxed mb-2.5" id="txt-bonus-desc">
+        The 2,200 Bonus Tokens reward is exclusively available for first-time upgrades directly from Free status. Upgrading from an existing Emblem to Emblem+ does not include bonus tokens.
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] font-mono">
+        <div class="p-2.5 rounded-xl bg-zinc-950/70 border border-emerald-500/30 text-zinc-200">
+          <span class="text-emerald-400 font-bold">✓ Free ➔ Emblem / Emblem+:</span>
+          <div class="text-[10.5px] text-zinc-400 mt-0.5" id="txt-bonus-rule-eligible">Eligible for 2,200 Bonus Tokens (1st Upgrade)</div>
+        </div>
+        <div class="p-2.5 rounded-xl bg-zinc-950/70 border border-zinc-800 text-zinc-300">
+          <span class="text-amber-400 font-bold">✕ Emblem ➔ Emblem+:</span>
+          <div class="text-[10.5px] text-zinc-400 mt-0.5" id="txt-bonus-rule-ineligible">Not eligible for bonus tokens</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEVEL UP BANNER 1 -->
+    <div id="levelup-banner-desc" class="hidden mt-2 mb-3 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-pink-950/30 via-[#111116] to-[#121217] border border-pink-500/25 shadow-sm">
+      <div class="flex items-center justify-between gap-2 mb-2">
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-pink-500/15 text-pink-300 border border-pink-500/25 uppercase" id="txt-lv-rewards-tag">
+          Level Up Bundle Rewards
+        </span>
+        <span class="text-[11px] font-mono text-pink-300/80 font-medium" id="txt-lv-rewards-ingame-tag">Refer to In-Game</span>
+      </div>
+      <p class="text-xs sm:text-[13px] text-zinc-200 leading-relaxed mb-2.5" id="txt-lv-rewards-desc">
+        Each Starter Pack includes its own dedicated clothing outfit, weapon, exclusive combat skills, hairstyle, back item, accessory, a unique pet, and bonus Tokens.
+      </p>
+      <div class="p-2.5 rounded-xl bg-zinc-950/70 border border-pink-500/20 text-[11px] text-zinc-300 font-mono flex items-start gap-2">
+        <span class="text-pink-400 font-bold">•</span>
+        <span id="txt-lv-rewards-note" class="leading-relaxed">Please check in-game to inspect item models, pet abilities, and skill previews for each level.</span>
+      </div>
+    </div>
+
+    <!-- LEVEL UP BANNER 2 -->
+    <div id="levelup-banner-notes" class="hidden mt-2 mb-3 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-pink-950/25 via-[#111116] to-[#121217] border border-pink-500/25 shadow-sm">
+      <div class="flex items-center justify-between gap-2 mb-2">
+        <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-pink-500/15 text-pink-300 border border-pink-500/25 uppercase" id="txt-lv-notes-tag">
+          Purchase & Duplicate Policy
+        </span>
+        <span class="text-[11px] font-mono text-pink-300 font-semibold" id="txt-lv-notes-limit-tag">1 Per Character Slot</span>
+      </div>
+      <p class="text-xs sm:text-[13px] text-zinc-200 leading-relaxed mb-2.5" id="txt-lv-notes-desc">
+        Each package can only be purchased once per character slot. If you already own items included in the pack, they are automatically converted into Tokens:
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] font-mono">
+        <div class="p-2.5 rounded-xl bg-zinc-950/70 border border-pink-500/25 text-zinc-200">
+          <span class="text-pink-300 font-bold">★ Skill Replacement:</span>
+          <div class="text-[10.5px] text-zinc-300 mt-0.5" id="txt-lv-dup-skill">Owned Skill ➔ Replaced with 500 Tokens</div>
+        </div>
+        <div class="p-2.5 rounded-xl bg-zinc-950/70 border border-pink-500/25 text-zinc-200">
+          <span class="text-pink-300 font-bold">★ Cosmetic Replacement:</span>
+          <div class="text-[10.5px] text-zinc-300 mt-0.5" id="txt-lv-dup-cosmetic">Owned Clothing / Hairstyle ➔ Replaced with 100 Tokens each</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BATTLEPASS PICKER -->
+    <div id="bp-customizer" class="hidden mb-4 space-y-3">
+      <div id="bp-rewards-banner" class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-rose-950/30 via-[#111116] to-[#121217] border border-rose-500/25 shadow-sm">
+        <div class="flex items-center justify-between gap-2 mb-2">
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-rose-500/15 text-rose-300 border border-rose-500/25 uppercase" id="txt-bp-rewards-tag">
+            Battlepass Rewards Info
+          </span>
+          <span class="text-[11px] font-mono text-rose-300 font-semibold" id="txt-bp-rewards-ingame-tag">Refer to In-Game</span>
+        </div>
+        <p class="text-xs sm:text-[13px] text-zinc-200 leading-relaxed mb-2.5" id="txt-bp-rewards-desc">
+          Each Battlepass includes exclusive skills, tokens, talent training potions, weapons, back items, and accessories.
+        </p>
+        <div class="p-2.5 rounded-xl bg-zinc-950/70 border border-rose-500/20 text-[11px] text-zinc-300 font-mono flex items-start gap-2">
+          <span class="text-rose-400 font-bold">•</span>
+          <span id="txt-bp-rewards-note" class="leading-relaxed">To preview the full seasonal reward track and gear models, please check the in-game Battlepass tab.</span>
+        </div>
+      </div>
+
+      <div class="p-4 sm:p-5 rounded-2xl bg-[#121217] border border-surface-border">
+        <div class="flex items-center justify-between gap-2 mb-2.5">
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-zinc-800 text-zinc-300 uppercase" id="txt-bp-rate-badge">
+            Pricing Structure
+          </span>
+          <div class="flex items-center gap-2">
+            <span class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-zinc-800/80 text-zinc-400 border border-zinc-700/60" id="txt-bp-limit-note">Limit: 1 per season</span>
+            <span class="text-xs sm:text-[13px] font-semibold text-white tracking-tight" id="txt-bp-banner-title">Season Battlepass Rates</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-[11px]">
+          <div class="p-3 rounded-xl bg-zinc-950/70 border border-zinc-800">
+            <div class="text-zinc-400 font-medium" id="txt-bp-b1-title">Seasons 1 – 11</div>
+            <div class="text-emerald-400 font-mono font-bold text-xs mt-1">RM 11.00 <span class="text-zinc-500 font-normal">/</span> RM 16.00 <span class="text-[10px] text-zinc-500">(Maxed)</span></div>
+          </div>
+          <div class="p-3 rounded-xl bg-zinc-950/70 border border-zinc-800">
+            <div class="text-zinc-400 font-medium" id="txt-bp-b2-title">Seasons 12 – 21</div>
+            <div class="text-emerald-400 font-mono font-bold text-xs mt-1">RM 21.00 <span class="text-zinc-500 font-normal">/</span> RM 31.00 <span class="text-[10px] text-zinc-500">(Maxed)</span></div>
+          </div>
+          <div class="p-3 rounded-xl bg-zinc-950/70 border border-amber-500/30 ring-1 ring-amber-500/10">
+            <div class="text-amber-300 font-medium flex items-center justify-between">
+              <span id="txt-bp-b3-title">Season 22</span>
+              <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-300 font-bold" id="txt-bp-latest-tag">LATEST</span>
+            </div>
+            <div class="text-amber-400 font-mono font-bold text-xs mt-1">RM 41.00 <span class="text-zinc-500 font-normal">/</span> RM 61.00 <span class="text-[10px] text-zinc-500">(Maxed)</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 sm:p-5 rounded-2xl bg-surface-card border border-surface-border space-y-3.5">
+        <div>
+          <div class="flex items-center justify-between text-xs mb-2">
+            <span class="font-semibold text-zinc-300 tracking-tight" id="txt-bp-tier-label">Choose Tier</span>
+            <span class="text-[11px] font-mono text-zinc-400 font-normal" id="txt-bp-tier-sub">Live Season Rates</span>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button 
+              type="button" 
+              id="btn-bp-normal" 
+              onclick="setBpTier('Normal')" 
+              class="p-2.5 px-3 rounded-xl border text-left transition flex items-center justify-between bg-rose-950/25 border-rose-500/50 ring-1 ring-rose-500/20 text-white shadow-sm group">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-3.5 h-3.5 rounded-full border border-rose-400 flex items-center justify-center shrink-0">
+                  <div id="dot-tier-normal" class="w-1.5 h-1.5 rounded-full bg-rose-400"></div>
+                </div>
+                <div class="min-w-0">
+                  <div class="text-xs font-bold text-white tracking-tight leading-tight" id="txt-tier-normal-name">Normal Tier</div>
+                  <div class="text-[10px] text-zinc-400 leading-tight truncate mt-0.5" id="txt-tier-normal-desc">Standard Seasonal Pass</div>
+                </div>
+              </div>
+              <div class="text-right shrink-0 pl-2">
+                <span id="tier-rate-normal" class="text-xs font-mono font-bold text-rose-300">RM 11.00</span>
+              </div>
+            </button>
+
+            <button 
+              type="button" 
+              id="btn-bp-maxed" 
+              onclick="setBpTier('Maxed')" 
+              class="p-2.5 px-3 rounded-xl border text-left transition flex items-center justify-between bg-[#111116] border-surface-border text-zinc-400 hover:text-white hover:border-zinc-700 group">
+              <div class="flex items-center gap-2.5 min-w-0">
+                <div class="w-3.5 h-3.5 rounded-full border border-zinc-600 flex items-center justify-center shrink-0">
+                  <div id="dot-tier-maxed" class="w-1.5 h-1.5 rounded-full bg-transparent"></div>
+                </div>
+                <div class="min-w-0">
+                  <div class="text-xs font-bold text-white tracking-tight flex items-center gap-1.5 leading-tight">
+                    <span id="txt-tier-maxed-name">Maxed Tier</span>
+                    <span class="text-[8.5px] font-mono font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 leading-none">MAX LV</span>
+                  </div>
+                  <div class="text-[10px] text-zinc-400 leading-tight truncate mt-0.5" id="txt-tier-maxed-desc">Instant Max Level & Rewards</div>
+                </div>
+              </div>
+              <div class="text-right shrink-0 pl-2">
+                <span id="tier-rate-maxed" class="text-xs font-mono font-bold text-zinc-400">RM 16.00</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between text-[11px] text-zinc-400 mb-2">
+            <span id="txt-bp-season-label" class="font-medium text-zinc-300">Select Season</span>
+            <span id="bp-active-bracket" class="font-mono text-zinc-400 text-[10.5px]">Season 1</span>
+          </div>
+          <div class="grid grid-cols-6 sm:grid-cols-11 gap-1.5" id="bp-season-grid">
+            <!-- Buttons 1–22 generated dynamically -->
+          </div>
+        </div>
+
+        <button 
+          type="button" 
+          id="bp-add-btn"
+          onclick="addBattlepassToCart()"
+          class="w-full py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 active:scale-[0.99] text-xs font-bold text-white flex items-center justify-center gap-2 border border-rose-400/40 shadow-sm transition">
+          <span id="bp-add-button-label">+ Add Season 1 [Normal] (Limit 1)</span>
+          <span class="w-1 h-1 rounded-full bg-rose-200/50"></span>
+          <span id="bp-add-button-price" class="font-mono font-bold text-rose-100 text-sm">RM 11.00</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- PRODUCT LIST / ROWS -->
+    <div id="product-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 mt-2">
+      <!-- Items dynamically populated -->
+    </div>
+  </main>
+
+  <!-- ================= STICKY BOTTOM ORDER BAR ================= -->
+  <aside class="fixed bottom-0 inset-x-0 z-50 bg-[#09090c]/94 backdrop-blur-xl border-t border-surface-border/90 p-3 sm:p-3.5 shadow-[0_-8px_30px_rgba(0,0,0,0.5)]">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      
+      <!-- Cart Summary & Toggle -->
+      <div class="flex items-center justify-between sm:justify-start gap-3 sm:gap-4 text-xs">
+        <button type="button" onclick="toggleCartDrawer()" class="flex items-center gap-2 text-zinc-400 hover:text-white transition group">
+          <span id="cart-item-count-badge" class="px-2.5 py-0.5 rounded-full bg-zinc-800 text-zinc-300 font-mono font-semibold text-[11px] group-hover:bg-zinc-700">0 items</span>
+          <span id="txt-cart-view-label" class="underline underline-offset-4 decoration-zinc-600 group-hover:decoration-white font-medium">View Order List</span>
+        </button>
+        <div class="h-4 w-[1px] bg-zinc-800 hidden sm:block"></div>
+        <div class="flex items-baseline gap-1.5">
+          <span class="text-zinc-500 text-xs" id="txt-total-label">Total:</span>
+          <span id="cart-subtotal" class="text-base sm:text-lg font-bold font-mono text-emerald-400 tracking-tight">RM 0.00</span>
+        </div>
+      </div>
+
+      <!-- Character ID & Copy Button -->
+      <div class="flex items-center gap-2 w-full sm:w-auto">
+        <div class="relative flex-1 sm:w-64 md:w-72">
+          <input 
+            type="text" 
+            id="char-id-input" 
+            placeholder="Enter Character ID"
+            class="w-full bg-[#111116] border border-surface-border rounded-xl px-4 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition font-mono tracking-wide"
+          />
+        </div>
+
+        <button 
+          type="button" 
+          onclick="handleCopyOrder()" 
+          class="bg-white hover:bg-zinc-100 active:scale-[0.98] text-zinc-950 font-bold px-5 py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 transition shrink-0 shadow-sm">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span id="txt-copy-button">Copy Package Order</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ================= CART SLIDE-UP DRAWER ================= -->
+  <div id="cart-drawer" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-end sm:items-center justify-center p-0 sm:p-4 transition-opacity">
+    <div class="bg-[#121217] border border-surface-border w-full max-w-lg rounded-t-2xl sm:rounded-2xl max-h-[85vh] flex flex-col overflow-hidden shadow-2xl">
+      <div class="p-4 border-b border-surface-border flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <h3 class="text-sm font-bold text-white tracking-tight" id="txt-drawer-title">Selected Packages</h3>
+          <span id="drawer-count-pill" class="text-[11px] font-mono px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-300 font-semibold">0</span>
+        </div>
+        <button type="button" onclick="toggleCartDrawer()" class="text-zinc-400 hover:text-white text-xs px-2.5 py-1 rounded-full bg-zinc-800/60 transition">
+          ✕
+        </button>
+      </div>
+
+      <div class="p-4 overflow-y-auto space-y-2.5 flex-1 custom-scroll" id="cart-drawer-items">
+        <!-- Rendered items in cart -->
+      </div>
+
+      <div class="p-4 border-t border-surface-border bg-zinc-950 flex items-center justify-between">
+        <button type="button" onclick="clearCart()" class="text-xs text-red-400 hover:text-red-300 underline font-medium transition" id="txt-clear-cart">
+          Clear All
+        </button>
+        <div class="text-right">
+          <div class="text-[11px] text-zinc-400 font-medium" id="txt-drawer-total-label">Subtotal</div>
+          <div id="drawer-total-amount" class="text-base font-bold font-mono text-emerald-400">RM 0.00</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= ORDER COPIED MODAL ================= -->
+  <div id="ticket-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-[#121217] border border-surface-border w-full max-w-md rounded-2xl p-5 shadow-2xl space-y-4">
+      <div>
+        <h3 class="text-sm font-bold text-white tracking-tight" id="txt-modal-success-title">Order Details Copied</h3>
+        <p class="text-xs text-zinc-400 mt-1 leading-relaxed" id="txt-modal-success-sub">
+          The order summary has been copied to your clipboard. Paste it directly into our chat.
+        </p>
+      </div>
+
+      <!-- Plain Text Preview Box -->
+      <div class="relative">
+        <pre id="ticket-preview-box" class="p-4 rounded-xl bg-zinc-950 border border-zinc-800/80 text-xs font-mono text-zinc-200 whitespace-pre-wrap leading-relaxed max-h-52 overflow-y-auto custom-scroll selection:bg-zinc-800"></pre>
+      </div>
+
+      <!-- Button Showing Tokens Obtained with Custom Token Coin SVG Icon -->
+      <button 
+        type="button" 
+        id="btn-tokens-obtained" 
+        onclick="handleTokensClick()" 
+        title="Click to check token breakdown"
+        class="w-full py-2.5 px-3.5 rounded-xl bg-sky-950/25 hover:bg-sky-950/40 border border-sky-500/40 flex items-center justify-between text-xs transition active:scale-[0.99] shadow-[0_0_15px_rgba(56,189,248,0.08)] group">
+        <div class="flex items-center gap-2.5">
+          <!-- Custom Vector Token Coin SVG matching uploaded game coin -->
+          <svg class="w-6 h-6 shrink-0 drop-shadow-[0_0_8px_rgba(56,189,248,0.7)] group-hover:rotate-12 transition-transform duration-300" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="tokenOuterRim" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#38bdf8"/>
+                <stop offset="45%" stop-color="#0284c7"/>
+                <stop offset="100%" stop-color="#0369a1"/>
+              </linearGradient>
+              <linearGradient id="tokenInnerDisc" x1="20%" y1="0%" x2="80%" y2="100%">
+                <stop offset="0%" stop-color="#0e7490"/>
+                <stop offset="50%" stop-color="#155e75"/>
+                <stop offset="100%" stop-color="#083344"/>
+              </linearGradient>
+              <linearGradient id="tokenTFace" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#ffffff"/>
+                <stop offset="45%" stop-color="#e0f2fe"/>
+                <stop offset="100%" stop-color="#bae6fd"/>
+              </linearGradient>
+            </defs>
+            <!-- Outer border -->
+            <circle cx="50" cy="50" r="47" fill="#031622" stroke="#000000" stroke-width="4.5"/>
+            <!-- Metallic cyan outer rim -->
+            <circle cx="50" cy="50" r="43" fill="url(#tokenOuterRim)"/>
+            <!-- Rim highlight facets & notches -->
+            <path d="M48 8 A42 42 0 0 1 78 20 L72 26 A34 34 0 0 0 48 16 Z" fill="#7dd3fc" opacity="0.8"/>
+            <path d="M80 23 A42 42 0 0 1 92 50 L84 50 A34 34 0 0 0 74 29 Z" fill="#bae6fd" opacity="0.95"/>
+            <path d="M8 50 A42 42 0 0 1 20 22 L26 28 A34 34 0 0 0 16 50 Z" fill="#38bdf8" opacity="0.6"/>
+            <path d="M12 60 A42 42 0 0 0 28 82 L34 76 A34 34 0 0 1 20 58 Z" fill="#7dd3fc" opacity="0.85"/>
+            <path d="M38 88 A42 42 0 0 0 65 91 L63 83 A34 34 0 0 1 40 80 Z" fill="#38bdf8" opacity="0.6"/>
+            <!-- Inner groove divider border -->
+            <circle cx="50" cy="50" r="34" fill="#000000"/>
+            <!-- Inner deep teal coin face -->
+            <circle cx="50" cy="50" r="30" fill="url(#tokenInnerDisc)"/>
+            <!-- Subtle diagonal reflection stripes -->
+            <path d="M22 36 L44 20 L38 20 L20 34 Z" fill="#38bdf8" opacity="0.2"/>
+            <path d="M26 62 L64 24 L56 21 L22 55 Z" fill="#38bdf8" opacity="0.25"/>
+            <!-- 3D drop extrusion shadow of Letter T -->
+            <path d="M25 29 H73 V41 H57 V75 H43 V41 H25 Z" transform="translate(3.5, 3.5)" fill="#021c27"/>
+            <path d="M25 29 H73 V41 H57 V75 H43 V41 H25 Z" transform="translate(1.8, 1.8)" fill="#042f40"/>
+            <!-- Front face of Letter T -->
+            <path d="M25 29 H73 V41 H57 V75 H43 V41 H25 Z" fill="url(#tokenTFace)" stroke="#0284c7" stroke-width="0.8"/>
+            <!-- Top and left edge specular highlights -->
+            <path d="M25 29 H73 V32 H25 Z" fill="#ffffff"/>
+            <path d="M43 41 H57 V44 H43 Z" fill="#ffffff" opacity="0.8"/>
+          </svg>
+          <span class="text-zinc-200 font-semibold tracking-tight" id="txt-tokens-obtained-label">Tokens to be Received:</span>
+        </div>
+        <div class="flex items-center gap-1.5 font-mono font-bold text-sky-300 text-sm">
+          <span id="modal-tokens-count">0</span>
+          <span class="text-xs text-sky-400 font-medium">Tokens</span>
+        </div>
+      </button>
+
+      <!-- Choose Payment Method (3 Malaysian QR Buttons) -->
+      <div class="pt-2 border-t border-zinc-800/80 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-semibold text-zinc-300 tracking-tight" id="txt-choose-payment-head">Pay Directly with Malaysian QR:</span>
+          <span class="text-[10px] font-mono text-pink-400 font-medium">DuitNow Supported</span>
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <!-- Touch 'n Go Button -->
+          <button 
+            type="button" 
+            onclick="openQrModal('tng')" 
+            class="flex flex-col items-center justify-center p-2 sm:p-2.5 rounded-xl bg-[#0066cc]/15 hover:bg-[#0066cc]/25 border border-[#0066cc]/40 text-blue-300 transition active:scale-95 group">
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-400 mb-1 group-hover:scale-125 transition"></span>
+            <span class="text-[11px] sm:text-xs font-bold font-mono tracking-tight text-white">Touch 'n Go</span>
+            <span class="text-[9px] text-blue-300/80 font-mono">eWallet QR</span>
+          </button>
+
+          <!-- Maybank Button -->
+          <button 
+            type="button" 
+            onclick="openQrModal('maybank')" 
+            class="flex flex-col items-center justify-center p-2 sm:p-2.5 rounded-xl bg-[#ffcc00]/15 hover:bg-[#ffcc00]/25 border border-[#ffcc00]/40 text-amber-300 transition active:scale-95 group">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 mb-1 group-hover:scale-125 transition"></span>
+            <span class="text-[11px] sm:text-xs font-bold font-mono tracking-tight text-amber-200">Maybank</span>
+            <span class="text-[9px] text-amber-300/80 font-mono">MAE / M2U QR</span>
+          </button>
+
+          <!-- CIMB Button -->
+          <button 
+            type="button" 
+            onclick="openQrModal('cimb')" 
+            class="flex flex-col items-center justify-center p-2 sm:p-2.5 rounded-xl bg-[#ed1c24]/15 hover:bg-[#ed1c24]/25 border border-[#ed1c24]/40 text-rose-300 transition active:scale-95 group">
+            <span class="w-2.5 h-2.5 rounded-full bg-rose-400 mb-1 group-hover:scale-125 transition"></span>
+            <span class="text-[11px] sm:text-xs font-bold font-mono tracking-tight text-rose-200">CIMB</span>
+            <span class="text-[9px] text-rose-300/80 font-mono">Octo Bank QR</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex justify-between items-center gap-2 pt-1 border-t border-zinc-800/50">
+        <span class="text-[11px] text-zinc-500 font-mono" id="txt-modal-footer-note">Copied to clipboard</span>
+        <div class="flex items-center gap-2">
+          <button 
+            type="button" 
+            onclick="handleWhatsAppOrder()" 
+            class="px-3 py-2 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] text-zinc-950 text-xs font-bold transition shadow-sm flex items-center gap-1.5"
+            title="Send pre-filled order via WhatsApp">
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+              <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.196 8.196 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.03-1.25-.75-.67-1.26-1.5-1.41-1.75-.15-.25-.02-.39.11-.51.11-.11.25-.29.37-.43.13-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.34-.76-1.84-.2-.49-.4-.42-.56-.43h-.47c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.44.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29z"/>
+            </svg>
+            <span>Order via WhatsApp</span>
+          </button>
+          <button 
+            type="button" 
+            onclick="closeTicketModal()" 
+            class="px-4 py-2 rounded-xl bg-white hover:bg-zinc-100 text-zinc-950 text-xs font-bold transition shadow-sm" 
+            id="txt-modal-close-btn">
+            Done
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MALAYSIAN DUITNOW QR MODAL ================= -->
+  <div id="qr-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-[#121217] border border-surface-border w-full max-w-sm rounded-2xl p-4 sm:p-5 shadow-2xl space-y-3.5 my-auto">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <svg class="w-5 h-5" viewBox="0 0 100 100" fill="none">
+            <path d="M50 8 L32 36 L50 26 L68 36 Z" fill="#ed008c"/>
+            <path d="M92 50 L64 32 L74 50 L64 68 Z" fill="#ed008c"/>
+            <path d="M50 92 L68 64 L50 74 L32 64 Z" fill="#ed008c"/>
+            <path d="M8 50 L36 68 L26 50 L36 32 Z" fill="#ed008c"/>
+            <circle cx="50" cy="50" r="7" fill="#ed008c"/>
+          </svg>
+          <div>
+            <h3 class="text-sm font-bold text-white tracking-tight flex items-center gap-1.5">
+              <span>MY DuitNow QR</span>
+              <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-pink-500/20 text-pink-400 border border-pink-500/30">INSTANT</span>
+            </h3>
+          </div>
+        </div>
+        <button type="button" onclick="closeQrModal()" class="text-zinc-400 hover:text-white text-xs px-2.5 py-1 rounded-full bg-zinc-800/80 transition">
+          ✕
+        </button>
+      </div>
+
+      <div class="grid grid-cols-3 gap-1 p-1 bg-surface-input rounded-xl border border-surface-border text-xs">
+        <button type="button" id="tab-qr-tng" onclick="switchQrProvider('tng')" class="py-1.5 rounded-lg font-semibold transition text-center">
+          Touch 'n Go
+        </button>
+        <button type="button" id="tab-qr-maybank" onclick="switchQrProvider('maybank')" class="py-1.5 rounded-lg font-semibold transition text-center">
+          Maybank
+        </button>
+        <button type="button" id="tab-qr-cimb" onclick="switchQrProvider('cimb')" class="py-1.5 rounded-lg font-semibold transition text-center">
+          CIMB
+        </button>
+      </div>
+
+      <div class="bg-white rounded-2xl p-4 text-zinc-950 shadow-lg text-center relative overflow-hidden border border-zinc-200">
+        <div id="qr-brand-banner" class="rounded-xl py-2 px-3 mb-2.5 text-white flex items-center justify-between transition-colors bg-[#0066cc]">
+          <div class="flex items-center gap-1.5">
+            <span id="qr-brand-icon" class="w-2.5 h-2.5 rounded-full bg-white"></span>
+            <span id="qr-brand-name" class="font-bold text-xs tracking-tight">Touch 'n Go eWallet</span>
+          </div>
+          <span class="text-[9px] font-mono font-bold tracking-wider px-1.5 py-0.5 rounded bg-black/20 text-white/90">DuitNow QR</span>
+        </div>
+
+        <div id="qr-svg-container" class="py-1 flex items-center justify-center">
+          <!-- Dynamically populated SVG QR -->
+        </div>
+
+        <div id="qr-card-footnote" class="mt-2.5 pt-2 border-t border-zinc-200">
+          <div class="font-black text-xs tracking-tight text-zinc-900 uppercase">BADRUL HISHAM BIN MOHD FAUZI</div>
+          <div class="text-[9.5px] text-zinc-500 font-mono mt-0.5">National Standard • All Malaysian eWallets & Banks Accepted</div>
+        </div>
+      </div>
+
+      <button 
+        type="button" 
+        onclick="downloadMerchantQr()" 
+        class="w-full py-2.5 px-3 rounded-xl bg-[#181820] hover:bg-[#20202b] active:scale-[0.98] border border-zinc-700/80 text-white text-xs font-semibold flex items-center justify-center gap-2 transition shadow-sm group">
+        <svg class="w-4 h-4 text-emerald-400 group-hover:scale-110 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span id="txt-btn-download-qr">Download Merchant QR</span>
+      </button>
+
+      <div class="grid grid-cols-2 gap-2 text-xs font-mono">
+        <div class="p-2.5 rounded-xl bg-zinc-950/80 border border-zinc-800 flex flex-col justify-between">
+          <div class="text-[10px] text-zinc-400 font-medium" id="txt-qr-amount-label">Amount to Pay</div>
+          <div class="flex items-baseline justify-between mt-1">
+            <span id="qr-val-amount" class="font-bold text-emerald-400 text-sm">RM 0.00</span>
+            <button type="button" onclick="copyPaymentAmount()" class="text-[10px] text-zinc-400 hover:text-white underline">Copy</button>
+          </div>
+        </div>
+        <div class="p-2.5 rounded-xl bg-zinc-950/80 border border-zinc-800 flex flex-col justify-between">
+          <div class="text-[10px] text-zinc-400 font-medium" id="txt-qr-ref-label">Recipient Ref</div>
+          <div class="flex items-baseline justify-between mt-1">
+            <span id="qr-val-ref" class="font-bold text-zinc-200 text-xs truncate max-w-[90px]">-</span>
+            <button type="button" onclick="copyPaymentRef()" class="text-[10px] text-zinc-400 hover:text-white underline">Copy</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-3 rounded-xl bg-zinc-950/60 border border-zinc-800/80 text-[11px] text-zinc-400 space-y-1 font-mono leading-relaxed">
+        <div>1. Open <span id="qr-guide-appname" class="text-white font-semibold">Touch 'n Go eWallet</span> & tap Scan QR.</div>
+        <div>2. Confirm recipient name is <span class="text-white font-semibold">BADRUL HISHAM BIN MOHD FAUZI</span>.</div>
+        <div>3. Enter exact amount & Character ID as reference.</div>
+        <div>4. Screenshot receipt & send to chat for fulfilment!</div>
+      </div>
+
+      <div class="flex gap-2 pt-1">
+        <button 
+          type="button" 
+          onclick="handleWhatsAppOrder()" 
+          class="flex-1 py-2 px-3 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] active:scale-[0.98] text-zinc-950 text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm"
+          title="Send order and notify via WhatsApp">
+          <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24">
+            <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.196 8.196 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.03-1.25-.75-.67-1.26-1.5-1.41-1.75-.15-.25-.02-.39.11-.51.11-.11.25-.29.37-.43.13-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.34-.76-1.84-.2-.49-.4-.42-.56-.43h-.47c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.44.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29z"/>
+          </svg>
+          <span>Order via WhatsApp</span>
+        </button>
+        <button 
+          type="button" 
+          onclick="copyOrderAndReceiptText()" 
+          class="flex-1 py-2 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 active:scale-[0.98] text-white text-xs font-semibold transition flex items-center justify-center gap-1.5"
+          id="btn-qr-copy-all">
+          <span>Copy Order Details</span>
+        </button>
+        <button 
+          type="button" 
+          onclick="closeQrModal()" 
+          class="py-2 px-4 rounded-xl bg-white hover:bg-zinc-100 active:scale-[0.98] text-zinc-950 text-xs font-bold transition shadow-sm"
+          id="btn-qr-done">
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= WELCOME ANNOUNCEMENT MODAL ================= -->
+  <div id="announcement-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-[#121217] border border-surface-border w-full max-w-lg rounded-2xl p-5 sm:p-6 shadow-2xl space-y-4 my-auto relative max-h-[92vh] overflow-y-auto custom-scroll">
+      <div class="flex items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-bold tracking-wider bg-rose-500/15 text-rose-300 border border-rose-500/30 uppercase flex items-center gap-1.5" id="txt-anno-tag">
+            <span class="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse"></span>
+            📢 IMPORTANT ANNOUNCEMENT (EN)
+          </span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button 
+            type="button" 
+            onclick="toggleLanguage()" 
+            class="px-2.5 py-1 rounded-full bg-[#181820] hover:bg-[#22222c] border border-zinc-700/80 text-[10px] font-mono text-zinc-300 hover:text-white transition shadow-sm active:scale-95"
+            id="btn-anno-lang-toggle">
+            LANG: ENG
+          </button>
+          <button 
+            type="button" 
+            onclick="closeAnnouncementModal()" 
+            class="text-zinc-400 hover:text-white text-xs w-6 h-6 flex items-center justify-center rounded-full bg-zinc-800/80 transition">
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <h3 class="text-sm sm:text-base font-bold text-white tracking-tight" id="txt-anno-greeting">
+          Welcome and thank you for visiting my shop!
+        </h3>
+        <p class="text-xs sm:text-[13px] text-zinc-300 leading-relaxed font-normal" id="txt-anno-apology">
+          Please accept my apologies in advance if there are occasional delays in processing your orders. This typically happens when my reseller panel balance runs low, requiring me to contact my <span class="text-emerald-400 font-bold">USDT</span> supplier to complete a refill.
+        </p>
+      </div>
+
+      <div class="p-3.5 sm:p-4 rounded-xl bg-zinc-950/80 border border-zinc-800 space-y-2 font-mono text-xs">
+        <div class="text-[11px] font-bold text-zinc-400 uppercase tracking-wider" id="txt-anno-est-title">
+          Estimated processing time:
+        </div>
+        <div class="space-y-1.5 pl-1 text-[11.5px] sm:text-xs">
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 font-bold">•</span>
+            <span class="text-zinc-200" id="txt-anno-est-line1">Balance available: <strong class="text-emerald-400 font-semibold">5 – 30 minutes</strong></span>
+          </div>
+          <div class="flex items-start gap-2">
+            <span class="text-emerald-400 font-bold">•</span>
+            <span class="text-zinc-200" id="txt-anno-est-line2"><span class="text-emerald-400 font-bold">USDT</span> refill needed: <strong class="text-amber-300 font-semibold">Around 30 minutes – 2 hours</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-3 rounded-xl bg-[#16161d] border border-zinc-800/80 space-y-2 text-xs sm:text-[12.5px] text-zinc-300 leading-relaxed">
+        <p id="txt-anno-rush-note">
+          There is absolutely no pressure to buy from me—if you are in a rush or need your order urgently, please feel free to check with other resellers instead.
+        </p>
+        <p class="text-zinc-200 font-medium" id="txt-anno-closing-note">
+          Either way, I will always do my best to get things done as fast as I can. Thank you so much for your patience and kind understanding! :3
+        </p>
+      </div>
+
+      <div class="pt-2 border-t border-zinc-800/80 flex items-center justify-between gap-3">
+        <label class="flex items-center gap-2 cursor-pointer select-none text-[11px] text-zinc-400 hover:text-zinc-300 transition">
+          <input type="checkbox" id="chk-dont-show-anno" class="rounded border-zinc-700 bg-zinc-900 text-rose-500 focus:ring-0 w-3.5 h-3.5 cursor-pointer" />
+          <span id="txt-anno-chk-label">Don't show again today</span>
+        </label>
+        <button 
+          type="button" 
+          onclick="closeAnnouncementModal()" 
+          class="px-5 py-2.5 rounded-xl bg-white hover:bg-zinc-100 active:scale-[0.98] text-zinc-950 text-xs font-bold transition shadow-sm"
+          id="btn-anno-confirm">
+          Enter Store
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= CENTERED TOAST NOTIFICATION ================= -->
+  <div id="toast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] bg-[#16161d]/95 backdrop-blur-xl border border-zinc-700/90 text-white font-semibold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-[0_16px_50px_rgba(0,0,0,0.85)] max-w-xs sm:max-w-sm text-center flex items-center justify-center gap-2.5 opacity-0 scale-95 pointer-events-none transition-all duration-200 transform tracking-tight">
+    <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0" id="toast-indicator"></span>
+    <span id="toast-text">Copied to clipboard</span>
+  </div>
+
+  <!-- ================= SCRIPT & STORE LOGIC ================= -->
+  <script>
+    /* ---------------- I18N STRINGS ---------------- */
+    const I18N = {
+      en: {
+        storeTitle: "CATOLOGIST'S STORE",
+        headerNoticeBtn: "Notice",
+        annoTag: "📢 IMPORTANT ANNOUNCEMENT (EN)",
+        annoLangToggle: "LANG: ENG",
+        annoGreeting: "Welcome and thank you for visiting my shop!",
+        annoApologyHtml: "Please accept my apologies in advance if there are occasional delays in processing your orders. This typically happens when my reseller panel balance runs low, requiring me to contact my <span class=\"text-emerald-400 font-bold\">USDT</span> supplier to complete a refill.",
+        annoEstTitle: "Estimated processing time:",
+        annoEstLine1Html: "Balance available: <strong class=\"text-emerald-400 font-semibold\">5 – 30 minutes</strong>",
+        annoEstLine2Html: "<span class=\"text-emerald-400 font-bold\">USDT</span> refill needed: <strong class=\"text-amber-300 font-semibold\">Around 30 minutes – 2 hours</strong>",
+        annoRushNote: "There is absolutely no pressure to buy from me—if you are in a rush or need your order urgently, please feel free to check with other resellers instead.",
+        annoClosingNote: "Either way, I will always do my best to get things done as fast as I can. Thank you so much for your patience and kind understanding! :3",
+        annoChkLabel: "Don't show again today",
+        annoConfirmBtn: "Enter Store",
+        fulfilmentLabel: "Normal Fulfilment:",
+        fulfilmentVal: "5 – 30 Minutes",
+        eventTag: "First-Time Buyer Sale (25% OFF)",
+        eventLimitNote: "Limit: 1 per package",
+        eventAnnouncement: "During this event, for every and only FIRST purchase of the following packages, players will get 25% off Discount.",
+        tokensTag: "Token Packages Notice",
+        tokensIngameTag: "Refer to In-Game",
+        tokensNoticeHead: "In this catalog we don't have the detailed jutsu and pet that packaged with:",
+        tokensLine1: "• Package 1, 2, 3, 4 / A, B, C, D (Kinjutsu + Pet)",
+        tokensLine2: "• Package 5 / E (Hairstyle)",
+        tokensReferText: "Please refer to in-game.",
+        mcTag: "Market Coins Info",
+        mcConvertPill: "1:1 Convert to Tokens",
+        mcDesc: "Market Coins are an in-game currency used to purchase weapons, clothing, and back items from other players in the Market building.",
+        mcConvertNote: "Conversion: You can convert Market Coins 1:1 to Tokens.",
+        mcLine1: "• Package A–D includes Kinjutsu + Pet | Package E includes Hairstyle",
+        mcRefer: "Please refer to in-game for preview.",
+        clanTag: "Clan War Energy Packs",
+        clanLimitTag: "Best Stamina Value",
+        clanTabGuide: "Item Guide & Notes",
+        clanTabCompare: "Value Comparison vs Tokens",
+        clanRollDesc: "Refills 50 energy in Clan Wars.",
+        clanTwinDesc: "Refills 100 energy in Clan Wars (2x efficiency).",
+        clanCapDesc: "Permanently increases Clan War max energy by +50.",
+        arenaTag: "Ninja Arena Packs",
+        arenaBadgeVal: "Best Energy Capsule Value",
+        arenaTabGuide: "Item Guide & Notes",
+        arenaTabCompare: "Value Comparison vs Tokens",
+        arenaBaseline: "Baseline:",
+        arenaCapDesc: "Restores 50 energy in Ninja Arena.",
+        arenaBigcapDesc: "Restores 100 energy in Ninja Arena.",
+        arenaUpcapDesc: "Increases Ninja Arena max energy by +50 (Current season).",
+        bpRewardsTag: "Battlepass Rewards Info",
+        bpRewardsIngameTag: "Refer to In-Game",
+        bpRewardsDesc: "Each Battlepass includes exclusive skills, tokens, talent training potions, weapons, back items, and accessories.",
+        bpRewardsNote: "To preview the full seasonal reward track and gear models, please check the in-game Battlepass tab.",
+        emblemTag: "Emblem & Emblem+ Perks",
+        emblemLimitTag: "Limit: 1 per package",
+        emblemBasicIntro: "Essential privileges and daily bonuses for character growth:",
+        emblemPlusTierBonus: "★ Tier Bonus: Inherits ALL base Emblem benefits automatically",
+        bonusBadge: "2,200 Bonus Tokens Policy",
+        bonusHighlight: "First Upgrade Only",
+        bonusDesc: "The 2,200 Bonus Tokens reward is exclusively available for first-time upgrades directly from Free status. Upgrading from an existing Emblem to Emblem+ does not include bonus tokens.",
+        bonusEligible: "Eligible for 2,200 Bonus Tokens (1st Upgrade)",
+        bonusIneligible: "Not eligible for bonus tokens",
+        secCore: "Core System & Customization",
+        secMultipliers: "Multipliers & Energy Upgrades",
+        secDaily: "Daily Activities & Pet Villa",
+        lvRewardsTag: "Level Up Bundle Rewards",
+        lvRewardsIngameTag: "Refer to In-Game",
+        lvRewardsDesc: "Each Starter Pack includes its own dedicated clothing outfit, weapon, exclusive combat skills, hairstyle, back item, accessory, a unique pet, and bonus Tokens.",
+        lvRewardsNote: "Please check in-game to inspect item models, pet abilities, and skill previews for each level.",
+        lvNotesTag: "Purchase & Duplicate Policy",
+        lvNotesLimitTag: "1 Per Character Slot",
+        lvNotesDesc: "Each package can only be purchased once per character slot. If you already own items included in the pack, they are automatically converted into Tokens:",
+        lvDupSkill: "Owned Skill ➔ Replaced with 500 Tokens",
+        lvDupCosmetic: "Owned Clothing / Hairstyle ➔ Replaced with 100 Tokens each",
+        bpRateBadge: "Pricing Structure",
+        bpLimitNote: "Limit: 1 per season",
+        bpBannerTitle: "Season Battlepass Rates",
+        bpB1: "Seasons 1 – 11",
+        bpB2: "Seasons 12 – 21",
+        bpB3: "Season 22",
+        bpLatest: "LATEST",
+        bpTierLabel: "Choose Tier",
+        bpSeasonLabel: "Select Season",
+        copyBtn: "Copy Package Order",
+        charIdPlaceholder: "Enter Character ID",
+        cartView: "View Order List",
+        cartTotal: "Total:",
+        drawerTitle: "Selected Packages",
+        clearCart: "Clear All",
+        drawerSubtotal: "Subtotal",
+        emptyCartMsg: "No packages selected yet.",
+        modalSuccessTitle: "Order Details Copied",
+        modalSuccessSub: "The order summary has been copied to your clipboard. Paste it directly into our chat.",
+        modalClose: "Done",
+        limit1Badge: "Limit 1",
+        tokensObtainedLabel: "Tokens to be Received:",
+        ticketHeader: "ORDER SUMMARY",
+        ticketCharId: "Character ID",
+        ticketFulfilment: "Fulfilment: 5-30 mins",
+        ticketItemsHeader: "Items:",
+        ticketTotal: "Total: RM",
+        ticketClosing: "Please confirm payment details. Thank you.",
+        toastCharRequired: "Please enter your Character ID",
+        toastCartEmpty: "Please select at least one package",
+        toastCopied: "Copied to clipboard"
+      },
+      bm: {
+        storeTitle: "KEDAI CATOLOGIST",
+        headerNoticeBtn: "Notis",
+        annoTag: "📢 NOTIS PENTING KEPADA CUSTOMER (MY)",
+        annoLangToggle: "LANG: BM",
+        annoGreeting: "Hai, terima kasih sudi singgah kedai saya!",
+        annoApologyHtml: "Minta maaf awal-awal ya kalau ada masa order korang lambat sikit diproses. Kadang-kadang baki dekat panel reseller saya dah habis, jadi saya kena contact supplier <span class=\"text-emerald-400 font-bold\">USDT</span> dulu untuk refill.",
+        annoEstTitle: "Anggaran masa proses:",
+        annoEstLine1Html: "Baki panel ada: <strong class=\"text-emerald-400 font-semibold\">5 minit – 30 minit siap</strong>",
+        annoEstLine2Html: "Kena refill <span class=\"text-emerald-400 font-bold\">USDT</span>: <strong class=\"text-amber-300 font-semibold\">Ambik masa sekitar 30 minit – 2 jam</strong>",
+        annoRushNote: "Tiada paksaan untuk beli dari saya, kalau korang tengah rush atau perlukan barang cepat sangat, boleh terus cari atau berurusan dengan reseller lain dulu.",
+        annoClosingNote: "Apa-apa pun, saya sentiasa cuba buat secepat mungkin. Terima kasih banyak atas kesabaran dan kefahaman korang! :3",
+        annoChkLabel: "Jangan tunjuk lagi hari ini",
+        annoConfirmBtn: "Masuk Kedai",
+        fulfilmentLabel: "Masa Proses Biasa:",
+        fulfilmentVal: "5 – 30 Minit",
+        eventTag: "Jualan Pembeli Pertama (Diskaun 25%)",
+        eventLimitNote: "Had: 1 setiap pakej",
+        eventAnnouncement: "Sepanjang acara ini, bagi setiap dan HANYA pembelian PERTAMA pakej berikut, pemain akan menerima Diskaun 25%.",
+        tokensTag: "Notis Pakej Token",
+        tokensIngameTag: "Rujuk Dalam Game",
+        tokensNoticeHead: "Katalog ini tidak mempunyai butiran lengkap jutsu dan pet yang dipakejkan bersama:",
+        tokensLine1: "• Pakej 1, 2, 3, 4 / A, B, C, D (Kinjutsu + Pet)",
+        tokensLine2: "• Pakej 5 / E (Gaya Rambut)",
+        tokensReferText: "Sila rujuk di dalam game.",
+        mcTag: "Info Market Coins",
+        mcConvertPill: "Tukar 1:1 kepada Token",
+        mcDesc: "Market Coins adalah mata wang dalam game yang digunakan untuk membeli senjata, pakaian, dan barangan belakang dari pemain lain di bangunan Market.",
+        mcConvertNote: "Penukaran: Anda boleh menukar Market Coins 1:1 kepada Token.",
+        mcLine1: "• Pakej A–D termasuk Kinjutsu + Pet | Pakej E termasuk Gaya Rambut",
+        mcRefer: "Sila rujuk dalam game untuk pratonton.",
+        clanTag: "Pakej Tenaga Clan War",
+        clanLimitTag: "Nilai Stamina Terbaik",
+        clanTabGuide: "Panduan Item & Nota",
+        clanTabCompare: "Perbandingan Nilai vs Token",
+        clanRollDesc: "Mengisi semula 50 tenaga dalam Clan Wars.",
+        clanTwinDesc: "Mengisi semula 100 tenaga dalam Clan Wars (2x ganda).",
+        clanCapDesc: "Meningkatkan kapasiti maksimum tenaga Clan Wars secara kekal sebanyak +50.",
+        arenaTag: "Pakej Ninja Arena",
+        arenaBadgeVal: "Nilai Kapsul Tenaga Terbaik",
+        arenaTabGuide: "Panduan Item & Nota",
+        arenaTabCompare: "Perbandingan Nilai vs Token",
+        arenaBaseline: "Asas:",
+        arenaCapDesc: "Memulihkan 50 tenaga di Ninja Arena.",
+        arenaBigcapDesc: "Memulihkan 100 tenaga di Ninja Arena.",
+        arenaUpcapDesc: "Meningkatkan maksimum tenaga Ninja Arena sebanyak +50 (Musim semasa).",
+        bpRewardsTag: "Info Ganjaran Battlepass",
+        bpRewardsIngameTag: "Rujuk Dalam Game",
+        bpRewardsDesc: "Setiap Battlepass merangkumi skil eksklusif, token, ramuan latihan talent (training potion), senjata, barangan belakang (back item), dan aksesori.",
+        bpRewardsNote: "Sila semak tab Battlepass di dalam game untuk melihat pratonton penuh ganjaran dan rupa item.",
+        emblemTag: "Kelebihan Emblem & Emblem+",
+        emblemLimitTag: "Had: 1 setiap pakej",
+        emblemBasicIntro: "Kelebihan utama dan bonus harian untuk perkembangan watak:",
+        emblemPlusTierBonus: "★ Bonus Peringkat: Mewarisi SEMUA kelebihan Emblem asas secara automatik",
+        bonusBadge: "Polisi 2,200 Bonus Token",
+        bonusHighlight: "Naik Taraf Pertama Sahaja",
+        bonusDesc: "Ganjaran 2,200 Bonus Token hanya sah untuk naik taraf kali pertama secara terus daripada status Free. Naik taraf daripada akaun Emblem sedia ada ke Emblem+ tidak akan menerima bonus token ini.",
+        bonusEligible: "Layak terima 2,200 Bonus Token (Naik Taraf Pertama)",
+        bonusIneligible: "Tidak layak menerima bonus token",
+        secCore: "Sistem Asas & Penyesuaian",
+        secMultipliers: "Pengganda & Naik Taraf Tenaga",
+        secDaily: "Aktiviti Harian & Pet Villa",
+        lvRewardsTag: "Ganjaran Pakej Level Up",
+        lvRewardsIngameTag: "Rujuk Dalam Game",
+        lvRewardsDesc: "Setiap Starter Pack merangkumi pakaian khas, senjata, skil tempur eksklusif, gaya rambut, barangan belakang, aksesori, pet unik, serta bonus Token.",
+        lvRewardsNote: "Sila semak di dalam game untuk melihat rupa item, kebolehan pet, dan skil bagi setiap peringkat tahap.",
+        lvNotesTag: "Polisi Pembelian & Item Pendua",
+        lvNotesLimitTag: "1 Setiap Slot Watak",
+        lvNotesDesc: "Setiap pakej hanya boleh dibeli sekali sahaja bagi setiap slot watak. Jika anda sudah memiliki item dalam pakej, ia akan digantikan dengan Token:",
+        lvDupSkill: "Skil Sedia Ada ➔ Diganti dengan 500 Token",
+        lvDupCosmetic: "Pakaian / Gaya Rambut Sedia Ada ➔ Diganti dengan 100 Token setiap satu",
+        bpRateBadge: "Struktur Harga",
+        bpLimitNote: "Had: 1 setiap musim",
+        bpBannerTitle: "Kadar Battlepass Musim",
+        bpB1: "Musim 1 – 11",
+        bpB2: "Musim 12 – 21",
+        bpB3: "Musim 22",
+        bpLatest: "TERKINI",
+        bpTierLabel: "Pilih Peringkat",
+        bpSeasonLabel: "Pilih Musim",
+        copyBtn: "Salin Butiran Pesanan",
+        charIdPlaceholder: "Masukkan Character ID",
+        cartView: "Lihat Senarai Pesanan",
+        cartTotal: "Jumlah:",
+        drawerTitle: "Pakej Dipilih",
+        clearCart: "Padam Semua",
+        drawerSubtotal: "Jumlah Kecil",
+        emptyCartMsg: "Belum ada pakej dipilih.",
+        modalSuccessTitle: "Butiran Pesanan Disalin",
+        modalSuccessSub: "Ringkasan pesanan telah disalin ke papan keratan. Sila tampal terus ke dalam ruang sembang kami.",
+        modalClose: "Selesai",
+        limit1Badge: "Had 1",
+        tokensObtainedLabel: "Jumlah Token Diterima:",
+        ticketHeader: "RINGKASAN PESANAN",
+        ticketCharId: "Character ID",
+        ticketFulfilment: "Masa Proses: 5-30 minit",
+        ticketItemsHeader: "Senarai Item:",
+        ticketTotal: "Jumlah: RM",
+        ticketClosing: "Sila sahkan butiran pembayaran. Terima kasih.",
+        toastCharRequired: "Sila masukkan Character ID anda",
+        toastCartEmpty: "Sila pilih sekurang-kurangnya satu pakej",
+        toastCopied: "Disalin ke papan keratan"
+      }
+    };
+
+    let currentLang = 'en';
+
+    /* ---------------- CATALOG DATA WITH TOKEN COUNTS ---------------- */
+    const CATALOG = [
+      /* FIRST-TIME BUYER SALE (25% OFF) */
+      { id: "ft-1", category: "first-time", name: "Package 1", desc: "31,500 Tokens + 100 Stamina Rolls + Kinjutsu + Pet", price: 150.00, oldPrice: 200.00, limit: 1, tokens: 31500 },
+      { id: "ft-2", category: "first-time", name: "Package 2", desc: "14,175 Tokens + 40 Stamina Rolls + Kinjutsu + Pet", price: 75.75, oldPrice: 101.00, limit: 1, tokens: 14175 },
+      { id: "ft-3", category: "first-time", name: "Package 3", desc: "5,250 Tokens + 20 Stamina Rolls + Kinjutsu + Pet", price: 30.75, oldPrice: 41.00, limit: 1, tokens: 5250 },
+      { id: "ft-4", category: "first-time", name: "Package 4", desc: "2,310 Tokens + Kinjutsu + Pet", price: 15.75, oldPrice: 21.00, limit: 1, tokens: 2310 },
+      { id: "ft-5", category: "first-time", name: "Package 5", desc: "315 Tokens + Hairstyle", price: 4.00, oldPrice: 5.00, limit: 1, tokens: 315 },
+      { id: "ft-m1", category: "first-time", name: "Gacha Materials", desc: "Material Package (6-9)", price: 7.00, oldPrice: 9.00, limit: 1, tokens: 0 },
+      { id: "ft-m2", category: "first-time", name: "Anniversary Materials", desc: "Material Package (6-9)", price: 7.00, oldPrice: 9.00, limit: 1, tokens: 0 },
+      { id: "ft-m3", category: "first-time", name: "Anniversary Part II Materials", desc: "Material Package (6-9)", price: 7.00, oldPrice: 9.00, limit: 1, tokens: 0 },
+
+      /* TOKENS */
+      { id: "tk-a", category: "token", name: "Package A", desc: "31,500 Tokens + 100 Stamina Rolls + Kinjutsu + Pet", price: 200.00, oldPrice: null, limit: 99, tokens: 31500 },
+      { id: "tk-b", category: "token", name: "Package B", desc: "14,175 Tokens + 40 Stamina Rolls + Kinjutsu + Pet", price: 101.00, oldPrice: null, limit: 99, tokens: 14175 },
+      { id: "tk-c", category: "token", name: "Package C", desc: "5,250 Tokens + 20 Stamina Rolls + Kinjutsu + Pet", price: 41.00, oldPrice: null, limit: 99, tokens: 5250 },
+      { id: "tk-d", category: "token", name: "Package D", desc: "2,310 Tokens + Kinjutsu + Pet", price: 21.00, oldPrice: null, limit: 99, tokens: 2310 },
+      { id: "tk-e", category: "token", name: "Package E", desc: "315 Tokens + Hairstyle", price: 5.00, oldPrice: null, limit: 99, tokens: 315 },
+
+      /* MARKET COINS (1:1 CONVERSION) */
+      { id: "mc-a", category: "marketcoins", name: "Market Coins Pack A", desc: "31,500 Market Coins + 100 Stamina Rolls + Kinjutsu + Pet", price: 200.00, oldPrice: null, limit: 99, tokens: 31500 },
+      { id: "mc-b", category: "marketcoins", name: "Market Coins Pack B", desc: "14,175 Market Coins + 40 Stamina Rolls + Kinjutsu + Pet", price: 101.00, oldPrice: null, limit: 99, tokens: 14175 },
+      { id: "mc-c", category: "marketcoins", name: "Market Coins Pack C", desc: "5,250 Market Coins + 20 Stamina Rolls + Kinjutsu + Pet", price: 41.00, oldPrice: null, limit: 99, tokens: 5250 },
+      { id: "mc-d", category: "marketcoins", name: "Market Coins Pack D", desc: "2,310 Market Coins + Kinjutsu + Pet", price: 21.00, oldPrice: null, limit: 99, tokens: 2310 },
+      { id: "mc-e", category: "marketcoins", name: "Market Coins Pack E", desc: "315 Market Coins + Hairstyle", price: 5.00, oldPrice: null, limit: 99, tokens: 315 },
+
+      /* CLAN PACKAGES */
+      { id: "cl-sm", category: "clan", name: "Small Clan Pack", desc: "150 Stamina Rolls + 75 Twin Stamina Rolls + Pet", price: 21.00, oldPrice: null, limit: 99, tokens: 0 },
+      { id: "cl-md", category: "clan", name: "Medium Clan Pack", desc: "500 Stamina Rolls + 50 Twin Stamina Rolls + Pet", price: 41.00, oldPrice: null, limit: 99, tokens: 0 },
+      { id: "cl-lg", category: "clan", name: "Large Clan Pack", desc: "3,000 Stamina Rolls + 275 Twin Stamina Rolls + Clan Upgrade Capsule (+50 Energy) + Pet", price: 200.00, oldPrice: null, limit: 99, tokens: 0 },
+
+      /* ARENA PACKAGES */
+      { id: "ar-sm", category: "arena", name: "Small Arena Pack", desc: "200 Arena Energy Capsules + 50 Big Arena Energy Capsules", price: 41.00, oldPrice: null, limit: 99, tokens: 0 },
+      { id: "ar-lg", category: "arena", name: "Large Arena Pack", desc: "1,400 Arena Energy Capsules + 150 Big Energy Capsules + Arena Capsule Upgrade (+50 Energy) + Pet", price: 200.00, oldPrice: null, limit: 99, tokens: 0 },
+
+      /* EMBLEMS */
+      { id: "em-1", category: "emblem", name: "Free -> Emblem", desc: "Unlock 3 Elements, 2,200 Bonus Tokens (1st Upgrade), Free Wisdom Scroll & Daily Tokens", price: 21.00, oldPrice: null, limit: 1, tokens: 2200 },
+      { id: "em-2", category: "emblem", name: "Emblem -> Emblem+", desc: "Upgrade to 5 Elements, 3x XP/Gold, Unlimited Party Control & All Emblem+ Perks (No Bonus Tokens)", price: 21.00, oldPrice: null, limit: 1, tokens: 0 },
+      { id: "em-3", category: "emblem", name: "Free -> Emblem+", desc: "Full Unlock: 5 Elements, 2,200 Bonus Tokens (1st Upgrade), 3x Multipliers & Emblem+ Perks", price: 41.00, oldPrice: null, limit: 1, tokens: 2200 },
+
+      /* LEVEL UP PACKAGES */
+      { id: "lv-10", category: "levelup", name: "Lv10 Starter Pack", desc: "700 Tokens + Outfit, Weapon, Skills, Hairstyle, Back Item, Accessory & Pet", price: 9.00, oldPrice: null, limit: 1, tokens: 700 },
+      { id: "lv-20", category: "levelup", name: "Lv20 Starter Pack", desc: "2,000 Tokens + Outfit, Weapon, Skills, Hairstyle, Back Item, Accessory & Pet", price: 13.00, oldPrice: null, limit: 1, tokens: 2000 },
+      { id: "lv-30", category: "levelup", name: "Lv30 Starter Pack", desc: "2,500 Tokens + Outfit, Weapon, Skills, Hairstyle, Back Item, Accessory & Pet", price: 17.00, oldPrice: null, limit: 1, tokens: 2500 },
+      { id: "lv-40", category: "levelup", name: "Lv40 Starter Pack", desc: "3,000 Tokens + Outfit, Weapon, Skills, Hairstyle, Back Item, Accessory & Pet", price: 21.00, oldPrice: null, limit: 1, tokens: 3000 },
+      { id: "lv-50", category: "levelup", name: "Lv50 Starter Pack", desc: "4,100 Tokens + Outfit, Weapon, Skills, Hairstyle, Back Item, Accessory & Pet", price: 29.00, oldPrice: null, limit: 1, tokens: 4100 },
+      { id: "lv-60", category: "levelup", name: "Lv60 Starter Pack", desc: "5,200 Tokens + Outfit, Weapon, Skills, Hairstyle, Back Item, Accessory & Pet", price: 41.00, oldPrice: null, limit: 1, tokens: 5200 },
+      { id: "lv-70", category: "levelup", name: "Lv70 Starter Pack", desc: "8,000 Tokens + Outfit, Weapon, Skills, Hairstyle, Back Item, Accessory & Pet", price: 61.00, oldPrice: null, limit: 1, tokens: 8000 },
+      { id: "lv-80", category: "levelup", name: "Lv80 Starter Pack", desc: "15,000 Tokens + Outfit, Weapon, Skills, Hairstyle, Back Item, Accessory & Pet", price: 101.00, oldPrice: null, limit: 1, tokens: 15000 },
+      { id: "lv-90", category: "levelup", name: "Lv90 Starter Pack", desc: "20,000 Tokens + Outfit, Weapon, Skills, Hairstyle, Back Item, Accessory & Pet", price: 141.00, oldPrice: null, limit: 1, tokens: 20000 },
+      { id: "lv-100", category: "levelup", name: "Lv100 Starter Pack", desc: "30,000 Tokens + Outfit, Weapon, Skills, Hairstyle, Back Item, Accessory & Pet", price: 200.00, oldPrice: null, limit: 1, tokens: 30000 }
+    ];
+
+    /* ---------------- CART STATE ---------------- */
+    const cart = {};
+
+    let currentCategory = "first-time";
+    let bpSeason = 1;
+    let bpTier = "Normal";
+
+    /* ---------------- INITIALIZATION ---------------- */
+    window.addEventListener("DOMContentLoaded", () => {
+      try {
+        const savedPalette = localStorage.getItem('catologist_palette');
+        if (savedPalette && PALETTE_CONFIGS[savedPalette]) {
+          currentPaletteMode = savedPalette;
+        }
+      } catch(e) {}
+      buildBattlepassGrid();
+      updateLanguageUI();
+      applyPalette();
+      switchCategory(currentCategory);
+      updateCartSummary();
+      checkAnnouncementOnLoad();
+    });
+
+    /* ---------------- LANGUAGE TOGGLE ---------------- */
+    function toggleLanguage() {
+      currentLang = currentLang === 'en' ? 'bm' : 'en';
+      const langText = document.getElementById("current-lang-text");
+      if (langText) langText.innerText = currentLang.toUpperCase();
+      updateLanguageUI();
+      renderItems();
+      updateCartSummary();
+      syncBattlepassUI();
+    }
+
+    function updateLanguageUI() {
+      const t = I18N[currentLang];
+      const setText = (id, val) => {
+        const el = document.getElementById(id);
+        if (el) el.innerText = val;
+      };
+
+      setText("txt-store-title", t.storeTitle);
+      setText("txt-badge-label", t.fulfilmentLabel);
+      setText("txt-badge-val", t.fulfilmentVal);
+      setText("txt-badge-label-m", t.fulfilmentLabel);
+      setText("txt-badge-val-m", t.fulfilmentVal);
+      setText("txt-event-tag", t.eventTag);
+      setText("txt-event-limit-note", t.eventLimitNote);
+      setText("txt-event-announcement", t.eventAnnouncement);
+      setText("txt-tokens-tag", t.tokensTag);
+      setText("txt-tokens-ingame-tag", t.tokensIngameTag);
+      setText("txt-tokens-notice-head", t.tokensNoticeHead);
+      setText("txt-tokens-line1", t.tokensLine1);
+      setText("txt-tokens-line2", t.tokensLine2);
+      setText("txt-tokens-refer-text", t.tokensReferText);
+      setText("txt-mc-tag", t.mcTag);
+      setText("txt-mc-convert-pill", t.mcConvertPill);
+      setText("txt-mc-desc", t.mcDesc);
+      setText("txt-mc-convert-note", t.mcConvertNote);
+      setText("txt-mc-line1", t.mcLine1);
+      setText("txt-mc-refer", t.mcRefer);
+      setText("txt-clan-tag", t.clanTag);
+      setText("txt-clan-limit-tag", t.clanLimitTag);
+      setText("btn-tab-clan-guide", t.clanTabGuide);
+      setText("btn-tab-clan-compare", t.clanTabCompare);
+      setText("txt-clan-roll-desc", t.clanRollDesc);
+      setText("txt-clan-twin-desc", t.clanTwinDesc);
+      setText("txt-clan-cap-desc", t.clanCapDesc);
+      setText("txt-arena-tag", t.arenaTag);
+      setText("txt-arena-badge-val", t.arenaBadgeVal);
+      setText("btn-tab-arena-guide", t.arenaTabGuide);
+      setText("btn-tab-arena-compare", t.arenaTabCompare);
+      setText("txt-arena-baseline", t.arenaBaseline);
+      setText("txt-arena-cap-desc", t.arenaCapDesc);
+      setText("txt-arena-bigcap-desc", t.arenaBigcapDesc);
+      setText("txt-arena-upcap-desc", t.arenaUpcapDesc);
+      setText("txt-bp-rewards-tag", t.bpRewardsTag);
+      setText("txt-bp-rewards-ingame-tag", t.bpRewardsIngameTag);
+      setText("txt-bp-rewards-desc", t.bpRewardsDesc);
+      setText("txt-bp-rewards-note", t.bpRewardsNote);
+      setText("txt-emblem-tag", t.emblemTag);
+      setText("txt-emblem-limit-tag", t.emblemLimitTag);
+      setText("txt-emblem-basic-intro", t.emblemBasicIntro);
+      setText("txt-emblem-plus-tierbonus", t.emblemPlusTierBonus);
+      setText("txt-bonus-badge", t.bonusBadge);
+      setText("txt-bonus-highlight", t.bonusHighlight);
+      setText("txt-bonus-desc", t.bonusDesc);
+      setText("txt-bonus-rule-eligible", t.bonusEligible);
+      setText("txt-bonus-rule-ineligible", t.bonusIneligible);
+      setText("txt-sec-core", t.secCore);
+      setText("txt-sec-multipliers", t.secMultipliers);
+      setText("txt-sec-daily", t.secDaily);
+      setText("txt-lv-rewards-tag", t.lvRewardsTag);
+      setText("txt-lv-rewards-ingame-tag", t.lvRewardsIngameTag);
+      setText("txt-lv-rewards-desc", t.lvRewardsDesc);
+      setText("txt-lv-rewards-note", t.lvRewardsNote);
+      setText("txt-lv-notes-tag", t.lvNotesTag);
+      setText("txt-lv-notes-limit-tag", t.lvNotesLimitTag);
+      setText("txt-lv-notes-desc", t.lvNotesDesc);
+      setText("txt-lv-dup-skill", t.lvDupSkill);
+      setText("txt-lv-dup-cosmetic", t.lvDupCosmetic);
+      setText("txt-bp-rate-badge", t.bpRateBadge);
+      setText("txt-bp-limit-note", t.bpLimitNote);
+      setText("txt-bp-banner-title", t.bpBannerTitle);
+      setText("txt-bp-b1-title", t.bpB1);
+      setText("txt-bp-b2-title", t.bpB2);
+      setText("txt-bp-b3-title", t.bpB3);
+      setText("txt-bp-latest-tag", t.bpLatest);
+      setText("txt-bp-tier-label", t.bpTierLabel);
+      setText("txt-bp-season-label", t.bpSeasonLabel);
+      setText("txt-copy-button", t.copyBtn);
+      setText("txt-tokens-obtained-label", t.tokensObtainedLabel);
+
+      const charInput = document.getElementById("char-id-input");
+      if (charInput) charInput.placeholder = t.charIdPlaceholder;
+
+      setText("txt-cart-view-label", t.cartView);
+      setText("txt-total-label", t.cartTotal);
+      setText("txt-drawer-title", t.drawerTitle);
+      setText("txt-clear-cart", t.clearCart);
+      setText("txt-drawer-total-label", t.drawerSubtotal);
+      setText("txt-modal-success-title", t.modalSuccessTitle);
+      setText("txt-modal-success-sub", t.modalSuccessSub);
+      setText("txt-modal-close-btn", t.modalClose);
+      setText("txt-header-notice-btn", t.headerNoticeBtn);
+      setText("txt-anno-tag", t.annoTag);
+      setText("btn-anno-lang-toggle", t.annoLangToggle);
+      setText("txt-anno-greeting", t.annoGreeting);
+      
+      const elApology = document.getElementById("txt-anno-apology");
+      if (elApology) elApology.innerHTML = t.annoApologyHtml;
+
+      setText("txt-anno-est-title", t.annoEstTitle);
+
+      const elLine1 = document.getElementById("txt-anno-est-line1");
+      if (elLine1) elLine1.innerHTML = t.annoEstLine1Html;
+
+      const elLine2 = document.getElementById("txt-anno-est-line2");
+      if (elLine2) elLine2.innerHTML = t.annoEstLine2Html;
+
+      setText("txt-anno-rush-note", t.annoRushNote);
+      setText("txt-anno-closing-note", t.annoClosingNote);
+      setText("txt-anno-chk-label", t.annoChkLabel);
+      setText("btn-anno-confirm", t.annoConfirmBtn);
+
+      const palCfg = PALETTE_CONFIGS[currentPaletteMode];
+      const palText = document.getElementById("current-palette-text");
+      if (palText && palCfg) {
+        palText.innerText = currentLang === 'en' ? palCfg.name : palCfg.nameBm;
+      }
+    }
+
+    /* ---------------- PALETTE PRESETS ---------------- */
+    const PALETTE_CONFIGS = {
+      refined: {
+        name: "REFINED",
+        nameBm: "KEMAS",
+        tagClass: "text-violet-300",
+        tabs: {
+          'first-time': 'active text-emerald-200 bg-emerald-950/35 border-emerald-500/45 shadow-[0_0_12px_rgba(16,185,129,0.12)] font-semibold',
+          'token': 'active text-sky-200 bg-sky-950/35 border-sky-500/45 shadow-[0_0_12px_rgba(56,189,248,0.12)] font-semibold',
+          'marketcoins': 'active text-violet-200 bg-violet-950/35 border-violet-500/45 shadow-[0_0_12px_rgba(139,92,246,0.12)] font-semibold',
+          'clan': 'active text-teal-200 bg-teal-950/35 border-teal-500/45 shadow-[0_0_12px_rgba(20,184,166,0.12)] font-semibold',
+          'arena': 'active text-indigo-200 bg-indigo-950/35 border-indigo-500/45 shadow-[0_0_12px_rgba(99,102,241,0.12)] font-semibold',
+          'emblem': 'active text-amber-200 bg-amber-950/35 border-amber-500/45 shadow-[0_0_12px_rgba(245,158,11,0.12)] font-semibold',
+          'battlepass': 'active text-rose-200 bg-rose-950/35 border-rose-500/45 shadow-[0_0_12px_rgba(244,63,94,0.12)] font-semibold',
+          'levelup': 'active text-pink-200 bg-pink-950/35 border-pink-500/45 shadow-[0_0_12px_rgba(236,72,153,0.12)] font-semibold'
+        },
+        dots: {
+          'first-time': 'dot-indicator bg-emerald-400',
+          'token': 'dot-indicator bg-sky-400',
+          'marketcoins': 'dot-indicator bg-violet-400',
+          'clan': 'dot-indicator bg-teal-400',
+          'arena': 'dot-indicator bg-indigo-400',
+          'emblem': 'dot-indicator bg-amber-400',
+          'battlepass': 'dot-indicator bg-rose-400',
+          'levelup': 'dot-indicator bg-pink-400'
+        },
+        cards: {
+          'token': { inCart: 'bg-sky-950/25 border-sky-500/45 shadow-sm', hover: 'hover:border-sky-500/30 hover:bg-[#15151b]' },
+          'marketcoins': { inCart: 'bg-violet-950/25 border-violet-500/45 shadow-sm', hover: 'hover:border-violet-500/30 hover:bg-[#15151b]' },
+          'clan': { inCart: 'bg-teal-950/25 border-teal-500/45 shadow-sm', hover: 'hover:border-teal-500/30 hover:bg-[#15151b]' },
+          'arena': { inCart: 'bg-indigo-950/25 border-indigo-500/45 shadow-sm', hover: 'hover:border-indigo-500/30 hover:bg-[#15151b]' },
+          'emblem': { inCart: 'bg-amber-950/25 border-amber-500/45 shadow-sm', hover: 'hover:border-amber-500/30 hover:bg-[#15151b]' },
+          'levelup': { inCart: 'bg-pink-950/25 border-pink-500/45 shadow-sm', hover: 'hover:border-pink-500/30 hover:bg-[#15151b]' },
+          'default': { inCart: 'bg-emerald-950/25 border-emerald-500/45 shadow-sm', hover: 'hover:border-emerald-500/30 hover:bg-[#15151b]' }
+        },
+        prices: {
+          'token': 'text-sky-300 font-bold font-mono',
+          'marketcoins': 'text-violet-300 font-bold font-mono',
+          'clan': 'text-teal-300 font-bold font-mono',
+          'arena': 'text-indigo-300 font-bold font-mono',
+          'emblem': 'text-amber-300 font-bold font-mono',
+          'levelup': 'text-pink-300 font-bold font-mono',
+          'default': 'text-emerald-400 font-bold font-mono'
+        },
+        buttons: {
+          'token': 'bg-sky-600 hover:bg-sky-500 active:scale-95 text-white font-medium shadow-sm',
+          'marketcoins': 'bg-violet-600 hover:bg-violet-500 active:scale-95 text-white font-medium shadow-sm',
+          'clan': 'bg-teal-600 hover:bg-teal-500 active:scale-95 text-white font-medium shadow-sm',
+          'arena': 'bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-medium shadow-sm',
+          'emblem': 'bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 font-semibold shadow-sm',
+          'levelup': 'bg-pink-600 hover:bg-pink-500 active:scale-95 text-white font-medium shadow-sm',
+          'default': 'bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-medium shadow-sm'
+        },
+        steppers: {
+          'token': 'bg-sky-950/40 border-sky-500/30',
+          'marketcoins': 'bg-violet-950/40 border-violet-500/30',
+          'clan': 'bg-teal-950/40 border-teal-500/30',
+          'arena': 'bg-indigo-950/40 border-indigo-500/30',
+          'emblem': 'bg-amber-950/40 border-amber-500/30',
+          'levelup': 'bg-pink-950/40 border-pink-500/30',
+          'default': 'bg-zinc-950 border-zinc-700'
+        }
+      },
+      eyecare: {
+        name: "EYE-CARE",
+        nameBm: "LEMBUT",
+        tagClass: "text-emerald-300",
+        tabs: {
+          'first-time': 'active text-emerald-200 bg-emerald-950/25 border-emerald-500/35 font-medium',
+          'token': 'active text-slate-200 bg-slate-900 border-slate-600/40 font-medium',
+          'marketcoins': 'active text-violet-200 bg-violet-950/25 border-violet-500/35 font-medium',
+          'clan': 'active text-teal-200 bg-teal-950/25 border-teal-500/35 font-medium',
+          'arena': 'active text-indigo-200 bg-indigo-950/25 border-indigo-500/35 font-medium',
+          'emblem': 'active text-amber-200 bg-amber-950/25 border-amber-500/35 font-medium',
+          'battlepass': 'active text-rose-200 bg-rose-950/25 border-rose-500/35 font-medium',
+          'levelup': 'active text-pink-200 bg-pink-950/25 border-pink-500/35 font-medium'
+        },
+        dots: {
+          'first-time': 'dot-indicator bg-emerald-400/80',
+          'token': 'dot-indicator bg-sky-400/80',
+          'marketcoins': 'dot-indicator bg-violet-400/80',
+          'clan': 'dot-indicator bg-teal-400/80',
+          'arena': 'dot-indicator bg-indigo-400/80',
+          'emblem': 'dot-indicator bg-amber-400/80',
+          'battlepass': 'dot-indicator bg-rose-400/80',
+          'levelup': 'dot-indicator bg-pink-400/80'
+        },
+        cards: {
+          'token': { inCart: 'bg-slate-900/40 border-slate-700/50', hover: 'hover:border-slate-700' },
+          'marketcoins': { inCart: 'bg-violet-950/15 border-violet-500/30', hover: 'hover:border-violet-500/20' },
+          'clan': { inCart: 'bg-teal-950/15 border-teal-500/30', hover: 'hover:border-teal-500/20' },
+          'arena': { inCart: 'bg-indigo-950/15 border-indigo-500/30', hover: 'hover:border-indigo-500/20' },
+          'emblem': { inCart: 'bg-amber-950/15 border-amber-500/30', hover: 'hover:border-amber-500/20' },
+          'levelup': { inCart: 'bg-pink-950/15 border-pink-500/30', hover: 'hover:border-pink-500/20' },
+          'default': { inCart: 'bg-emerald-950/15 border-emerald-500/30', hover: 'hover:border-emerald-500/20' }
+        },
+        prices: {
+          'token': 'text-slate-300 font-bold font-mono',
+          'marketcoins': 'text-violet-200/90 font-bold font-mono',
+          'clan': 'text-teal-200/90 font-bold font-mono',
+          'arena': 'text-indigo-200/90 font-bold font-mono',
+          'emblem': 'text-amber-200/90 font-bold font-mono',
+          'levelup': 'text-pink-200/90 font-bold font-mono',
+          'default': 'text-emerald-300 font-bold font-mono'
+        },
+        buttons: {
+          'token': 'bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-medium',
+          'marketcoins': 'bg-violet-900/80 hover:bg-violet-800 text-violet-100 font-medium',
+          'clan': 'bg-teal-900/80 hover:bg-teal-800 text-teal-100 font-medium',
+          'arena': 'bg-indigo-900/80 hover:bg-indigo-800 text-indigo-100 font-medium',
+          'emblem': 'bg-amber-600/80 hover:bg-amber-500 text-zinc-950 font-semibold',
+          'levelup': 'bg-pink-900/80 hover:bg-pink-800 text-pink-100 font-medium',
+          'default': 'bg-emerald-800 hover:bg-emerald-700 active:scale-95 text-white font-medium'
+        },
+        steppers: {
+          'token': 'bg-slate-900 border-slate-700',
+          'marketcoins': 'bg-zinc-950 border-violet-900/40',
+          'clan': 'bg-zinc-950 border-teal-900/40',
+          'arena': 'bg-zinc-950 border-indigo-900/40',
+          'emblem': 'bg-zinc-950 border-amber-900/40',
+          'levelup': 'bg-zinc-950 border-pink-900/40',
+          'default': 'bg-zinc-950 border-zinc-700'
+        }
+      },
+      vivid: {
+        name: "VIVID",
+        nameBm: "TERANG",
+        tagClass: "text-amber-400",
+        tabs: {
+          'first-time': 'active text-emerald-300 bg-emerald-950/45 border-emerald-500/70 shadow-[0_0_14px_rgba(16,185,129,0.25)] font-semibold',
+          'token': 'active text-blue-300 bg-blue-950/45 border-blue-500/70 shadow-[0_0_14px_rgba(59,130,246,0.25)] font-semibold',
+          'marketcoins': 'active text-purple-300 bg-purple-950/45 border-purple-500/70 shadow-[0_0_14px_rgba(168,85,247,0.25)] font-semibold',
+          'clan': 'active text-cyan-300 bg-cyan-950/45 border-cyan-500/70 shadow-[0_0_14px_rgba(6,182,212,0.25)] font-semibold',
+          'arena': 'active text-indigo-300 bg-indigo-950/45 border-indigo-500/70 shadow-[0_0_14px_rgba(99,102,241,0.25)] font-semibold',
+          'emblem': 'active text-amber-300 bg-amber-950/45 border-amber-500/70 shadow-[0_0_14px_rgba(245,158,11,0.25)] font-semibold',
+          'battlepass': 'active text-red-300 bg-red-950/45 border-red-500/70 shadow-[0_0_14px_rgba(239,68,68,0.25)] font-semibold',
+          'levelup': 'active text-pink-300 bg-pink-950/45 border-pink-500/70 shadow-[0_0_14px_rgba(236,72,153,0.25)] font-semibold'
+        },
+        dots: {
+          'first-time': 'dot-indicator bg-emerald-400',
+          'token': 'dot-indicator bg-blue-400',
+          'marketcoins': 'dot-indicator bg-purple-400',
+          'clan': 'dot-indicator bg-cyan-400',
+          'arena': 'dot-indicator bg-indigo-400',
+          'emblem': 'dot-indicator bg-amber-400',
+          'battlepass': 'dot-indicator bg-red-400',
+          'levelup': 'dot-indicator bg-pink-400'
+        },
+        cards: {
+          'token': { inCart: 'bg-blue-950/25 border-blue-500/60 shadow-[0_0_16px_rgba(59,130,246,0.18)]', hover: 'hover:border-blue-500/40 hover:shadow-[0_0_12px_rgba(59,130,246,0.1)]' },
+          'marketcoins': { inCart: 'bg-purple-950/30 border-purple-500/70 shadow-[0_0_18px_rgba(168,85,247,0.2)]', hover: 'hover:border-purple-500/40 hover:shadow-[0_0_12px_rgba(168,85,247,0.12)]' },
+          'clan': { inCart: 'bg-cyan-950/30 border-cyan-500/70 shadow-[0_0_18px_rgba(6,182,212,0.2)]', hover: 'hover:border-cyan-500/40 hover:shadow-[0_0_12px_rgba(6,182,212,0.12)]' },
+          'arena': { inCart: 'bg-indigo-950/30 border-indigo-500/70 shadow-[0_0_18px_rgba(99,102,241,0.2)]', hover: 'hover:border-indigo-500/40 hover:shadow-[0_0_12px_rgba(99,102,241,0.12)]' },
+          'emblem': { inCart: 'bg-amber-950/30 border-amber-500/70 shadow-[0_0_18px_rgba(245,158,11,0.2)]', hover: 'hover:border-amber-500/40 hover:shadow-[0_0_12px_rgba(245,158,11,0.12)]' },
+          'levelup': { inCart: 'bg-pink-950/30 border-pink-500/70 shadow-[0_0_18px_rgba(236,72,153,0.2)]', hover: 'hover:border-pink-500/40 hover:shadow-[0_0_12px_rgba(236,72,153,0.12)]' },
+          'default': { inCart: 'bg-emerald-950/25 border-emerald-500/60 shadow-[0_0_16px_rgba(16,185,129,0.18)]', hover: 'hover:border-emerald-500/30' }
+        },
+        prices: {
+          'token': 'text-blue-400 font-bold font-mono drop-shadow-[0_0_6px_rgba(96,165,250,0.35)]',
+          'marketcoins': 'text-purple-400 font-bold font-mono drop-shadow-[0_0_6px_rgba(192,132,252,0.4)]',
+          'clan': 'text-cyan-400 font-bold font-mono drop-shadow-[0_0_6px_rgba(6,182,212,0.4)]',
+          'arena': 'text-indigo-400 font-bold font-mono drop-shadow-[0_0_6px_rgba(129,140,248,0.4)]',
+          'emblem': 'text-amber-400 font-bold font-mono drop-shadow-[0_0_6px_rgba(251,191,36,0.4)]',
+          'levelup': 'text-pink-400 font-bold font-mono drop-shadow-[0_0_6px_rgba(244,114,182,0.4)]',
+          'default': 'text-emerald-400 font-bold font-mono'
+        },
+        buttons: {
+          'token': 'bg-blue-600 hover:bg-blue-500 active:scale-95 text-white shadow-[0_0_10px_rgba(37,99,235,0.35)]',
+          'marketcoins': 'bg-purple-600 hover:bg-purple-500 active:scale-95 text-white font-semibold shadow-[0_0_12px_rgba(168,85,247,0.4)]',
+          'clan': 'bg-cyan-500 hover:bg-cyan-400 active:scale-95 text-zinc-950 font-semibold shadow-[0_0_12px_rgba(6,182,212,0.4)]',
+          'arena': 'bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-semibold shadow-[0_0_12px_rgba(99,102,241,0.4)]',
+          'emblem': 'bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 font-semibold shadow-[0_0_12px_rgba(245,158,11,0.4)]',
+          'levelup': 'bg-pink-600 hover:bg-pink-500 active:scale-95 text-white font-semibold shadow-[0_0_12px_rgba(236,72,153,0.4)]',
+          'default': 'bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white'
+        },
+        steppers: {
+          'token': 'bg-blue-950/40 border-blue-500/40',
+          'marketcoins': 'bg-purple-950/40 border-purple-500/40',
+          'clan': 'bg-cyan-950/40 border-cyan-500/40',
+          'arena': 'bg-indigo-950/40 border-indigo-500/40',
+          'emblem': 'bg-amber-950/40 border-amber-500/40',
+          'levelup': 'bg-pink-950/40 border-pink-500/40',
+          'default': 'bg-zinc-950 border-zinc-700'
+        }
+      }
+    };
+
+    let currentPaletteMode = 'refined';
+
+    function cyclePaletteMode() {
+      const modes = ['refined', 'eyecare', 'vivid'];
+      const nextIdx = (modes.indexOf(currentPaletteMode) + 1) % modes.length;
+      currentPaletteMode = modes[nextIdx];
+      try { localStorage.setItem('catologist_palette', currentPaletteMode); } catch(e) {}
+      applyPalette();
+      const cfg = PALETTE_CONFIGS[currentPaletteMode];
+      const isEn = currentLang === 'en';
+      showToast((isEn ? 'Palette switched to: ' : 'Palet ditukar kepada: ') + (isEn ? cfg.name : cfg.nameBm));
+    }
+
+    function applyPalette() {
+      const cfg = PALETTE_CONFIGS[currentPaletteMode];
+      const palText = document.getElementById('current-palette-text');
+      if (palText) {
+        palText.innerText = currentLang === 'en' ? cfg.name : cfg.nameBm;
+        palText.className = 'font-bold tracking-wide ' + cfg.tagClass;
+      }
+
+      for (const cat in cfg.dots) {
+        const dot = document.getElementById('dot-' + cat);
+        if (dot) dot.className = cfg.dots[cat];
+      }
+
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        const btnCat = btn.dataset.cat;
+        if (btnCat === currentCategory) {
+          btn.className = `tab-btn ${cfg.tabs[currentCategory]}`;
+        } else {
+          btn.className = "tab-btn";
+        }
+      });
+
+      renderItems();
+      if (currentCategory === 'battlepass') {
+        buildBattlepassGrid();
+      }
+    }
+
+    function switchCategory(cat) {
+      currentCategory = cat;
+      const palette = PALETTE_CONFIGS[currentPaletteMode];
+
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        const btnCat = btn.dataset.cat;
+        if (btnCat === cat) {
+          btn.className = `tab-btn ${palette.tabs[cat]}`;
+          btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        } else {
+          btn.className = "tab-btn";
+        }
+      });
+
+      const ftBanner = document.getElementById("first-time-banner");
+      const tkBanner = document.getElementById("tokens-banner");
+      const mcBanner = document.getElementById("marketcoins-banner");
+      const clBanner = document.getElementById("clan-banner");
+      const arBanner = document.getElementById("arena-banner");
+      const emBanner = document.getElementById("emblem-banner");
+      const emBonusBanner = document.getElementById("emblem-bonus-banner");
+      const bpBox = document.getElementById("bp-customizer");
+      const lvDescBanner = document.getElementById("levelup-banner-desc");
+      const lvNotesBanner = document.getElementById("levelup-banner-notes");
+
+      const hideAll = () => {
+        if (ftBanner) ftBanner.classList.add("hidden");
+        if (tkBanner) tkBanner.classList.add("hidden");
+        if (mcBanner) mcBanner.classList.add("hidden");
+        if (clBanner) clBanner.classList.add("hidden");
+        if (arBanner) arBanner.classList.add("hidden");
+        if (emBanner) emBanner.classList.add("hidden");
+        if (emBonusBanner) emBonusBanner.classList.add("hidden");
+        if (bpBox) bpBox.classList.add("hidden");
+        if (lvDescBanner) lvDescBanner.classList.add("hidden");
+        if (lvNotesBanner) lvNotesBanner.classList.add("hidden");
+      };
+
+      hideAll();
+
+      if (cat === "first-time") {
+        if (ftBanner) ftBanner.classList.remove("hidden");
+      } else if (cat === "token") {
+        if (tkBanner) tkBanner.classList.remove("hidden");
+      } else if (cat === "marketcoins") {
+        if (mcBanner) mcBanner.classList.remove("hidden");
+      } else if (cat === "clan") {
+        if (clBanner) clBanner.classList.remove("hidden");
+      } else if (cat === "arena") {
+        if (arBanner) arBanner.classList.remove("hidden");
+      } else if (cat === "emblem") {
+        if (emBanner) emBanner.classList.remove("hidden");
+        if (emBonusBanner) emBonusBanner.classList.remove("hidden");
+      } else if (cat === "battlepass") {
+        if (bpBox) bpBox.classList.remove("hidden");
+        buildBattlepassGrid();
+        syncBattlepassUI();
+      } else if (cat === "levelup") {
+        if (lvDescBanner) lvDescBanner.classList.remove("hidden");
+        if (lvNotesBanner) lvNotesBanner.classList.remove("hidden");
+      }
+
+      renderItems();
+    }
+
+    function switchClanInfo(view) {
+      const guideBox = document.getElementById("clan-info-guide");
+      const compareBox = document.getElementById("clan-info-compare");
+      const btnGuide = document.getElementById("btn-tab-clan-guide");
+      const btnCompare = document.getElementById("btn-tab-clan-compare");
+
+      if (view === 'guide') {
+        guideBox.classList.remove("hidden");
+        compareBox.classList.add("hidden");
+        btnGuide.className = "flex-1 py-1.5 rounded-lg text-xs font-semibold transition bg-teal-600 text-white shadow-sm";
+        btnCompare.className = "flex-1 py-1.5 rounded-lg text-xs font-semibold transition text-zinc-400 hover:text-white";
+      } else {
+        guideBox.classList.add("hidden");
+        compareBox.classList.remove("hidden");
+        btnCompare.className = "flex-1 py-1.5 rounded-lg text-xs font-semibold transition bg-teal-600 text-white shadow-sm";
+        btnGuide.className = "flex-1 py-1.5 rounded-lg text-xs font-semibold transition text-zinc-400 hover:text-white";
+      }
+    }
+
+    function switchArenaInfo(view) {
+      const guideBox = document.getElementById("arena-info-guide");
+      const compareBox = document.getElementById("arena-info-compare");
+      const btnGuide = document.getElementById("btn-tab-arena-guide");
+      const btnCompare = document.getElementById("btn-tab-arena-compare");
+
+      if (view === 'guide') {
+        guideBox.classList.remove("hidden");
+        compareBox.classList.add("hidden");
+        btnGuide.className = "flex-1 py-1.5 rounded-lg text-xs font-semibold transition bg-indigo-600 text-white shadow-sm";
+        btnCompare.className = "flex-1 py-1.5 rounded-lg text-xs font-semibold transition text-zinc-400 hover:text-white";
+      } else {
+        guideBox.classList.add("hidden");
+        compareBox.classList.remove("hidden");
+        btnCompare.className = "flex-1 py-1.5 rounded-lg text-xs font-semibold transition bg-indigo-600 text-white shadow-sm";
+        btnGuide.className = "flex-1 py-1.5 rounded-lg text-xs font-semibold transition text-zinc-400 hover:text-white";
+      }
+    }
+
+    function switchEmblemInfo(tier) {
+      const basicBox = document.getElementById("emblem-info-basic");
+      const plusBox = document.getElementById("emblem-info-plus");
+      const btnBasic = document.getElementById("btn-tab-emblem");
+      const btnPlus = document.getElementById("btn-tab-emblemplus");
+
+      if (tier === 'emblem') {
+        basicBox.classList.remove("hidden");
+        plusBox.classList.add("hidden");
+        btnBasic.className = "flex-1 py-1.5 rounded-lg text-xs font-semibold transition bg-amber-500 text-zinc-950 shadow-sm";
+        btnPlus.className = "flex-1 py-1.5 rounded-lg text-xs font-semibold transition text-zinc-400 hover:text-white";
+      } else {
+        basicBox.classList.add("hidden");
+        plusBox.classList.remove("hidden");
+        btnPlus.className = "flex-1 py-1.5 rounded-lg text-xs font-semibold transition bg-amber-500 text-zinc-950 shadow-sm";
+        btnBasic.className = "flex-1 py-1.5 rounded-lg text-xs font-semibold transition text-zinc-400 hover:text-white";
+      }
+    }
+
+    /* ---------------- BATTLEPASS LOGIC ---------------- */
+    function getBpPrice(season, tier) {
+      const isMaxed = tier === "Maxed";
+      if (season === 22) {
+        return isMaxed ? 61.00 : 41.00;
+      } else if (season >= 12 && season <= 21) {
+        return isMaxed ? 31.00 : 21.00;
+      } else {
+        return isMaxed ? 16.00 : 11.00;
+      }
+    }
+
+    function buildBattlepassGrid() {
+      const grid = document.getElementById("bp-season-grid");
+      if (!grid) return;
+      grid.innerHTML = "";
+      for (let s = 1; s <= 22; s++) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        const isS22 = s === 22;
+        const isSelected = s === bpSeason;
+        const inCartForSeason = Object.keys(cart).find(k => k.startsWith(`bp-s${s}-`));
+
+        let baseClasses = "relative py-1.5 rounded-xl text-xs font-mono font-medium transition border text-center ";
+        if (isSelected) {
+          baseClasses += "bg-rose-600 text-white border-rose-400 shadow-sm font-bold scale-[1.02]";
+        } else if (inCartForSeason) {
+          baseClasses += "bg-emerald-950/40 border-emerald-500/50 text-emerald-300 font-semibold";
+        } else if (isS22) {
+          baseClasses += "bg-amber-950/20 border-amber-500/40 text-amber-300 hover:border-amber-400";
+        } else {
+          baseClasses += "bg-surface-input border-surface-border text-zinc-300 hover:bg-zinc-800 hover:text-white";
+        }
+
+        btn.className = baseClasses;
+        btn.innerHTML = `${s}${inCartForSeason && !isSelected ? `<span class="absolute top-0.5 right-1 w-1.5 h-1.5 rounded-full bg-emerald-400"></span>` : ''}`;
+        btn.onclick = () => {
+          bpSeason = s;
+          buildBattlepassGrid();
+          syncBattlepassUI();
+        };
+        grid.appendChild(btn);
+      }
+      syncBattlepassUI();
+    }
+
+    function setBpTier(tier) {
+      bpTier = tier;
+      const btnNorm = document.getElementById("btn-bp-normal");
+      const btnMax = document.getElementById("btn-bp-maxed");
+      const dotNorm = document.getElementById("dot-tier-normal");
+      const dotMax = document.getElementById("dot-tier-maxed");
+      const rateNorm = document.getElementById("tier-rate-normal");
+      const rateMax = document.getElementById("tier-rate-maxed");
+
+      if (tier === "Normal") {
+        if (btnNorm) btnNorm.className = "p-2.5 px-3 rounded-xl border text-left transition flex items-center justify-between bg-rose-950/25 border-rose-500/50 ring-1 ring-rose-500/20 text-white shadow-sm group";
+        if (btnMax) btnMax.className = "p-2.5 px-3 rounded-xl border text-left transition flex items-center justify-between bg-[#111116] border-surface-border text-zinc-400 hover:text-white hover:border-zinc-700 group";
+        if (dotNorm) {
+          dotNorm.className = "w-1.5 h-1.5 rounded-full bg-rose-400";
+          if (dotNorm.parentElement) dotNorm.parentElement.className = "w-3.5 h-3.5 rounded-full border border-rose-400 flex items-center justify-center shrink-0";
+        }
+        if (dotMax) {
+          dotMax.className = "w-1.5 h-1.5 rounded-full bg-transparent";
+          if (dotMax.parentElement) dotMax.parentElement.className = "w-3.5 h-3.5 rounded-full border border-zinc-600 flex items-center justify-center shrink-0";
+        }
+        if (rateNorm) rateNorm.className = "text-xs font-mono font-bold text-rose-300";
+        if (rateMax) rateMax.className = "text-xs font-mono font-bold text-zinc-400";
+      } else {
+        if (btnMax) btnMax.className = "p-2.5 px-3 rounded-xl border text-left transition flex items-center justify-between bg-rose-950/25 border-rose-500/50 ring-1 ring-rose-500/20 text-white shadow-sm group";
+        if (btnNorm) btnNorm.className = "p-2.5 px-3 rounded-xl border text-left transition flex items-center justify-between bg-[#111116] border-surface-border text-zinc-400 hover:text-white hover:border-zinc-700 group";
+        if (dotMax) {
+          dotMax.className = "w-1.5 h-1.5 rounded-full bg-rose-400";
+          if (dotMax.parentElement) dotMax.parentElement.className = "w-3.5 h-3.5 rounded-full border border-rose-400 flex items-center justify-center shrink-0";
+        }
+        if (dotNorm) {
+          dotNorm.className = "w-1.5 h-1.5 rounded-full bg-transparent";
+          if (dotNorm.parentElement) dotNorm.parentElement.className = "w-3.5 h-3.5 rounded-full border border-zinc-600 flex items-center justify-center shrink-0";
+        }
+        if (rateMax) rateMax.className = "text-xs font-mono font-bold text-rose-300";
+        if (rateNorm) rateNorm.className = "text-xs font-mono font-bold text-zinc-400";
+      }
+      syncBattlepassUI();
+    }
+
+    function syncBattlepassUI() {
+      const price = getBpPrice(bpSeason, bpTier);
+      const isEn = currentLang === 'en';
+      let bracketName = bpSeason === 22 
+        ? (isEn ? "Season 22 (Latest)" : "Musim 22 (Terkini)")
+        : bpSeason >= 12 
+        ? (isEn ? "Seasons 12–21 Bracket" : "Kategori Musim 12–21")
+        : (isEn ? "Seasons 1–11 Bracket" : "Kategori Musim 1–11");
+
+      const activeBracket = document.getElementById("bp-active-bracket");
+      if (activeBracket) activeBracket.innerText = `S${bpSeason} • ${bracketName}`;
+
+      const rateNorm = document.getElementById("tier-rate-normal");
+      const rateMax = document.getElementById("tier-rate-maxed");
+      if (rateNorm) rateNorm.innerText = `RM ${getBpPrice(bpSeason, "Normal").toFixed(2)}`;
+      if (rateMax) rateMax.innerText = `RM ${getBpPrice(bpSeason, "Maxed").toFixed(2)}`;
+      
+      const sWord = isEn ? "Season" : "Musim";
+      const existingSeasonKey = Object.keys(cart).find(k => k.startsWith(`bp-s${bpSeason}-`));
+      const addBtnLabel = document.getElementById("bp-add-button-label");
+      const addBtnPrice = document.getElementById("bp-add-button-price");
+
+      if (addBtnLabel && addBtnPrice) {
+        if (existingSeasonKey) {
+          const item = cart[existingSeasonKey];
+          if (item.id === `bp-s${bpSeason}-${bpTier.toLowerCase()}`) {
+            addBtnLabel.innerText = `✓ ${sWord} ${bpSeason} [${bpTier}] (Limit 1)`;
+          } else {
+            addBtnLabel.innerText = `Switch to ${sWord} ${bpSeason} [${bpTier}] (Limit 1)`;
+          }
+        } else {
+          addBtnLabel.innerText = `+ Add ${sWord} ${bpSeason} [${bpTier}] (Limit 1)`;
+        }
+        addBtnPrice.innerText = `RM ${price.toFixed(2)}`;
+      }
+    }
+
+    function addBattlepassToCart() {
+      const bpId = `bp-s${bpSeason}-${bpTier.toLowerCase()}`;
+      const price = getBpPrice(bpSeason, bpTier);
+      const isEn = currentLang === 'en';
+      const sWord = isEn ? "Season" : "Musim";
+
+      const existingSeasonKey = Object.keys(cart).find(k => k.startsWith(`bp-s${bpSeason}-`));
+      if (existingSeasonKey) {
+        if (existingSeasonKey === bpId) {
+          showToast(isEn ? `Season ${bpSeason} already in order (Limit 1)` : `Musim ${bpSeason} sudah dalam pesanan (Had 1)`);
+          return;
+        } else {
+          delete cart[existingSeasonKey];
+        }
+      }
+
+      cart[bpId] = {
+        id: bpId,
+        name: `Battlepass ${sWord} ${bpSeason} [${bpTier}]`,
+        desc: bpTier === 'Normal' ? 'Discounted Pass Activation' : 'Maxed Pass Activation',
+        price: price,
+        qty: 1,
+        limit: 1,
+        tokens: 0
+      };
+
+      updateCartSummary();
+      buildBattlepassGrid();
+      syncBattlepassUI();
+      showToast(`${sWord} ${bpSeason} [${bpTier}] ${existingSeasonKey ? (isEn ? 'updated' : 'dikemaskini') : (isEn ? 'added' : 'ditambah')}`);
+    }
+
+    /* ---------------- PRODUCT RENDERING ---------------- */
+    function renderItems() {
+      const list = document.getElementById("product-list");
+      list.innerHTML = "";
+
+      if (currentCategory === "battlepass") {
+        return;
+      }
+
+      const items = CATALOG.filter(item => item.category === currentCategory);
+      const palette = PALETTE_CONFIGS[currentPaletteMode];
+      const catKey = currentCategory in palette.cards ? currentCategory : 'default';
+
+      items.forEach(item => {
+        const inCartQty = cart[item.id] ? cart[item.id].qty : 0;
+        const isLimitReached = item.limit === 1 && inCartQty >= 1;
+
+        const row = document.createElement("div");
+        
+        const cardStyle = inCartQty > 0 
+          ? palette.cards[catKey].inCart 
+          : 'bg-surface-card border-surface-border ' + palette.cards[catKey].hover;
+
+        row.className = `p-4 rounded-2xl border transition-all duration-200 flex items-center justify-between gap-3 ${cardStyle}`;
+
+        const priceColor = palette.prices[catKey];
+        const addBtnStyle = palette.buttons[catKey];
+        const stepperBg = palette.steppers[catKey];
+
+        row.innerHTML = `
+          <div class="flex-1 min-w-0 pr-1.5">
+            <div class="flex items-center gap-2">
+              <span class="text-xs sm:text-[13px] font-semibold text-white tracking-tight truncate">${item.name}</span>
+              ${item.limit === 1 ? `<span class="text-[9px] font-mono font-medium px-1.5 py-0.2 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700/60">${I18N[currentLang].limit1Badge}</span>` : ''}
+            </div>
+            <p class="text-[11px] sm:text-xs text-zinc-400 leading-snug break-words mt-1">${item.desc}</p>
+          </div>
+
+          <div class="flex items-center gap-3 shrink-0">
+            <div class="text-right">
+              <div class="text-xs sm:text-[13px] font-bold font-mono ${priceColor} tracking-tight">
+                RM ${item.price.toFixed(2)}
+              </div>
+              ${item.oldPrice ? `<div class="text-[10px] text-zinc-500 line-through font-mono">RM ${item.oldPrice.toFixed(2)}</div>` : ''}
+            </div>
+
+            ${inCartQty === 0 ? `
+              <button 
+                type="button" 
+                onclick="addToCart('${item.id}')"
+                class="px-3.5 py-1.5 rounded-xl active:scale-95 text-xs font-semibold transition ${addBtnStyle}">
+                + Add
+              </button>
+            ` : `
+              <div class="flex items-center gap-1.5 ${stepperBg} border rounded-xl p-1">
+                <button 
+                  type="button" 
+                  onclick="changeQty('${item.id}', -1)" 
+                  class="w-6 h-6 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg text-xs font-mono transition">
+                  -
+                </button>
+                <span class="w-5 text-center font-mono text-xs font-bold text-white">${inCartQty}</span>
+                <button 
+                  type="button" 
+                  onclick="changeQty('${item.id}', 1)" 
+                  ${isLimitReached ? 'disabled' : ''}
+                  class="w-6 h-6 flex items-center justify-center rounded-lg text-xs font-mono transition ${
+                    isLimitReached 
+                      ? 'text-zinc-600 cursor-not-allowed' 
+                      : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
+                  }">
+                  +
+                </button>
+              </div>
+            `}
+          </div>
+        `;
+
+        list.appendChild(row);
+      });
+    }
+
+    /* ---------------- CART OPERATIONS ---------------- */
+    function addToCart(itemId) {
+      const item = CATALOG.find(p => p.id === itemId);
+      if (!item) return;
+
+      if (!cart[itemId]) {
+        cart[itemId] = {
+          id: item.id,
+          name: item.name,
+          desc: item.desc,
+          price: item.price,
+          qty: 1,
+          limit: item.limit || 99,
+          tokens: item.tokens || 0
+        };
+      } else {
+        if (cart[itemId].limit === 1 && cart[itemId].qty >= 1) return;
+        cart[itemId].qty += 1;
+      }
+
+      updateCartSummary();
+      renderItems();
+    }
+
+    function changeQty(itemId, delta) {
+      if (!cart[itemId]) return;
+
+      const newQty = cart[itemId].qty + delta;
+      if (newQty <= 0) {
+        delete cart[itemId];
+      } else {
+        if (cart[itemId].limit === 1 && newQty > 1) return;
+        cart[itemId].qty = newQty;
+      }
+
+      updateCartSummary();
+      renderItems();
+      renderCartDrawerItems();
+    }
+
+    function clearCart() {
+      for (const key in cart) delete cart[key];
+      updateCartSummary();
+      renderItems();
+      renderCartDrawerItems();
+    }
+
+    function updateCartSummary() {
+      let totalQty = 0;
+      let totalPrice = 0;
+
+      for (const id in cart) {
+        totalQty += cart[id].qty;
+        totalPrice += cart[id].price * cart[id].qty;
+      }
+
+      document.getElementById("cart-item-count-badge").innerText = `${totalQty} item${totalQty === 1 ? '' : 's'}`;
+      document.getElementById("cart-subtotal").innerText = `RM ${totalPrice.toFixed(2)}`;
+      document.getElementById("drawer-count-pill").innerText = totalQty;
+      document.getElementById("drawer-total-amount").innerText = `RM ${totalPrice.toFixed(2)}`;
+
+      if (currentCategory === "battlepass") {
+        buildBattlepassGrid();
+        syncBattlepassUI();
+      }
+    }
+
+    /* ---------------- CART DRAWER MODAL ---------------- */
+    function toggleCartDrawer() {
+      const drawer = document.getElementById("cart-drawer");
+      const isHidden = drawer.classList.contains("hidden");
+      if (isHidden) {
+        renderCartDrawerItems();
+        drawer.classList.remove("hidden");
+        drawer.classList.add("flex");
+      } else {
+        drawer.classList.add("hidden");
+        drawer.classList.remove("flex");
+      }
+    }
+
+    function renderCartDrawerItems() {
+      const container = document.getElementById("cart-drawer-items");
+      container.innerHTML = "";
+
+      const keys = Object.keys(cart);
+      if (keys.length === 0) {
+        container.innerHTML = `<div class="py-10 text-center text-xs text-zinc-500 font-medium">${I18N[currentLang].emptyCartMsg}</div>`;
+        return;
+      }
+
+      keys.forEach(id => {
+        const item = cart[id];
+        const row = document.createElement("div");
+        row.className = "flex items-center justify-between p-3 rounded-xl bg-[#17171e] border border-zinc-800 text-xs";
+        row.innerHTML = `
+          <div class="min-w-0 pr-2">
+            <div class="font-semibold text-white tracking-tight truncate">${item.name}</div>
+            <div class="text-[11px] text-zinc-400 font-mono mt-0.5">RM ${item.price.toFixed(2)} x ${item.qty} = RM ${(item.price * item.qty).toFixed(2)}</div>
+          </div>
+          <div class="flex items-center gap-1.5 shrink-0">
+            <button onclick="changeQty('${item.id}', -1)" class="w-6 h-6 rounded bg-zinc-800 text-zinc-300 hover:text-white flex items-center justify-center font-mono transition">-</button>
+            <span class="w-4 text-center font-mono font-bold text-white">${item.qty}</span>
+            <button onclick="changeQty('${item.id}', 1)" ${item.limit === 1 && item.qty >= 1 ? 'disabled' : ''} class="w-6 h-6 rounded bg-zinc-800 text-zinc-300 hover:text-white flex items-center justify-center font-mono disabled:opacity-30 disabled:cursor-not-allowed transition">+</button>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    /* ---------------- TOKEN CALCULATION & INTERACTION ---------------- */
+    function calculateTotalTokens() {
+      let total = 0;
+      for (const id in cart) {
+        const item = cart[id];
+        let t = item.tokens;
+        if (t === undefined) {
+          const match = (item.desc || "").match(/([\d,]+)\s*(Tokens|Market Coins)/i);
+          t = match ? parseInt(match[1].replace(/,/g, ''), 10) || 0 : 0;
+        }
+        total += t * (item.qty || 1);
+      }
+      return total;
+    }
+
+    function handleTokensClick() {
+      const totalTokens = calculateTotalTokens();
+      const isEn = currentLang === 'en';
+      showToast(isEn ? `Order includes ~${totalTokens.toLocaleString()} Tokens!` : `Pesanan ini mengandungi ~${totalTokens.toLocaleString()} Token!`);
+    }
+
+    /* ---------------- CLEAN ORDER TICKET BUILDER ---------------- */
+    function generateCleanOrderTicket(charId) {
+      const t = I18N[currentLang];
+      const regularItems = [];
+      const battlepassItems = [];
+      let total = 0;
+
+      for (const id in cart) {
+        const item = cart[id];
+        const lineTotal = item.price * item.qty;
+        total += lineTotal;
+
+        if (id.startsWith('bp-') || item.name.toLowerCase().includes('battlepass')) {
+          const match = item.name.match(/Season\s*(\d+)/i) || id.match(/s(\d+)/i);
+          const seasonNum = match ? parseInt(match[1], 10) : 999;
+          battlepassItems.push({
+            season: seasonNum,
+            text: "- " + item.qty + "x " + item.name + " (RM " + lineTotal.toFixed(2) + ")"
+          });
+        } else if (id.startsWith('lv-') || item.name.toLowerCase().includes('starter pack')) {
+          const match = item.name.match(/Lv\s*(\d+)/i) || id.match(/lv-(\d+)/i);
+          const lvNum = match ? parseInt(match[1], 10) : 999;
+          regularItems.push({
+            isStarterPack: true,
+            orderKey: lvNum,
+            text: "- " + item.qty + "x " + item.name + " (RM " + lineTotal.toFixed(2) + ")"
+          });
+        } else {
+          regularItems.push({
+            isStarterPack: false,
+            orderKey: 999,
+            text: "- " + item.qty + "x " + item.name + " (RM " + lineTotal.toFixed(2) + ")\n  " + item.desc
+          });
+        }
+      }
+
+      battlepassItems.sort((a, b) => a.season - b.season);
+      const formattedBpList = battlepassItems.map(b => b.text);
+
+      const starterPacks = regularItems.filter(r => r.isStarterPack).sort((a, b) => a.orderKey - b.orderKey);
+      const otherItems = regularItems.filter(r => !r.isStarterPack);
+      const formattedRegularList = [...otherItems.map(r => r.text), ...starterPacks.map(r => r.text)];
+
+      let itemsBlock = "";
+      if (formattedRegularList.length > 0 && formattedBpList.length > 0) {
+        itemsBlock = t.ticketItemsHeader + "\n" + formattedRegularList.join("\n") + "\n\nBattlepass :\n" + formattedBpList.join("\n");
+      } else if (formattedBpList.length > 0) {
+        itemsBlock = "Battlepass :\n" + formattedBpList.join("\n");
+      } else {
+        itemsBlock = t.ticketItemsHeader + "\n" + formattedRegularList.join("\n");
+      }
+
+      return t.ticketHeader + "\n" +
+             t.ticketCharId + ": " + charId + "\n" +
+             t.ticketFulfilment + "\n\n" +
+             itemsBlock + "\n\n" +
+             t.ticketTotal + " " + total.toFixed(2) + "\n\n" +
+             t.ticketClosing;
+    }
+
+    /* ---------------- COPY & MODAL HANDLER ---------------- */
+    function handleWhatsAppOrder() {
+      const charId = document.getElementById("char-id-input").value.trim();
+      const t = I18N[currentLang];
+
+      if (!charId) {
+        showToast(t.toastCharRequired);
+        document.getElementById("char-id-input").focus();
+        return;
+      }
+
+      if (Object.keys(cart).length === 0) {
+        showToast(t.toastCartEmpty);
+        return;
+      }
+
+      const ticketText = generateCleanOrderTicket(charId);
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(ticketText).catch(() => fallbackCopy(ticketText));
+      } else {
+        fallbackCopy(ticketText);
+      }
+
+      const targetPhone = (typeof WHATSAPP_PHONE_NUMBER !== 'undefined' && WHATSAPP_PHONE_NUMBER) ? WHATSAPP_PHONE_NUMBER : "601121354481";
+      const waUrl = `https://wa.me/${targetPhone}?text=${encodeURIComponent(ticketText)}`;
+      window.open(waUrl, '_blank');
+
+      showToast(currentLang === 'en' ? 'Opening WhatsApp with your order...' : 'Membuka WhatsApp bersama pesanan anda...');
+    }
+
+    function checkAnnouncementOnLoad() {
+      try {
+        const dismissed = localStorage.getItem('catologist_anno_dismissed');
+        const today = new Date().toISOString().slice(0, 10);
+        if (dismissed === today) {
+          return;
+        }
+      } catch(e) {}
+
+      setTimeout(() => {
+        openAnnouncementModal();
+      }, 350);
+    }
+
+    function openAnnouncementModal() {
+      const modal = document.getElementById("announcement-modal");
+      if (modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+      }
+    }
+
+    function closeAnnouncementModal() {
+      const modal = document.getElementById("announcement-modal");
+      const chk = document.getElementById("chk-dont-show-anno");
+      if (chk && chk.checked) {
+        try {
+          const today = new Date().toISOString().slice(0, 10);
+          localStorage.setItem('catologist_anno_dismissed', today);
+        } catch(e) {}
+      }
+      if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
+    }
+
+    function handleCopyOrder() {
+      const charId = document.getElementById("char-id-input").value.trim();
+      const t = I18N[currentLang];
+
+      if (!charId) {
+        showToast(t.toastCharRequired);
+        document.getElementById("char-id-input").focus();
+        return;
+      }
+
+      if (Object.keys(cart).length === 0) {
+        showToast(t.toastCartEmpty);
+        return;
+      }
+
+      const ticketText = generateCleanOrderTicket(charId);
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(ticketText).catch(() => fallbackCopy(ticketText));
+      } else {
+        fallbackCopy(ticketText);
+      }
+
+      // Update tokens count inside ticket modal button
+      const totalTokens = calculateTotalTokens();
+      const tokensCountEl = document.getElementById("modal-tokens-count");
+      if (tokensCountEl) {
+        tokensCountEl.innerText = totalTokens.toLocaleString();
+      }
+
+      document.getElementById("ticket-preview-box").innerText = ticketText;
+      const modal = document.getElementById("ticket-modal");
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+
+      showToast(t.toastCopied);
+    }
+
+    function closeTicketModal() {
+      const modal = document.getElementById("ticket-modal");
+      modal.classList.add("hidden");
+      modal.classList.remove("flex");
+    }
+
+    function fallbackCopy(text) {
+      const ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.left = "-9999px";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      try { document.execCommand('copy'); } catch(e) {}
+      document.body.removeChild(ta);
+    }
+
+    /* =====================================================================
+       STORE OWNER SETTINGS (WHATSAPP & PAYMENT QR)
+       ===================================================================== */
+    const WHATSAPP_PHONE_NUMBER = "601121354481";
+
+    const CUSTOM_QR_IMAGES = {
+      tng: "",
+      maybank: "",
+      cimb: ""
+    };
+
+    let activeQrProvider = "tng";
+
+    function openQrModal(provider) {
+      activeQrProvider = provider || "tng";
+      const qrModal = document.getElementById("qr-modal");
+      if (!qrModal) return;
+
+      renderQrView();
+      qrModal.classList.remove("hidden");
+      qrModal.classList.add("flex");
+    }
+
+    function closeQrModal() {
+      const qrModal = document.getElementById("qr-modal");
+      if (qrModal) {
+        qrModal.classList.add("hidden");
+        qrModal.classList.remove("flex");
+      }
+    }
+
+    function switchQrProvider(provider) {
+      activeQrProvider = provider;
+      renderQrView();
+    }
+
+    function renderQrView() {
+      const btnTng = document.getElementById("tab-qr-tng");
+      const btnMaybank = document.getElementById("tab-qr-maybank");
+      const btnCimb = document.getElementById("tab-qr-cimb");
+      const banner = document.getElementById("qr-brand-banner");
+      const brandName = document.getElementById("qr-brand-name");
+      const guideAppName = document.getElementById("qr-guide-appname");
+      const container = document.getElementById("qr-svg-container");
+
+      const tabs = [btnTng, btnMaybank, btnCimb];
+      tabs.forEach(btn => {
+        if (btn) btn.className = "py-1.5 rounded-lg font-semibold transition text-center text-zinc-400 hover:text-white";
+      });
+
+      let brandColor = "#0066cc";
+      let appTitle = "Touch 'n Go eWallet";
+
+      if (activeQrProvider === "tng") {
+        if (btnTng) btnTng.className = "py-1.5 rounded-lg font-semibold transition text-center bg-blue-600 text-white shadow-sm";
+        brandColor = "#0066cc";
+        appTitle = "Touch 'n Go eWallet";
+      } else if (activeQrProvider === "maybank") {
+        if (btnMaybank) btnMaybank.className = "py-1.5 rounded-lg font-semibold transition text-center bg-amber-500 text-zinc-950 shadow-sm";
+        brandColor = "#e5a700";
+        appTitle = "Maybank MAE / M2U";
+      } else if (activeQrProvider === "cimb") {
+        if (btnCimb) btnCimb.className = "py-1.5 rounded-lg font-semibold transition text-center bg-rose-600 text-white shadow-sm";
+        brandColor = "#ed1c24";
+        appTitle = "CIMB Octo / Clicks";
+      }
+
+      if (banner) banner.style.backgroundColor = brandColor;
+      if (brandName) brandName.innerText = appTitle;
+      if (guideAppName) guideAppName.innerText = appTitle;
+
+      let subtotal = 0;
+      for (const id in cart) {
+        subtotal += cart[id].price * cart[id].qty;
+      }
+      const charId = document.getElementById("char-id-input").value.trim() || "-";
+      
+      const amtEl = document.getElementById("qr-val-amount");
+      if (amtEl) amtEl.innerText = `RM ${subtotal.toFixed(2)}`;
+
+      const refEl = document.getElementById("qr-val-ref");
+      if (refEl) refEl.innerText = charId;
+
+      const customImg = CUSTOM_QR_IMAGES[activeQrProvider];
+      if (customImg && customImg.length > 10) {
+        container.innerHTML = `<img src="${customImg}" alt="${appTitle} QR" class="max-w-[210px] w-full h-auto rounded-xl mx-auto border border-zinc-200 shadow-sm" />`;
+      } else {
+        container.innerHTML = `
+          <div class="relative w-48 h-48 bg-zinc-100 border border-zinc-300 rounded-xl flex flex-col items-center justify-center p-3 text-center mx-auto shadow-inner">
+            <svg class="w-12 h-12 text-[#ed008c] mb-2" viewBox="0 0 100 100" fill="none">
+              <path d="M50 8 L32 36 L50 26 L68 36 Z" fill="#ed008c"/>
+              <path d="M92 50 L64 32 L74 50 L64 68 Z" fill="#ed008c"/>
+              <path d="M50 92 L68 64 L50 74 L32 64 Z" fill="#ed008c"/>
+              <path d="M8 50 L36 68 L26 50 L36 32 Z" fill="#ed008c"/>
+              <circle cx="50" cy="50" r="7" fill="#ed008c"/>
+            </svg>
+            <span class="text-xs font-bold font-mono text-zinc-800">MALAYSIAN QR</span>
+            <span class="text-[10px] text-zinc-500 font-mono mt-0.5">DuitNow QR Ready</span>
+          </div>
+        `;
+      }
+    }
+
+    function copyPaymentAmount() {
+      let subtotal = 0;
+      for (const id in cart) {
+        subtotal += cart[id].price * cart[id].qty;
+      }
+      fallbackCopy(subtotal.toFixed(2));
+      showToast(currentLang === 'en' ? "Amount copied" : "Jumlah disalin");
+    }
+
+    function copyPaymentRef() {
+      const charId = document.getElementById("char-id-input").value.trim();
+      if (!charId) {
+        showToast(I18N[currentLang].toastCharRequired);
+        return;
+      }
+      fallbackCopy(charId);
+      showToast(currentLang === 'en' ? "Reference copied" : "Rujukan disalin");
+    }
+
+    function copyOrderAndReceiptText() {
+      const charId = document.getElementById("char-id-input").value.trim();
+      const ticket = generateCleanOrderTicket(charId || "Pending");
+      fallbackCopy(ticket);
+      showToast(I18N[currentLang].toastCopied);
+    }
+
+    function downloadMerchantQr() {
+      const customImg = CUSTOM_QR_IMAGES[activeQrProvider];
+      if (customImg && customImg.length > 10) {
+        const link = document.createElement("a");
+        link.href = customImg;
+        link.download = `${activeQrProvider}_duitnow_qr.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast(currentLang === 'en' ? "Downloading Merchant QR..." : "Memuat turun QR Peniaga...");
+      } else {
+        showToast(currentLang === 'en' ? "QR image file not configured yet." : "Fail imej QR belum dikonfigurasi.");
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      const toastText = document.getElementById("toast-text");
+      if (!toast || !toastText) return;
+
+      toastText.innerText = msg;
+      toast.classList.remove("opacity-0", "scale-95");
+      toast.classList.add("opacity-100", "scale-100");
+
+      setTimeout(() => {
+        toast.classList.remove("opacity-100", "scale-100");
+        toast.classList.add("opacity-0", "scale-95");
+      }, 2200);
+    }
+  </script>
+</body>
+</html>
