@@ -114,6 +114,30 @@
     .custom-scroll::-webkit-scrollbar-thumb:hover {
       background: #3f3f50;
     }
+
+    /* Gaming Item Slot Tooltip Hover styling & Stacking Context Fix */
+    .item-slot {
+      position: relative;
+      z-index: 1;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .item-slot:hover,
+    .item-slot:focus-within {
+      transform: translateY(-2px);
+      z-index: 50; /* Lifts the entire hovered card above all subsequent DOM items */
+    }
+    .item-tooltip {
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+      pointer-events: none;
+      z-index: 60;
+    }
+    .item-slot:hover .item-tooltip,
+    .item-slot:focus-within .item-tooltip {
+      visibility: visible;
+      opacity: 1;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col font-sans pb-36 selection:bg-zinc-800 selection:text-white">
@@ -129,7 +153,7 @@
         <div class="flex flex-col">
           <h1 id="txt-store-title" class="text-xs sm:text-sm font-bold tracking-wider text-white uppercase flex items-center gap-1.5">
             Catologist's Store
-            <span class="hidden md:inline-block px-1.5 py-0.2 rounded text-[9px] font-mono font-medium tracking-normal bg-zinc-800/80 text-zinc-400 border border-zinc-700/50">v2.4</span>
+            <span class="hidden md:inline-block px-1.5 py-0.2 rounded text-[9px] font-mono font-medium tracking-normal bg-zinc-800/80 text-zinc-400 border border-zinc-700/50">v2.5</span>
           </h1>
         </div>
       </div>
@@ -184,7 +208,7 @@
       <span class="font-semibold text-emerald-400" id="txt-badge-val-m">5 – 30 Minutes</span>
     </div>
 
-    <!-- CATEGORY TABS (CAPSULE PILL GRID & SCROLLBAR-FREE BAR) -->
+    <!-- CATEGORY TABS -->
     <div class="relative py-2 -mx-4 px-4 sm:mx-0 sm:px-0">
       <div class="flex items-center md:justify-center gap-2 overflow-x-auto no-scrollbar py-1" id="category-tabs">
         <button type="button" onclick="switchCategory('first-time')" class="tab-btn active" data-cat="first-time">
@@ -236,7 +260,7 @@
       </p>
     </div>
 
-    <!-- TOKENS BANNER (REFINED SAPPHIRE / SKY) -->
+    <!-- TOKENS BANNER -->
     <div id="tokens-banner" class="hidden mt-2 mb-3 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-sky-950/30 via-[#111116] to-[#121217] border border-sky-500/25 shadow-sm">
       <div class="flex items-center justify-between gap-2 mb-2">
         <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-sky-500/15 text-sky-300 border border-sky-500/25 uppercase flex items-center gap-1.5" id="txt-tokens-tag">
@@ -254,7 +278,7 @@
       </div>
     </div>
 
-    <!-- MARKET COINS BANNER (SOFT AMETHYST / VIOLET) -->
+    <!-- MARKET COINS BANNER -->
     <div id="marketcoins-banner" class="hidden mt-2 mb-3 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-violet-950/30 via-[#111116] to-[#121217] border border-violet-500/25 shadow-sm">
       <div class="flex items-center justify-between gap-2 mb-2">
         <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-violet-500/15 text-violet-300 border border-violet-500/25 uppercase" id="txt-mc-tag">
@@ -407,9 +431,6 @@
             <div class="text-indigo-400 font-bold text-[11px] mt-2 pt-1.5 border-t border-indigo-500/30">+39,500 Extra Tokens + Capsule (+125.4%)</div>
           </div>
         </div>
-        <p class="text-[10.5px] text-zinc-400 italic font-mono pt-1" id="txt-arena-season-note">
-          *Large Arena Pack includes 1x Arena Upgrade Capsule (+50 max energy for current season).
-        </p>
       </div>
     </div>
 
@@ -439,13 +460,9 @@
           <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 3 Elements:</span> Master up to 3 elements (default is 2)</div>
           <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• Free Wisdom Scroll:</span> Instantly master Lv 1–100 skills</div>
           <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 10 Free Tokens Daily:</span> Claim every day</div>
-          <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• +30 PvE Energy & +10 Event Stamina:</span> Extra capacities</div>
-          <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• Exclusive Talents & Combat Skills:</span> Unique skill trees</div>
+          <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• +30 PvE Energy & +10 Event Stamina</span></div>
+          <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• Exclusive Talents & Combat Skills</span></div>
           <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 6 Character Slots & Bonus XP Limit 50</span></div>
-          <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 3x Daily Party Control:</span> Take control in PvE runs</div>
-          <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 2 Daily Wishes & 2 Lucky Spins</span></div>
-          <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-400 font-bold">• 3 Pet Villa Slots & 6 Daily Scratch Cards</span></div>
-          <div class="p-2.5 rounded-xl bg-zinc-950/60 border border-zinc-800/80 sm:col-span-2 md:col-span-3"><span class="text-amber-400 font-bold">• Perks & Discounts:</span> Missions, shop discounts & resets</div>
         </div>
       </div>
 
@@ -453,39 +470,10 @@
         <div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11px] font-semibold flex items-center justify-between">
           <span id="txt-emblem-plus-tierbonus">★ Tier Bonus: Inherits ALL base Emblem benefits automatically</span>
         </div>
-
-        <div class="space-y-3">
-          <div>
-            <div class="text-[10px] uppercase tracking-wider font-semibold text-amber-400 mb-1.5" id="txt-sec-core">Core System & Customization</div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-[11px] font-mono text-zinc-300">
-              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 5 Elements:</span> Master all 5 elements</div>
-              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 50 Preset Loadouts:</span> Instant fast switching</div>
-              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 2x Daily Tokens:</span> Double token claims</div>
-              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• Bonus XP 100 Cap & Free Fast Travel</span></div>
-              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• Gear/Skill Search & Item Bookmarks</span></div>
-              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• Exclusive Free Set:</span> Outfit / Gear (in-game)</div>
-            </div>
-          </div>
-
-          <div>
-            <div class="text-[10px] uppercase tracking-wider font-semibold text-amber-400 mb-1.5" id="txt-sec-multipliers">Multipliers & Energy Upgrades</div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-[11px] font-mono text-zinc-300">
-              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 3x Gold & 3x XP Gains:</span> Triple progression</div>
-              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 2x Battle Rewards & Recruit Any Level</span></div>
-              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• Unlimited Party Control:</span> Unrestricted PvE</div>
-              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• Energy:</span> +50 Clan, +50 Crew, +30 PvE, +30 PvP</div>
-              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80 sm:col-span-2 md:col-span-2"><span class="text-amber-300 font-bold">• +20 Event Stamina & Exclusive Talents</span></div>
-            </div>
-          </div>
-
-          <div>
-            <div class="text-[10px] uppercase tracking-wider font-semibold text-amber-400 mb-1.5" id="txt-sec-daily">Daily Activities & Pet Villa</div>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] font-mono text-zinc-300">
-              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 3 Daily Wishes & 3 Lucky Spins</span></div>
-              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 8 Daily Scratch Cards & Exclusive Pets</span></div>
-              <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 5 Pet Villa Slots & -50% Training Time</span></div>
-            </div>
-          </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] font-mono text-zinc-300">
+          <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 5 Elements:</span> Master all 5 elements</div>
+          <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• 3x Gold & 3x XP Gains</span></div>
+          <div class="p-2 rounded-lg bg-zinc-950/60 border border-zinc-800/80"><span class="text-amber-300 font-bold">• Unlimited Party Control</span></div>
         </div>
       </div>
     </div>
@@ -499,34 +487,32 @@
         <span class="text-[11px] font-mono text-amber-400 font-semibold" id="txt-bonus-highlight">First Upgrade Only</span>
       </div>
       <p class="text-xs sm:text-[13px] text-zinc-200 leading-relaxed mb-2.5" id="txt-bonus-desc">
-        The 2,200 Bonus Tokens reward is exclusively available for first-time upgrades directly from Free status. Upgrading from an existing Emblem to Emblem+ does not include bonus tokens.
+        The 2,200 Bonus Tokens reward is exclusively available for first-time upgrades directly from Free status.
       </p>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] font-mono">
-        <div class="p-2.5 rounded-xl bg-zinc-950/70 border border-emerald-500/30 text-zinc-200">
-          <span class="text-emerald-400 font-bold">✓ Free ➔ Emblem / Emblem+:</span>
-          <div class="text-[10.5px] text-zinc-400 mt-0.5" id="txt-bonus-rule-eligible">Eligible for 2,200 Bonus Tokens (1st Upgrade)</div>
-        </div>
-        <div class="p-2.5 rounded-xl bg-zinc-950/70 border border-zinc-800 text-zinc-300">
-          <span class="text-amber-400 font-bold">✕ Emblem ➔ Emblem+:</span>
-          <div class="text-[10.5px] text-zinc-400 mt-0.5" id="txt-bonus-rule-ineligible">Not eligible for bonus tokens</div>
-        </div>
-      </div>
     </div>
 
-    <!-- LEVEL UP BANNER 1 -->
+    <!-- LEVEL UP BANNER 1 (WITH PREVIEW TIP) -->
     <div id="levelup-banner-desc" class="hidden mt-2 mb-3 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-pink-950/30 via-[#111116] to-[#121217] border border-pink-500/25 shadow-sm">
       <div class="flex items-center justify-between gap-2 mb-2">
         <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-pink-500/15 text-pink-300 border border-pink-500/25 uppercase" id="txt-lv-rewards-tag">
           Level Up Bundle Rewards
         </span>
-        <span class="text-[11px] font-mono text-pink-300/80 font-medium" id="txt-lv-rewards-ingame-tag">Refer to In-Game</span>
+        <span class="text-[11px] font-mono text-pink-300/90 font-semibold flex items-center gap-1.5" id="txt-lv-rewards-ingame-tag">
+          <svg class="w-3.5 h-3.5 text-pink-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+          Interactive Preview Enabled
+        </span>
       </div>
       <p class="text-xs sm:text-[13px] text-zinc-200 leading-relaxed mb-2.5" id="txt-lv-rewards-desc">
         Each Starter Pack includes its own dedicated clothing outfit, weapon, exclusive combat skills, hairstyle, back item, accessory, a unique pet, and bonus Tokens.
       </p>
-      <div class="p-2.5 rounded-xl bg-zinc-950/70 border border-pink-500/20 text-[11px] text-zinc-300 font-mono flex items-start gap-2">
-        <span class="text-pink-400 font-bold">•</span>
-        <span id="txt-lv-rewards-note" class="leading-relaxed">Please check in-game to inspect item models, pet abilities, and skill previews for each level.</span>
+      <div class="p-2.5 rounded-xl bg-zinc-950/70 border border-pink-500/20 text-[11px] text-zinc-300 font-mono flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-pink-400 font-bold">✨</span>
+          <span id="txt-lv-rewards-note" class="leading-relaxed">Click the <strong class="text-pink-300">Preview</strong> button on any Starter Pack card to inspect all items and hover for full stats!</span>
+        </div>
       </div>
     </div>
 
@@ -565,39 +551,6 @@
         <p class="text-xs sm:text-[13px] text-zinc-200 leading-relaxed mb-2.5" id="txt-bp-rewards-desc">
           Each Battlepass includes exclusive skills, tokens, talent training potions, weapons, back items, and accessories.
         </p>
-        <div class="p-2.5 rounded-xl bg-zinc-950/70 border border-rose-500/20 text-[11px] text-zinc-300 font-mono flex items-start gap-2">
-          <span class="text-rose-400 font-bold">•</span>
-          <span id="txt-bp-rewards-note" class="leading-relaxed">To preview the full seasonal reward track and gear models, please check the in-game Battlepass tab.</span>
-        </div>
-      </div>
-
-      <div class="p-4 sm:p-5 rounded-2xl bg-[#121217] border border-surface-border">
-        <div class="flex items-center justify-between gap-2 mb-2.5">
-          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-zinc-800 text-zinc-300 uppercase" id="txt-bp-rate-badge">
-            Pricing Structure
-          </span>
-          <div class="flex items-center gap-2">
-            <span class="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-zinc-800/80 text-zinc-400 border border-zinc-700/60" id="txt-bp-limit-note">Limit: 1 per season</span>
-            <span class="text-xs sm:text-[13px] font-semibold text-white tracking-tight" id="txt-bp-banner-title">Season Battlepass Rates</span>
-          </div>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-[11px]">
-          <div class="p-3 rounded-xl bg-zinc-950/70 border border-zinc-800">
-            <div class="text-zinc-400 font-medium" id="txt-bp-b1-title">Seasons 1 – 11</div>
-            <div class="text-emerald-400 font-mono font-bold text-xs mt-1">RM 11.00 <span class="text-zinc-500 font-normal">/</span> RM 16.00 <span class="text-[10px] text-zinc-500">(Maxed)</span></div>
-          </div>
-          <div class="p-3 rounded-xl bg-zinc-950/70 border border-zinc-800">
-            <div class="text-zinc-400 font-medium" id="txt-bp-b2-title">Seasons 12 – 21</div>
-            <div class="text-emerald-400 font-mono font-bold text-xs mt-1">RM 21.00 <span class="text-zinc-500 font-normal">/</span> RM 31.00 <span class="text-[10px] text-zinc-500">(Maxed)</span></div>
-          </div>
-          <div class="p-3 rounded-xl bg-zinc-950/70 border border-amber-500/30 ring-1 ring-amber-500/10">
-            <div class="text-amber-300 font-medium flex items-center justify-between">
-              <span id="txt-bp-b3-title">Season 22</span>
-              <span class="text-[9px] px-1.5 py-0.2 rounded-full bg-amber-500/20 text-amber-300 font-bold" id="txt-bp-latest-tag">LATEST</span>
-            </div>
-            <div class="text-amber-400 font-mono font-bold text-xs mt-1">RM 41.00 <span class="text-zinc-500 font-normal">/</span> RM 61.00 <span class="text-[10px] text-zinc-500">(Maxed)</span></div>
-          </div>
-        </div>
       </div>
 
       <div class="p-4 sm:p-5 rounded-2xl bg-surface-card border border-surface-border space-y-3.5">
@@ -656,7 +609,7 @@
             <span id="bp-active-bracket" class="font-mono text-zinc-400 text-[10.5px]">Season 1</span>
           </div>
           <div class="grid grid-cols-6 sm:grid-cols-11 gap-1.5" id="bp-season-grid">
-            <!-- Buttons 1–22 generated dynamically -->
+            <!-- Dynamic 1–22 buttons -->
           </div>
         </div>
 
@@ -677,6 +630,73 @@
       <!-- Items dynamically populated -->
     </div>
   </main>
+
+  <!-- ================= LEVEL UP PACKAGE CONTENT PREVIEW MODAL ================= -->
+  <div id="preview-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-[#121217] border border-pink-500/30 w-full max-w-3xl rounded-3xl p-5 sm:p-6 shadow-[0_0_50px_rgba(236,72,153,0.18)] space-y-4 my-auto relative max-h-[92vh] overflow-y-auto custom-scroll">
+      
+      <!-- Modal Header -->
+      <div class="flex items-start justify-between border-b border-zinc-800/80 pb-3 gap-3">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-pink-600 to-rose-400 flex items-center justify-center text-white shadow-lg shrink-0">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 id="preview-pkg-title" class="text-base sm:text-lg font-bold text-white tracking-tight">Lv10 Starter Pack</h3>
+              <span id="preview-pkg-tokens" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-pink-500/15 text-pink-300 border border-pink-500/30 font-semibold">+700 Tokens</span>
+            </div>
+            <p class="text-xs text-zinc-400 mt-0.5" id="preview-pkg-subtitle">Hover over any item slot to inspect full stats, lore, and skill descriptions.</p>
+          </div>
+        </div>
+
+        <button 
+          type="button" 
+          onclick="closePreviewModal()" 
+          class="text-zinc-400 hover:text-white text-xs w-7 h-7 flex items-center justify-center rounded-full bg-zinc-800/80 hover:bg-zinc-700 transition">
+          ✕
+        </button>
+      </div>
+
+      <!-- Item Grid with Hover Tooltips -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 py-1 relative" id="preview-items-grid">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Centered Bonus Token Badge Box -->
+      <div id="preview-bonus-token-banner" class="flex items-center justify-center pt-1">
+        <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-xl bg-sky-950/30 border border-sky-500/40 text-xs shadow-[0_0_15px_rgba(56,189,248,0.08)]">
+          <img id="preview-token-img" src="https://media.discordapp.net/attachments/1507242831763210351/1567339085520179250/DzKVrqhLegidAAAAAElFTkSuQmCC.png?ex=6aebd1c5&is=6aea8045&hm=6d66d8ea5243d35ef2677a67fca8264d8574afa24a167ebf60b4ccbfeca2897a&=&format=webp&quality=lossless" alt="Token Coin" class="w-6 h-6 object-contain drop-shadow-[0_0_8px_rgba(56,189,248,0.7)]" />
+          <span class="text-zinc-300 font-medium tracking-tight">Bonus Token :</span>
+          <span id="preview-token-value" class="font-mono font-bold text-sky-300 text-sm">700</span>
+        </div>
+      </div>
+
+      <!-- Modal Footer with Quick Cart Action -->
+      <div class="pt-3 border-t border-zinc-800/80 flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="text-xs text-zinc-400 flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-pink-400 inline-block animate-pulse"></span>
+          <span>Duplicate items automatically converted to Tokens as per policy.</span>
+        </div>
+        <div class="flex items-center gap-2.5 w-full sm:w-auto">
+          <button 
+            type="button" 
+            onclick="closePreviewModal()" 
+            class="flex-1 sm:flex-none px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold transition">
+            Close
+          </button>
+          <button 
+            type="button" 
+            id="preview-quick-add-btn"
+            class="flex-1 sm:flex-none px-5 py-2 rounded-xl bg-pink-600 hover:bg-pink-500 active:scale-95 text-white text-xs font-bold transition shadow-[0_0_15px_rgba(236,72,153,0.3)]">
+            + Add to Order
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- ================= STICKY BOTTOM ORDER BAR ================= -->
   <aside class="fixed bottom-0 inset-x-0 z-50 bg-[#09090c]/94 backdrop-blur-xl border-t border-surface-border/90 p-3 sm:p-3.5 shadow-[0_-8px_30px_rgba(0,0,0,0.5)]">
@@ -764,7 +784,7 @@
         <pre id="ticket-preview-box" class="p-4 rounded-xl bg-zinc-950 border border-zinc-800/80 text-xs font-mono text-zinc-200 whitespace-pre-wrap leading-relaxed max-h-52 overflow-y-auto custom-scroll selection:bg-zinc-800"></pre>
       </div>
 
-      <!-- Button Showing Tokens Obtained with Custom Token Coin SVG Icon -->
+      <!-- Button Showing Tokens Obtained with Custom Token Coin Image -->
       <button 
         type="button" 
         id="btn-tokens-obtained" 
@@ -772,51 +792,11 @@
         title="Click to check token breakdown"
         class="w-full py-2.5 px-3.5 rounded-xl bg-sky-950/25 hover:bg-sky-950/40 border border-sky-500/40 flex items-center justify-between text-xs transition active:scale-[0.99] shadow-[0_0_15px_rgba(56,189,248,0.08)] group">
         <div class="flex items-center gap-2.5">
-          <!-- Custom Vector Token Coin SVG matching uploaded game coin -->
-          <svg class="w-6 h-6 shrink-0 drop-shadow-[0_0_8px_rgba(56,189,248,0.7)] group-hover:rotate-12 transition-transform duration-300" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="tokenOuterRim" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#38bdf8"/>
-                <stop offset="45%" stop-color="#0284c7"/>
-                <stop offset="100%" stop-color="#0369a1"/>
-              </linearGradient>
-              <linearGradient id="tokenInnerDisc" x1="20%" y1="0%" x2="80%" y2="100%">
-                <stop offset="0%" stop-color="#0e7490"/>
-                <stop offset="50%" stop-color="#155e75"/>
-                <stop offset="100%" stop-color="#083344"/>
-              </linearGradient>
-              <linearGradient id="tokenTFace" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" stop-color="#ffffff"/>
-                <stop offset="45%" stop-color="#e0f2fe"/>
-                <stop offset="100%" stop-color="#bae6fd"/>
-              </linearGradient>
-            </defs>
-            <!-- Outer border -->
-            <circle cx="50" cy="50" r="47" fill="#031622" stroke="#000000" stroke-width="4.5"/>
-            <!-- Metallic cyan outer rim -->
-            <circle cx="50" cy="50" r="43" fill="url(#tokenOuterRim)"/>
-            <!-- Rim highlight facets & notches -->
-            <path d="M48 8 A42 42 0 0 1 78 20 L72 26 A34 34 0 0 0 48 16 Z" fill="#7dd3fc" opacity="0.8"/>
-            <path d="M80 23 A42 42 0 0 1 92 50 L84 50 A34 34 0 0 0 74 29 Z" fill="#bae6fd" opacity="0.95"/>
-            <path d="M8 50 A42 42 0 0 1 20 22 L26 28 A34 34 0 0 0 16 50 Z" fill="#38bdf8" opacity="0.6"/>
-            <path d="M12 60 A42 42 0 0 0 28 82 L34 76 A34 34 0 0 1 20 58 Z" fill="#7dd3fc" opacity="0.85"/>
-            <path d="M38 88 A42 42 0 0 0 65 91 L63 83 A34 34 0 0 1 40 80 Z" fill="#38bdf8" opacity="0.6"/>
-            <!-- Inner groove divider border -->
-            <circle cx="50" cy="50" r="34" fill="#000000"/>
-            <!-- Inner deep teal coin face -->
-            <circle cx="50" cy="50" r="30" fill="url(#tokenInnerDisc)"/>
-            <!-- Subtle diagonal reflection stripes -->
-            <path d="M22 36 L44 20 L38 20 L20 34 Z" fill="#38bdf8" opacity="0.2"/>
-            <path d="M26 62 L64 24 L56 21 L22 55 Z" fill="#38bdf8" opacity="0.25"/>
-            <!-- 3D drop extrusion shadow of Letter T -->
-            <path d="M25 29 H73 V41 H57 V75 H43 V41 H25 Z" transform="translate(3.5, 3.5)" fill="#021c27"/>
-            <path d="M25 29 H73 V41 H57 V75 H43 V41 H25 Z" transform="translate(1.8, 1.8)" fill="#042f40"/>
-            <!-- Front face of Letter T -->
-            <path d="M25 29 H73 V41 H57 V75 H43 V41 H25 Z" fill="url(#tokenTFace)" stroke="#0284c7" stroke-width="0.8"/>
-            <!-- Top and left edge specular highlights -->
-            <path d="M25 29 H73 V32 H25 Z" fill="#ffffff"/>
-            <path d="M43 41 H57 V44 H43 Z" fill="#ffffff" opacity="0.8"/>
-          </svg>
+          <img 
+            src="https://media.discordapp.net/attachments/1507242831763210351/1567339085520179250/DzKVrqhLegidAAAAAElFTkSuQmCC.png?ex=6aebd1c5&is=6aea8045&hm=6d66d8ea5243d35ef2677a67fca8264d8574afa24a167ebf60b4ccbfeca2897a&=&format=webp&quality=lossless" 
+            alt="Token Coin" 
+            class="w-6 h-6 shrink-0 object-contain drop-shadow-[0_0_8px_rgba(56,189,248,0.7)] group-hover:rotate-12 transition-transform duration-300" 
+          />
           <span class="text-zinc-200 font-semibold tracking-tight" id="txt-tokens-obtained-label">Tokens to be Received:</span>
         </div>
         <div class="flex items-center gap-1.5 font-mono font-bold text-sky-300 text-sm">
@@ -825,41 +805,38 @@
         </div>
       </button>
 
-      <!-- Choose Payment Method (3 Malaysian QR Buttons) -->
+      <!-- Choose Payment Method -->
       <div class="pt-2 border-t border-zinc-800/80 space-y-2">
         <div class="flex items-center justify-between">
           <span class="text-xs font-semibold text-zinc-300 tracking-tight" id="txt-choose-payment-head">Pay Directly with Malaysian QR:</span>
           <span class="text-[10px] font-mono text-pink-400 font-medium">DuitNow Supported</span>
         </div>
         <div class="grid grid-cols-3 gap-2">
-          <!-- Touch 'n Go Button -->
           <button 
             type="button" 
             onclick="openQrModal('tng')" 
-            class="flex flex-col items-center justify-center p-2 sm:p-2.5 rounded-xl bg-[#0066cc]/15 hover:bg-[#0066cc]/25 border border-[#0066cc]/40 text-blue-300 transition active:scale-95 group">
-            <span class="w-2.5 h-2.5 rounded-full bg-blue-400 mb-1 group-hover:scale-125 transition"></span>
-            <span class="text-[11px] sm:text-xs font-bold font-mono tracking-tight text-white">Touch 'n Go</span>
+            class="flex flex-col items-center justify-center p-2 rounded-xl bg-[#0066cc]/15 hover:bg-[#0066cc]/25 border border-[#0066cc]/40 text-blue-300 transition active:scale-95 group">
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-400 mb-1"></span>
+            <span class="text-xs font-bold font-mono tracking-tight text-white">Touch 'n Go</span>
             <span class="text-[9px] text-blue-300/80 font-mono">eWallet QR</span>
           </button>
 
-          <!-- Maybank Button -->
           <button 
             type="button" 
             onclick="openQrModal('maybank')" 
-            class="flex flex-col items-center justify-center p-2 sm:p-2.5 rounded-xl bg-[#ffcc00]/15 hover:bg-[#ffcc00]/25 border border-[#ffcc00]/40 text-amber-300 transition active:scale-95 group">
-            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 mb-1 group-hover:scale-125 transition"></span>
-            <span class="text-[11px] sm:text-xs font-bold font-mono tracking-tight text-amber-200">Maybank</span>
-            <span class="text-[9px] text-amber-300/80 font-mono">MAE / M2U QR</span>
+            class="flex flex-col items-center justify-center p-2 rounded-xl bg-[#ffcc00]/15 hover:bg-[#ffcc00]/25 border border-[#ffcc00]/40 text-amber-300 transition active:scale-95 group">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 mb-1"></span>
+            <span class="text-xs font-bold font-mono tracking-tight text-amber-200">Maybank</span>
+            <span class="text-[9px] text-amber-300/80 font-mono">MAE QR</span>
           </button>
 
-          <!-- CIMB Button -->
           <button 
             type="button" 
             onclick="openQrModal('cimb')" 
-            class="flex flex-col items-center justify-center p-2 sm:p-2.5 rounded-xl bg-[#ed1c24]/15 hover:bg-[#ed1c24]/25 border border-[#ed1c24]/40 text-rose-300 transition active:scale-95 group">
-            <span class="w-2.5 h-2.5 rounded-full bg-rose-400 mb-1 group-hover:scale-125 transition"></span>
-            <span class="text-[11px] sm:text-xs font-bold font-mono tracking-tight text-rose-200">CIMB</span>
-            <span class="text-[9px] text-rose-300/80 font-mono">Octo Bank QR</span>
+            class="flex flex-col items-center justify-center p-2 rounded-xl bg-[#ed1c24]/15 hover:bg-[#ed1c24]/25 border border-[#ed1c24]/40 text-rose-300 transition active:scale-95 group">
+            <span class="w-2.5 h-2.5 rounded-full bg-rose-400 mb-1"></span>
+            <span class="text-xs font-bold font-mono tracking-tight text-rose-200">CIMB</span>
+            <span class="text-[9px] text-rose-300/80 font-mono">Octo QR</span>
           </button>
         </div>
       </div>
@@ -891,29 +868,26 @@
 
   <!-- ================= MALAYSIAN DUITNOW QR MODAL ================= -->
   <div id="qr-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
-    <div class="bg-[#121217] border border-surface-border w-full max-w-sm rounded-2xl p-4 sm:p-5 shadow-2xl space-y-3.5 my-auto">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <svg class="w-5 h-5" viewBox="0 0 100 100" fill="none">
+    <div class="bg-[#121217] border border-surface-border w-full max-w-sm sm:max-w-[420px] rounded-2xl p-4 sm:p-4.5 shadow-2xl space-y-2.5 my-auto">
+      <div class="flex items-center justify-between pb-0.5">
+        <h3 class="text-xs sm:text-sm font-bold text-white tracking-tight flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-[#ed008c]" viewBox="0 0 100 100" fill="none">
             <path d="M50 8 L32 36 L50 26 L68 36 Z" fill="#ed008c"/>
             <path d="M92 50 L64 32 L74 50 L64 68 Z" fill="#ed008c"/>
             <path d="M50 92 L68 64 L50 74 L32 64 Z" fill="#ed008c"/>
             <path d="M8 50 L36 68 L26 50 L36 32 Z" fill="#ed008c"/>
             <circle cx="50" cy="50" r="7" fill="#ed008c"/>
           </svg>
-          <div>
-            <h3 class="text-sm font-bold text-white tracking-tight flex items-center gap-1.5">
-              <span>MY DuitNow QR</span>
-              <span class="text-[9px] font-mono px-1.5 py-0.2 rounded bg-pink-500/20 text-pink-400 border border-pink-500/30">INSTANT</span>
-            </h3>
-          </div>
-        </div>
-        <button type="button" onclick="closeQrModal()" class="text-zinc-400 hover:text-white text-xs px-2.5 py-1 rounded-full bg-zinc-800/80 transition">
+          <span>MY DuitNow QR</span>
+          <span class="text-[8.5px] font-mono px-1.5 py-0.2 rounded bg-pink-500/20 text-pink-400 border border-pink-500/30 font-bold">INSTANT</span>
+        </h3>
+        <button type="button" onclick="closeQrModal()" class="text-zinc-400 hover:text-white text-xs w-6 h-6 flex items-center justify-center rounded-full bg-zinc-800/80 hover:bg-zinc-700 transition">
           ✕
         </button>
       </div>
 
-      <div class="grid grid-cols-3 gap-1 p-1 bg-surface-input rounded-xl border border-surface-border text-xs">
+      <!-- Provider Tabs -->
+      <div class="grid grid-cols-3 gap-1 p-0.5 bg-surface-input rounded-xl border border-surface-border text-[11px]">
         <button type="button" id="tab-qr-tng" onclick="switchQrProvider('tng')" class="py-1.5 rounded-lg font-semibold transition text-center">
           Touch 'n Go
         </button>
@@ -925,84 +899,87 @@
         </button>
       </div>
 
-      <div class="bg-white rounded-2xl p-4 text-zinc-950 shadow-lg text-center relative overflow-hidden border border-zinc-200">
-        <div id="qr-brand-banner" class="rounded-xl py-2 px-3 mb-2.5 text-white flex items-center justify-between transition-colors bg-[#0066cc]">
+      <!-- White DuitNow Card Container (Preserving Large QR Image) -->
+      <div class="bg-white rounded-2xl p-3 sm:p-3.5 text-zinc-950 shadow-md text-center relative overflow-hidden border border-zinc-200">
+        <div id="qr-brand-banner" class="rounded-xl py-1.5 px-3 mb-2 text-white flex items-center justify-between transition-colors bg-[#ffcc00]">
           <div class="flex items-center gap-1.5">
-            <span id="qr-brand-icon" class="w-2.5 h-2.5 rounded-full bg-white"></span>
-            <span id="qr-brand-name" class="font-bold text-xs tracking-tight">Touch 'n Go eWallet</span>
+            <span id="qr-brand-icon" class="w-2 h-2 rounded-full bg-white"></span>
+            <span id="qr-brand-name" class="font-bold text-xs tracking-tight">Maybank MAE / M2U</span>
           </div>
           <span class="text-[9px] font-mono font-bold tracking-wider px-1.5 py-0.5 rounded bg-black/20 text-white/90">DuitNow QR</span>
         </div>
 
-        <div id="qr-svg-container" class="py-1 flex items-center justify-center">
-          <!-- Dynamically populated SVG QR -->
+        <!-- Preserved Large QR Image Display -->
+        <div id="qr-svg-container" class="py-1 flex items-center justify-center min-h-[250px] sm:min-h-[290px]">
+          <img id="qr-display-image" src="" alt="Merchant DuitNow QR" class="w-auto h-auto max-w-[270px] sm:max-w-[310px] max-h-[300px] sm:max-h-[340px] object-contain rounded-xl drop-shadow-md transition-all duration-200" />
         </div>
 
-        <div id="qr-card-footnote" class="mt-2.5 pt-2 border-t border-zinc-200">
-          <div class="font-black text-xs tracking-tight text-zinc-900 uppercase">BADRUL HISHAM BIN MOHD FAUZI</div>
-          <div class="text-[9.5px] text-zinc-500 font-mono mt-0.5">National Standard • All Malaysian eWallets & Banks Accepted</div>
+        <div class="mt-2 pt-2 border-t border-zinc-200">
+          <div class="font-black text-[11px] sm:text-xs tracking-tight text-zinc-900 uppercase">BADRUL HISHAM BIN MOHD FAUZI</div>
+          <div class="text-[9px] text-zinc-500 font-mono mt-0.5">National Standard • All Malaysian eWallets &amp; Banks Accepted</div>
         </div>
       </div>
 
+      <!-- Download Merchant QR Button -->
       <button 
         type="button" 
-        onclick="downloadMerchantQr()" 
-        class="w-full py-2.5 px-3 rounded-xl bg-[#181820] hover:bg-[#20202b] active:scale-[0.98] border border-zinc-700/80 text-white text-xs font-semibold flex items-center justify-center gap-2 transition shadow-sm group">
-        <svg class="w-4 h-4 text-emerald-400 group-hover:scale-110 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        onclick="downloadActiveQr()" 
+        class="w-full py-2 px-3 rounded-xl bg-[#17171e] hover:bg-[#20202a] border border-zinc-800 text-[11px] font-semibold text-zinc-200 flex items-center justify-center gap-1.5 transition active:scale-[0.99]">
+        <svg class="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
           <polyline points="7 10 12 15 17 10"></polyline>
           <line x1="12" y1="15" x2="12" y2="3"></line>
         </svg>
-        <span id="txt-btn-download-qr">Download Merchant QR</span>
+        <span>Download Merchant QR</span>
       </button>
 
+      <!-- Amount to Pay & Recipient Ref with Copy Buttons -->
       <div class="grid grid-cols-2 gap-2 text-xs font-mono">
-        <div class="p-2.5 rounded-xl bg-zinc-950/80 border border-zinc-800 flex flex-col justify-between">
-          <div class="text-[10px] text-zinc-400 font-medium" id="txt-qr-amount-label">Amount to Pay</div>
-          <div class="flex items-baseline justify-between mt-1">
-            <span id="qr-val-amount" class="font-bold text-emerald-400 text-sm">RM 0.00</span>
-            <button type="button" onclick="copyPaymentAmount()" class="text-[10px] text-zinc-400 hover:text-white underline">Copy</button>
+        <div class="p-2 sm:p-2.5 rounded-xl bg-zinc-950/80 border border-zinc-800 flex flex-col justify-between">
+          <div class="flex items-center justify-between text-[10px] text-zinc-400 font-medium">
+            <span>Amount to Pay</span>
+            <button type="button" onclick="copyPaymentAmount()" class="text-zinc-400 hover:text-white underline decoration-zinc-600 transition text-[9.5px]">Copy</button>
           </div>
+          <span id="qr-val-amount" class="font-bold text-emerald-400 text-sm sm:text-base mt-0.5">RM 0.00</span>
         </div>
-        <div class="p-2.5 rounded-xl bg-zinc-950/80 border border-zinc-800 flex flex-col justify-between">
-          <div class="text-[10px] text-zinc-400 font-medium" id="txt-qr-ref-label">Recipient Ref</div>
-          <div class="flex items-baseline justify-between mt-1">
-            <span id="qr-val-ref" class="font-bold text-zinc-200 text-xs truncate max-w-[90px]">-</span>
-            <button type="button" onclick="copyPaymentRef()" class="text-[10px] text-zinc-400 hover:text-white underline">Copy</button>
+        <div class="p-2 sm:p-2.5 rounded-xl bg-zinc-950/80 border border-zinc-800 flex flex-col justify-between">
+          <div class="flex items-center justify-between text-[10px] text-zinc-400 font-medium">
+            <span>Recipient Ref</span>
+            <button type="button" onclick="copyPaymentRef()" class="text-zinc-400 hover:text-white underline decoration-zinc-600 transition text-[9.5px]">Copy</button>
           </div>
+          <span id="qr-val-ref" class="font-bold text-zinc-200 text-xs sm:text-[13px] truncate max-w-[120px] mt-0.5">-</span>
         </div>
       </div>
 
-      <div class="p-3 rounded-xl bg-zinc-950/60 border border-zinc-800/80 text-[11px] text-zinc-400 space-y-1 font-mono leading-relaxed">
-        <div>1. Open <span id="qr-guide-appname" class="text-white font-semibold">Touch 'n Go eWallet</span> & tap Scan QR.</div>
-        <div>2. Confirm recipient name is <span class="text-white font-semibold">BADRUL HISHAM BIN MOHD FAUZI</span>.</div>
-        <div>3. Enter exact amount & Character ID as reference.</div>
-        <div>4. Screenshot receipt & send to chat for fulfilment!</div>
+      <!-- 4-Step Instructions Box -->
+      <div class="p-2.5 sm:p-3 rounded-xl bg-[#111116] border border-zinc-800/90 text-[10.5px] sm:text-[11px] font-mono text-zinc-300 space-y-1 leading-relaxed">
+        <div>1. Open <strong id="qr-guide-appname" class="text-white">Maybank MAE / M2U</strong> &amp; tap Scan QR.</div>
+        <div>2. Confirm recipient name is <strong class="text-white">BADRUL HISHAM BIN MOHD FAUZI</strong>.</div>
+        <div>3. Enter exact amount &amp; Character ID as reference.</div>
+        <div>4. Screenshot receipt &amp; send to chat for fulfilment!</div>
       </div>
 
-      <div class="flex gap-2 pt-1">
+      <!-- Bottom Actions -->
+      <div class="flex items-center gap-1.5 pt-0.5">
         <button 
           type="button" 
           onclick="handleWhatsAppOrder()" 
-          class="flex-1 py-2 px-3 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] active:scale-[0.98] text-zinc-950 text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm"
-          title="Send order and notify via WhatsApp">
-          <svg class="w-3.5 h-3.5 fill-current shrink-0" viewBox="0 0 24 24">
+          class="flex-1 py-2 px-2.5 rounded-xl bg-[#25D366] hover:bg-[#20ba5a] active:scale-[0.98] text-zinc-950 text-[11px] font-bold transition flex items-center justify-center gap-1 shadow-sm truncate">
+          <svg class="w-3 h-3 fill-current shrink-0" viewBox="0 0 24 24">
             <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.196 8.196 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24m4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.03-1.25-.75-.67-1.26-1.5-1.41-1.75-.15-.25-.02-.39.11-.51.11-.11.25-.29.37-.43.13-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.34-.76-1.84-.2-.49-.4-.42-.56-.43h-.47c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.77 2.7 4.29 3.79.6.26 1.07.41 1.44.53.6.19 1.15.16 1.58.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.08.15-1.18-.06-.1-.23-.17-.48-.29z"/>
           </svg>
-          <span>Order via WhatsApp</span>
+          <span class="truncate">Order via WhatsApp</span>
         </button>
         <button 
           type="button" 
-          onclick="copyOrderAndReceiptText()" 
-          class="flex-1 py-2 px-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 active:scale-[0.98] text-white text-xs font-semibold transition flex items-center justify-center gap-1.5"
-          id="btn-qr-copy-all">
-          <span>Copy Order Details</span>
+          onclick="handleCopyOrder()" 
+          class="flex-1 py-2 px-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 active:scale-[0.98] text-white text-[11px] font-semibold transition truncate">
+          <span class="truncate">Copy Order</span>
         </button>
         <button 
           type="button" 
           onclick="closeQrModal()" 
-          class="py-2 px-4 rounded-xl bg-white hover:bg-zinc-100 active:scale-[0.98] text-zinc-950 text-xs font-bold transition shadow-sm"
-          id="btn-qr-done">
+          class="py-2 px-3 rounded-xl bg-white hover:bg-zinc-100 active:scale-[0.98] text-zinc-950 text-[11px] font-bold transition shadow-sm">
           Done
         </button>
       </div>
@@ -1086,6 +1063,60 @@
     </div>
   </div>
 
+  <!-- ================= LEVEL UP STARTER PACK NOTICE MODAL ================= -->
+  <div id="levelup-notice-modal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div class="bg-[#121217] border border-pink-500/35 w-full max-w-lg rounded-2xl p-5 sm:p-6 shadow-[0_0_40px_rgba(236,72,153,0.15)] space-y-4 my-auto relative max-h-[92vh] overflow-y-auto custom-scroll">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-bold tracking-wider bg-pink-500/15 text-pink-300 border border-pink-500/30 uppercase flex items-center gap-1.5" id="txt-lvmodal-tag">
+            <span class="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse"></span>
+            ⚡ LEVEL-UP STARTER PACK NOTICE
+          </span>
+        </div>
+        <button 
+          type="button" 
+          onclick="closeLevelUpNoticeModal()" 
+          class="text-zinc-400 hover:text-white text-xs w-6 h-6 flex items-center justify-center rounded-full bg-zinc-800/80 transition">
+          ✕
+        </button>
+      </div>
+
+      <!-- Main Notice Content -->
+      <div class="space-y-3">
+        <div class="p-3 rounded-xl bg-pink-950/20 border border-pink-500/30 text-pink-200 text-xs sm:text-[12.5px] leading-relaxed font-semibold flex items-start gap-2.5">
+          <span class="text-pink-400 text-sm">📌</span>
+          <span id="txt-lvmodal-rule1">Please note that packages cannot be skipped—they must be purchased in sequential order.</span>
+        </div>
+
+        <p class="text-xs sm:text-[13px] text-zinc-300 leading-relaxed" id="txt-lvmodal-rule2">
+          You can buy multiple packs (or all of them) at once regardless of your in-game level. For example, a Level 10 character can purchase Lv.10 through Lv.100 in a single order.
+        </p>
+
+        <div class="p-3 rounded-xl bg-zinc-950/80 border border-emerald-500/30 text-[11.5px] text-zinc-200 font-mono flex items-start gap-2">
+          <span class="text-emerald-400 font-bold">✓</span>
+          <span id="txt-lvmodal-rule3" class="leading-relaxed">As long as you unlock them in sequence, your character's level will not restrict your purchases.</span>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="pt-2 border-t border-zinc-800/80 flex items-center justify-between gap-3">
+        <label class="flex items-center gap-2 cursor-pointer select-none text-[11px] text-zinc-400 hover:text-zinc-300 transition">
+          <input type="checkbox" id="chk-dont-show-lvnotice" class="rounded border-zinc-700 bg-zinc-900 text-pink-500 focus:ring-0 w-3.5 h-3.5 cursor-pointer" />
+          <span id="txt-lvmodal-chk-label">Don't show again today</span>
+        </label>
+        <button 
+          type="button" 
+          onclick="closeLevelUpNoticeModal()" 
+          class="px-5 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-500 active:scale-[0.98] text-white text-xs font-bold transition shadow-[0_0_15px_rgba(236,72,153,0.3)]"
+          id="btn-lvmodal-confirm">
+          Understood
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ================= CENTERED TOAST NOTIFICATION ================= -->
   <div id="toast" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[100] bg-[#16161d]/95 backdrop-blur-xl border border-zinc-700/90 text-white font-semibold text-xs sm:text-sm px-5 py-3 rounded-2xl shadow-[0_16px_50px_rgba(0,0,0,0.85)] max-w-xs sm:max-w-sm text-center flex items-center justify-center gap-2.5 opacity-0 scale-95 pointer-events-none transition-all duration-200 transform tracking-tight">
     <span class="w-2 h-2 rounded-full bg-emerald-400 shrink-0" id="toast-indicator"></span>
@@ -1094,6 +1125,114 @@
 
   <!-- ================= SCRIPT & STORE LOGIC ================= -->
   <script>
+    /* =====================================================================
+       CUSTOM IMAGES & DESCRIPTIONS CONFIGURATION
+       👉 Put your image URLs or filenames (e.g. "images/weapon.png") here!
+       If left empty (""), the store cleanly falls back to the default icon.
+       ===================================================================== */
+    const CUSTOM_ITEM_IMAGES = {
+      // --- Lv.10 Starter Pack ---
+      "lv10_skill": "https://media.discordapp.net/attachments/1507242831763210351/1567336803587989524/skill_902.png?ex=6aebcfa5&is=6aea7e25&hm=b791552b3fd74b468c7eb09f005f6c77e3a7c129048ac425e0b5a3f10b1d09b4&=&format=webp&quality=lossless",      // Kinjutsu: The Lance of God Killing
+      "lv10_weapon": "https://media.discordapp.net/attachments/1507242831763210351/1567336803986571375/wpn_526.png?ex=6aebcfa5&is=6aea7e25&hm=8a59402e4a88bdbd6cd8ecacc7963b4d602a840b4f0f5540bf145b498277ff9b&=&format=webp&quality=lossless",     // 2022 Carnival Red Bachi
+      "lv10_back": "https://media.discordapp.net/attachments/1507242831763210351/1567336804322123816/back_452.png?ex=6aebcfa5&is=6aea7e25&hm=8a12bd7e68ed761f7fbfe18f4f37d4ca92c0cc1d9e2da28f83e938c0f1a75343&=&format=webp&quality=lossless",       // Red Backpack
+      "lv10_essential": "https://media.discordapp.net/attachments/1507242831763210351/1567336804703535174/essential_52.png?ex=6aebcfa5&is=6aea7e25&hm=74af863325553ec01effc9a5828c6002b3bf0caf0f5b6a883ae53100fcb9d2e4&=&format=webp&quality=lossless",  // Chunin Magatama Fukubukuro ×15
+      "lv10_clothing": "https://media.discordapp.net/attachments/1507242831763210351/1567336805291008081/set_231_0.png?ex=6aebcfa6&is=6aea7e26&hm=c4b6963748343bde6e42f7f5d13e47099546100c4beecf9977031b4486265831&=&format=webp&quality=lossless",   // Exclusive Outfit (Suit)
+      "lv10_hairstyle": "https://media.discordapp.net/attachments/1507242831763210351/1567336806146510969/hair_108_0.png?ex=6aebcfa6&is=6aea7e26&hm=2b9ee58f462d248e3f3d03670c23888545432882b201a4e5cf60aa1d9a189df1&=&format=webp&quality=lossless",  // Exclusive Hairstyle
+      "lv10_pet": "https://media.discordapp.net/attachments/1507242831763210351/1567336806519808172/pet_mini_taiko.png?ex=6aebcfa6&is=6aea7e26&hm=ea995b2eb490cc23ee06f9c3551d9bce132db8ffe64c453995f9b94f083de1af&=&format=webp&quality=lossless",        // Mini Taiko
+      "lv10_jutsu_pill": "https://media.discordapp.net/attachments/1507242831763210351/1567338122990325780/essential_57.png?ex=6aebd0e0&is=6aea7f60&hm=909c22bf791a7e688ec3e678a88bddbbd20b867fbcd3517e2c460ba519387f67&=&format=webp&quality=lossless", // Jutsu Pill Bag X5
+      "token_coin": "https://media.discordapp.net/attachments/1507242831763210351/1567339085520179250/DzKVrqhLegidAAAAAElFTkSuQmCC.png?ex=6aebd1c5&is=6aea8045&hm=6d66d8ea5243d35ef2677a67fca8264d8574afa24a167ebf60b4ccbfeca2897a&=&format=webp&quality=lossless",
+
+      // --- Lv20 Starter Pack ---
+      "lv20_skill": "https://media.discordapp.net/attachments/1507242831763210351/1567341001394094221/skill_919.png?ex=6aebd38e&is=6aea820e&hm=7878bf237d1644af64a01c8bce20703f19373fe5d6ca8d63bee3c5939e41b515&=&format=webp&quality=lossless",
+      "lv20_weapon": "https://media.discordapp.net/attachments/1507242831763210351/1567341160727449722/wpn_990.png?ex=6aebd3b4&is=6aea8234&hm=d5f873422ef1ff7af9e1f4a1efa9da1218c9ad36fc9d045a8cc77c1178e17ebd&=&format=webp&quality=lossless",
+      "lv20_back": "https://media.discordapp.net/attachments/1507242831763210351/1567341161704726648/back_190.png?ex=6aebd3b4&is=6aea8234&hm=f55c59ae9a3f9842bf104bf6b12614e801e4e4983344747a172cfec75e38f70c&=&format=webp&quality=lossless",
+      "lv20_accessory": "https://media.discordapp.net/attachments/1507242831763210351/1567341162027810998/accessory_119.png?ex=6aebd3b4&is=6aea8234&hm=6d6644c18baf2471c6dcbc1b53ae90659b87986146e4e5e0990c318185afdd3e&=&format=webp&quality=lossless",
+      "lv20_clothing": "https://media.discordapp.net/attachments/1507242831763210351/1567341162380140655/set_644_0.png?ex=6aebd3b4&is=6aea8234&hm=4c2395cfa245f815f87917ef06f5c57a04b539914f2ddf0a3d32eb1b4a57a77b&=&format=webp&quality=lossless",
+      "lv20_hairstyle": "https://media.discordapp.net/attachments/1507242831763210351/1567341162652500028/hair_31_0.png?ex=6aebd3b4&is=6aea8234&hm=61b9513a607995d9df006d6ec5a893f8a0537e7c9635f65798f4dc786e34524b&=&format=webp&quality=lossless",
+      "lv20_essential": "https://media.discordapp.net/attachments/1507242831763210351/1567341162983854171/essential_96.png?ex=6aebd3b5&is=6aea8235&hm=69bede01225d9fb5e071745027693ce225059eb9c2b06993fedcff3513b03977&=&format=webp&quality=lossless",
+      "lv20_pet": "https://media.discordapp.net/attachments/1507242831763210351/1567341163298693200/pet_tanuki.png?ex=6aebd3b5&is=6aea8235&hm=ffb6239f85d8536dd655fb2082e3428852c13dbdac5e677866afd65e2c9d7902&=&format=webp&quality=lossless",
+
+      // --- Lv30 Starter Pack ---
+      "lv30_skill": "https://media.discordapp.net/attachments/1507242831763210351/1567342696803205231/skill_412.png?ex=6aebd522&is=6aea83a2&hm=9abdc97389f625c791a54d03284f1fdb3330324472cd966c03c15624864351cd&=&format=webp&quality=lossless",
+      "lv30_weapon": "https://media.discordapp.net/attachments/1507242831763210351/1567342697184759809/wpn_345.png?ex=6aebd522&is=6aea83a2&hm=d571de2acbf91cd67b90a45b3adab73c9e1a7c4b551ab991a2d621324da76ed6&=&format=webp&quality=lossless",
+      "lv30_back": "https://media.discordapp.net/attachments/1507242831763210351/1567342697545736263/back_73.png?ex=6aebd522&is=6aea83a2&hm=fcdaff60bb3ac74bd2589f06f3708e39245a7967340e0397c23596dfb3622412&=&format=webp&quality=lossless",
+      "lv30_jutsu_pill": "https://media.discordapp.net/attachments/1507242831763210351/1567342697927413790/essential_57.png?ex=6aebd523&is=6aea83a3&hm=2a6baf6e5cfd54f574ea47823652f21b8fb2fbc3e123eab3fffbfc8d7ab53725&=&format=webp&quality=lossless",
+      "lv30_genjutsu_pill": "https://media.discordapp.net/attachments/1507242831763210351/1567342698942431312/essential_97.png?ex=6aebd523&is=6aea83a3&hm=1fc3772d7aa05b8685a70e507a81b5ec270fb1ec35c518f53482e693d3f42529&=&format=webp&quality=lossless",
+      "lv30_clothing": "https://media.discordapp.net/attachments/1507242831763210351/1567342698279469108/set_153_0.png?ex=6aebd523&is=6aea83a3&hm=18012300482fe69a23ba9c1c8a6765a5262d798467241eaa53f8e3224f4f2c78&=&format=webp&quality=lossless",
+      "lv30_hairstyle": "https://media.discordapp.net/attachments/1507242831763210351/1567342698602561617/hair_78_0.png?ex=6aebd523&is=6aea83a3&hm=1c15ab773058928cc10fe327f56e2034e58f08d498f31f6761fbdd2cbea5e7f5&=&format=webp&quality=lossless",
+      "lv30_pet": "https://media.discordapp.net/attachments/1507242831763210351/1567342699302887454/pet_panda.png?ex=6aebd523&is=6aea83a3&hm=8f740142264fe76edc5eb59f50609e84d1f37cb0d4534357076bd4a210add9a0&=&format=webp&quality=lossless",
+
+      // --- Lv40 Starter Pack ---
+      "lv40_skill": "https://media.discordapp.net/attachments/1507242831763210351/1567344073285701862/skill_343.png?ex=6aebd66a&is=6aea84ea&hm=6c12f2e1a52cfc4cc2c13508696a9a16ab01d6954ab35ac8ad190ec437733a1a&=&format=webp&quality=lossless",
+      "lv40_weapon": "https://media.discordapp.net/attachments/1507242831763210351/1567344073654804510/wpn_571.png?ex=6aebd66b&is=6aea84eb&hm=f2fb47157b55e1186206513a867e0d75e2d0f71469013f63b0088b9241d26352&=&format=webp&quality=lossless",
+      "lv40_back": "https://media.discordapp.net/attachments/1507242831763210351/1567344074065973308/back_467.png?ex=6aebd66b&is=6aea84eb&hm=e8006045de26a9003b35c789d96e8ab62d3be70c43f5df459ac2388e139c0237&=&format=webp&quality=lossless",
+      "lv40_sage_pill": "https://media.discordapp.net/attachments/1507242831763210351/1567344074434941039/essential_08.png?ex=6aebd66b&is=6aea84eb&hm=425278c3f03580f41fbe2c476be4fd5ac29dd653fb3e95fd85ae59c82c63ea0c&=&format=webp&quality=lossless",
+      "lv40_taijutsu_pill": "https://media.discordapp.net/attachments/1507242831763210351/1567344075504353350/essential_96.png?ex=6aebd66b&is=6aea84eb&hm=ee7e526d7c1e15e6651bd36d450135423a92715d11c8190ca2410a3a89229f2f&=&format=webp&quality=lossless",
+      "lv40_clothing": "https://media.discordapp.net/attachments/1507242831763210351/1567344074833272872/set_645_0.png?ex=6aebd66b&is=6aea84eb&hm=b9d1193f237649f349a079b02572739c5328bf4c24f2ea56835a046abe9dfc8c&=&format=webp&quality=lossless",
+      "lv40_hairstyle": "https://media.discordapp.net/attachments/1507242831763210351/1567344075131330580/hair_283_0.png?ex=6aebd66b&is=6aea84eb&hm=b1bd5ae5400b4bd9700e2936fc3d5369fc83eabbedc397b9a9b06dfc82d523b0&=&format=webp&quality=lossless",
+      "lv40_pet": "https://media.discordapp.net/attachments/1507242831763210351/1567344075860877342/pet_ghost_lights.png?ex=6aebd66b&is=6aea84eb&hm=111a61755923ea291be9fe772bfe18501e475c6293324fa19ef78cb70a802fe1&=&format=webp&quality=lossless",
+
+      // --- Lv50 Starter Pack ---
+      "lv50_skill": "https://media.discordapp.net/attachments/1507242831763210351/1567345977650716723/skill_316.png?ex=6aebd830&is=6aea86b0&hm=4c960e55421521b5f42c1d64c0703674e8682126eadf483db080a73d7243bc69&=&format=webp&quality=lossless",
+      "lv50_weapon": "https://media.discordapp.net/attachments/1507242831763210351/1567345978053365952/wpn_631.png?ex=6aebd831&is=6aea86b1&hm=9ba82713d75c317cb9f9cb2f6ba7f58247f9f73800303232b88c9ec623804844&=&format=webp&quality=lossless",
+      "lv50_back": "https://media.discordapp.net/attachments/1507242831763210351/1567345978573455370/back_657.png?ex=6aebd831&is=6aea86b1&hm=7d1a1bdb5995ef728a0d6dd7d54a261b0b7d731db39a9c56ec15ade9f2691fd4&=&format=webp&quality=lossless",
+      "lv50_jonin_magatama": "https://media.discordapp.net/attachments/1507242831763210351/1567345978925916190/essential_53.png?ex=6aebd831&is=6aea86b1&hm=4a005d396c44d0865aa0a95d6e5d22cdf2b19227fcde89da2e581ea42c9f51cb&=&format=webp&quality=lossless",
+      "lv50_dragon_coin": "https://media.discordapp.net/attachments/1507242831763210351/1567345979974221954/essential_107.png?ex=6aebd831&is=6aea86b1&hm=97a5cf5ebd17e4d86cab72b06c7adfdf026a914d5883c8fe9f7a99c07282ea21&=&format=webp&quality=lossless",
+      "lv50_clothing": "https://media.discordapp.net/attachments/1507242831763210351/1567345979311784179/set_261_0.png?ex=6aebd831&is=6aea86b1&hm=72199f84928e8c898390ca5f0cb240e7d03d1832c65fc2ce78b88cb88bee3604&=&format=webp&quality=lossless",
+      "lv50_hairstyle": "https://media.discordapp.net/attachments/1507242831763210351/1567345979638812764/hair_158_0.png?ex=6aebd831&is=6aea86b1&hm=260cec7be4672bcad053213e9b56c1d2ca74cd6dd3dc602630ce18d5776c3f79&=&format=webp&quality=lossless",
+      "lv50_pet": "https://media.discordapp.net/attachments/1507242831763210351/1567345980565758062/pet_silver_monkey_king.png?ex=6aebd831&is=6aea86b1&hm=c913162da45f6db2ebb74c14d40887aadffba2593034dc7e4e987a334ebd1904&=&format=webp&quality=lossless",
+
+      // --- Lv60 Starter Pack ---
+      "lv60_skill": "https://media.discordapp.net/attachments/1507242831763210351/1567349177447354409/skill_330.png?ex=6aebdb2b&is=6aea89ab&hm=1d63c22b820da45bcddbfe16a2ccb00eec1fb51199eef35ab949ffe95a28a103&=&format=webp&quality=lossless",
+      "lv60_weapon": "https://media.discordapp.net/attachments/1507242831763210351/1567349177783164958/wpn_696.png?ex=6aebdb2b&is=6aea89ab&hm=013716ee8d8dd3c68c5a53655936b5009e7561ce92725785e7eab9dd1e42ef5d&=&format=webp&quality=lossless",
+      "lv60_back": "https://media.discordapp.net/attachments/1507242831763210351/1567349178097606818/back_595.png?ex=6aebdb2b&is=6aea89ab&hm=97d43d1113e6f8f3767ac85f747abe1be8b1058dbc3de052726df64e628b212c&=&format=webp&quality=lossless",
+      "lv60_sealing_scroll": "https://media.discordapp.net/attachments/1507242831763210351/1567349178441666692/essential_103.png?ex=6aebdb2c&is=6aea89ac&hm=5ac58e64f1ac1925e551072d191471154d20616df911a7c67f1ec309deef5e91&=&format=webp&quality=lossless",
+      "lv60_clothing": "https://media.discordapp.net/attachments/1507242831763210351/1567349178936332299/set_619_0.png?ex=6aebdb2c&is=6aea89ac&hm=e1aff25fc39d81593b71e01fa3ae0a2a64c7f22fc9fa4bb832bd31a17c34b28e&=&format=webp&quality=lossless",
+      "lv60_hairstyle": "https://media.discordapp.net/attachments/1507242831763210351/1567349179250901105/hair_271_0.png?ex=6aebdb2c&is=6aea89ac&hm=8d6707e8472ae702eafefd0f8060c031412796571c4b02360c0598ebb4a81e57&=&format=webp&quality=lossless",
+      "lv60_energy_bag": "https://media.discordapp.net/attachments/1507242831763210351/1567349179590778880/essential_55.png?ex=6aebdb2c&is=6aea89ac&hm=70eea92a2187190fff64acdc93acc6d70decb9b6c2c9349f717ae7615d215f0a&=&format=webp&quality=lossless",
+      "lv60_pet": "https://media.discordapp.net/attachments/1507242831763210351/1567349180144554104/pet_falcon.png?ex=6aebdb2c&is=6aea89ac&hm=be737c2498eb32e45f364c3d11eafc3e71f9c29ed3ebd3ac5f0143ba0a64701a&=&format=webp&quality=lossless",
+
+      // --- Lv70 Starter Pack ---
+      "lv70_skill": "https://media.discordapp.net/attachments/1507242831763210351/1567350775708123226/skill_407.png?ex=6aebdca8&is=6aea8b28&hm=a09046fe008b06274c66a0411b3e0a4bbdecb3793305b2c922ff243d53a5f717&=&format=webp&quality=lossless",
+      "lv70_weapon": "https://media.discordapp.net/attachments/1507242831763210351/1567350776043671683/wpn_686.png?ex=6aebdca8&is=6aea8b28&hm=802a0a0adb2d081a753756b073945f8647039114ca412726cc536ab750b1ec13&=&format=webp&quality=lossless",
+      "lv70_back": "https://media.discordapp.net/attachments/1507242831763210351/1567350776412643358/back_359.png?ex=6aebdca9&is=6aea8b29&hm=8cce12e98c2d2f034c5ae43fc71a73271fcfec771a87a5476638e961aa332e4c&=&format=webp&quality=lossless",
+      "lv70_energy_bag": "https://media.discordapp.net/attachments/1507242831763210351/1567350776781738075/essential_56.png?ex=6aebdca9&is=6aea8b29&hm=102a93b8bbf86eb729b988132bfde73f7517b7d315db261f95c72c4089db44ff&=&format=webp&quality=lossless",
+      "lv70_clothing": "https://media.discordapp.net/attachments/1507242831763210351/1567350777234849812/set_646_0.png?ex=6aebdca9&is=6aea8b29&hm=0949e43f289b68641899fc4a0b3e6cad5975d0e892e727f5f0b7211962784df0&=&format=webp&quality=lossless",
+      "lv70_hairstyle": "https://media.discordapp.net/attachments/1507242831763210351/1567350777591111720/hair_253_0.png?ex=6aebdca9&is=6aea8b29&hm=0f2cf2fcc91846a54fd77bd5a421f4058948c183b7d103b4b34eef1d29bffaff&=&format=webp&quality=lossless",
+      "lv70_pet_essence": "https://media.discordapp.net/attachments/1507242831763210351/1567350777981309069/essential_106.png?ex=6aebdca9&is=6aea8b29&hm=2ac1ec604ea304baacf5e32c5acfdc9a1bad62d34087d6282d1f27e1472ce97d&=&format=webp&quality=lossless",
+      "lv70_pet": "https://media.discordapp.net/attachments/1507242831763210351/1567350778367053874/pet_nibi.png?ex=6aebdca9&is=6aea8b29&hm=45b950c223f5f9efa586977d57cfd532af8f2b2982a498dd1bca458c63f531ee&=&format=webp&quality=lossless",
+
+      // --- Lv80 Starter Pack ---
+      "lv80_skill": "https://media.discordapp.net/attachments/1507242831763210351/1567351868294828072/skill_376.png?ex=6aebddad&is=6aea8c2d&hm=6edcef9b945a06f12aa12e5b60ce9cf21949f7437d9e86323f0e5c74d0773036&=&format=webp&quality=lossless",
+      "lv80_weapon": "https://media.discordapp.net/attachments/1507242831763210351/1567351868672311316/wpn_396.png?ex=6aebddad&is=6aea8c2d&hm=6aed3b0ca35750a0bbaabdefce103a40f776a02ebdbd17bf3fa2e40d7371bceb&=&format=webp&quality=lossless",
+      "lv80_back": "https://media.discordapp.net/attachments/1507242831763210351/1567351869112848424/back_154.png?ex=6aebddad&is=6aea8c2d&hm=123c93baa2de4aa392b09bd636da534a32a19d1778029a539284319eb81c5bc7&=&format=webp&quality=lossless",
+      "lv80_taijutsu_pill": "https://media.discordapp.net/attachments/1507242831763210351/1567351869536469112/essential_98.png?ex=6aebddad&is=6aea8c2d&hm=7bec36328a781a146c82f1af2427ea5f84496c7e9639a0e0153d1f778de95e28&=&format=webp&quality=lossless",
+      "lv80_clothing": "https://media.discordapp.net/attachments/1507242831763210351/1567351869989199993/set_215_0.png?ex=6aebddad&is=6aea8c2d&hm=c807ff7862786cada87aa0ddc040d5cb438e7c57c86137c6a8d6df3180a8d65a&=&format=webp&quality=lossless",
+      "lv80_hairstyle": "https://media.discordapp.net/attachments/1507242831763210351/1567351870521872444/hair_126_0.png?ex=6aebddad&is=6aea8c2d&hm=5d8daf09e9144f5bc3eb4897459f4a6e35131c850f0752f37e42ef39805588b1&=&format=webp&quality=lossless",
+      "lv80_genjutsu_pill": "https://media.discordapp.net/attachments/1507242831763210351/1567351870995963974/essential_99.png?ex=6aebddae&is=6aea8c2e&hm=b16a123e950351ad13279cf130b6b7f85e598ced617223e04c87748f2fb6ef7b&=&format=webp&quality=lossless",
+      "lv80_pet": "https://media.discordapp.net/attachments/1507242831763210351/1567351871457333290/pet_christmas_kyubi.png?ex=6aebddae&is=6aea8c2e&hm=76115da438d6cd700053191e1eb41bcdba80dd92315fe89d6444aeb83c3e7f03&=&format=webp&quality=lossless",
+
+      // --- Lv90 Starter Pack ---
+      "lv90_skill": "https://media.discordapp.net/attachments/1507242831763210351/1567353002178908240/skill_1235.png?ex=6aebdebb&is=6aea8d3b&hm=e4d327b35518b6709c30a5e50c758819ac8078b23983ad416b15457281edf003&=&format=webp&quality=lossless",
+      "lv90_weapon": "https://media.discordapp.net/attachments/1507242831763210351/1567353002833084476/wpn_899.png?ex=6aebdebb&is=6aea8d3b&hm=6e9d680efcef94c8fddf36fb8bdd7717fd1f643f7071bb379a110c0f98cafe44&=&format=webp&quality=lossless",
+      "lv90_back": "https://media.discordapp.net/attachments/1507242831763210351/1567353003529211984/back_492.png?ex=6aebdebc&is=6aea8d3c&hm=48279cbe586b1d5eaf42db36d61b2d509a4a0128bd29a837aa3fc04d8ed9fe6c&=&format=webp&quality=lossless",
+      "lv90_accessory": "https://media.discordapp.net/attachments/1507242831763210351/1567353003927928882/accessory_126.png?ex=6aebdebc&is=6aea8d3c&hm=b820db1a824f815665676c48f249aad2d46343950e79f645b7169ff0508d2d4c&=&format=webp&quality=lossless",
+      "lv90_clothing": "https://media.discordapp.net/attachments/1507242831763210351/1567353004284190740/set_719_0.png?ex=6aebdebc&is=6aea8d3c&hm=f8a9e150e1358b24a40bc8d1f24785758f8a51806c6e7993cb3150bde20567f3&=&format=webp&quality=lossless",
+      "lv90_hairstyle": "https://media.discordapp.net/attachments/1507242831763210351/1567353004615663747/hair_330_0.png?ex=6aebdebc&is=6aea8d3c&hm=f917d87db5e6258631f217f72f41ddb59f7db6147d131bcab4f7ed788f9f79a8&=&format=webp&quality=lossless",
+      "lv90_energy_bag": "https://media.discordapp.net/attachments/1507242831763210351/1567353004963926066/essential_55.png?ex=6aebdebc&is=6aea8d3c&hm=7520637172c19b148fe18c69813c8f4736ab98a7d7ef1c2f0892c4468c6e15d6&=&format=webp&quality=lossless",
+      "lv90_pet": "https://media.discordapp.net/attachments/1507242831763210351/1567353005513121852/pet_ultimate_kirin_iv.png?ex=6aebdebc&is=6aea8d3c&hm=8bd0644f354ee0bb9ba62d2e3af5d100ed37ba42b9f707681dd2d958ce9ae53d&=&format=webp&quality=lossless",
+
+      // --- Lv100 Starter Pack ---
+      "lv100_skill": "https://media.discordapp.net/attachments/1507242831763210351/1567354666302308404/skill_1275.png?ex=6aebe048&is=6aea8ec8&hm=e690be2ab185e9066542f1243d6dbd64894bc48a87fd636cc7181c8dce46ff59&=&format=webp&quality=lossless",
+      "lv100_weapon": "https://media.discordapp.net/attachments/1507242831763210351/1567354666835116082/wpn_838.png?ex=6aebe048&is=6aea8ec8&hm=f2fde26b87d738a7bd631fd2ae8c633fff55b199a43d41be47015f830ddf32fc&=&format=webp&quality=lossless",
+      "lv100_back": "https://media.discordapp.net/attachments/1507242831763210351/1567354667187310713/back_455.png?ex=6aebe048&is=6aea8ec8&hm=f8c7d484a9105dd464ca17b5ad4f1af034c1ebb2042ce18d7209eb909385fecf&=&format=webp&quality=lossless",
+      "lv100_accessory": "https://media.discordapp.net/attachments/1507242831763210351/1567354667619590175/accessory_162.png?ex=6aebe048&is=6aea8ec8&hm=3b0fbc0a48fdf9015a8b0162b484715033dbdf3f378f1cce30fd818c9037818a&=&format=webp&quality=lossless",
+      "lv100_clothing": "https://media.discordapp.net/attachments/1507242831763210351/1567354667917250631/set_729_0.png?ex=6aebe048&is=6aea8ec8&hm=4706dbcd2722d6b5caf2557e72b92e91222488cc6cde2ca38949d4897dccc3c3&=&format=webp&quality=lossless",
+      "lv100_hairstyle": "https://media.discordapp.net/attachments/1507242831763210351/1567354668223565825/hair_336_0.png?ex=6aebe048&is=6aea8ec8&hm=e1a7642ba5b0fe904e8262ef671664259acf6ac2d14255690aaab10f2567977e&=&format=webp&quality=lossless",
+      "lv100_energy_bag": "https://media.discordapp.net/attachments/1507242831763210351/1567354668584013854/essential_55.png?ex=6aebe049&is=6aea8ec9&hm=ab22198f3d7326c708a9fea41fd24a966365b7f32f2840162b8d553b9303f196&=&format=webp&quality=lossless",
+      "lv100_pet": "https://media.discordapp.net/attachments/1507242831763210351/1567354669075013774/pet_tornado_jyubi.png?ex=6aebe049&is=6aea8ec9&hm=9b3364fa26b55993ed558327c473173e2c385a71bcdc365274517367eabf1ad6&=&format=webp&quality=lossless"
+    };
+
     /* ---------------- I18N STRINGS ---------------- */
     const I18N = {
       en: {
@@ -1147,7 +1286,7 @@
         bpRewardsDesc: "Each Battlepass includes exclusive skills, tokens, talent training potions, weapons, back items, and accessories.",
         bpRewardsNote: "To preview the full seasonal reward track and gear models, please check the in-game Battlepass tab.",
         emblemTag: "Emblem & Emblem+ Perks",
-        emblemLimitTag: "Limit: 1 per package",
+        emblemLimitTag: "Choose 1 Option Only",
         emblemBasicIntro: "Essential privileges and daily bonuses for character growth:",
         emblemPlusTierBonus: "★ Tier Bonus: Inherits ALL base Emblem benefits automatically",
         bonusBadge: "2,200 Bonus Tokens Policy",
@@ -1159,9 +1298,9 @@
         secMultipliers: "Multipliers & Energy Upgrades",
         secDaily: "Daily Activities & Pet Villa",
         lvRewardsTag: "Level Up Bundle Rewards",
-        lvRewardsIngameTag: "Refer to In-Game",
+        lvRewardsIngameTag: "Interactive Preview Enabled",
         lvRewardsDesc: "Each Starter Pack includes its own dedicated clothing outfit, weapon, exclusive combat skills, hairstyle, back item, accessory, a unique pet, and bonus Tokens.",
-        lvRewardsNote: "Please check in-game to inspect item models, pet abilities, and skill previews for each level.",
+        lvRewardsNote: "Click the Preview button on any Starter Pack card to inspect all items and hover for full stats!",
         lvNotesTag: "Purchase & Duplicate Policy",
         lvNotesLimitTag: "1 Per Character Slot",
         lvNotesDesc: "Each package can only be purchased once per character slot. If you already own items included in the pack, they are automatically converted into Tokens:",
@@ -1188,6 +1327,8 @@
         modalSuccessSub: "The order summary has been copied to your clipboard. Paste it directly into our chat.",
         modalClose: "Done",
         limit1Badge: "Limit 1",
+        emblemChoiceBadge: "Choose 1 Only",
+        switchBtn: "Switch",
         tokensObtainedLabel: "Tokens to be Received:",
         ticketHeader: "ORDER SUMMARY",
         ticketCharId: "Character ID",
@@ -1197,7 +1338,13 @@
         ticketClosing: "Please confirm payment details. Thank you.",
         toastCharRequired: "Please enter your Character ID",
         toastCartEmpty: "Please select at least one package",
-        toastCopied: "Copied to clipboard"
+        toastCopied: "Copied to clipboard",
+        lvNoticeTag: "⚡ LEVEL-UP STARTER PACK NOTICE",
+        lvNoticeRule1: "Please note that packages cannot be skipped—they must be purchased in sequential order.",
+        lvNoticeRule2: "You can buy multiple packs (or all of them) at once regardless of your in-game level. For example, a Level 10 character can purchase Lv.10 through Lv.100 in a single order.",
+        lvNoticeRule3: "As long as you unlock them in sequence, your character's level will not restrict your purchases.",
+        lvNoticeChk: "Don't show again today",
+        lvNoticeBtn: "Understood"
       },
       bm: {
         storeTitle: "KEDAI CATOLOGIST",
@@ -1250,7 +1397,7 @@
         bpRewardsDesc: "Setiap Battlepass merangkumi skil eksklusif, token, ramuan latihan talent (training potion), senjata, barangan belakang (back item), dan aksesori.",
         bpRewardsNote: "Sila semak tab Battlepass di dalam game untuk melihat pratonton penuh ganjaran dan rupa item.",
         emblemTag: "Kelebihan Emblem & Emblem+",
-        emblemLimitTag: "Had: 1 setiap pakej",
+        emblemLimitTag: "Pilih 1 Pilihan Sahaja",
         emblemBasicIntro: "Kelebihan utama dan bonus harian untuk perkembangan watak:",
         emblemPlusTierBonus: "★ Bonus Peringkat: Mewarisi SEMUA kelebihan Emblem asas secara automatik",
         bonusBadge: "Polisi 2,200 Bonus Token",
@@ -1262,9 +1409,9 @@
         secMultipliers: "Pengganda & Naik Taraf Tenaga",
         secDaily: "Aktiviti Harian & Pet Villa",
         lvRewardsTag: "Ganjaran Pakej Level Up",
-        lvRewardsIngameTag: "Rujuk Dalam Game",
+        lvRewardsIngameTag: "Pratonton Interaktif Tersedia",
         lvRewardsDesc: "Setiap Starter Pack merangkumi pakaian khas, senjata, skil tempur eksklusif, gaya rambut, barangan belakang, aksesori, pet unik, serta bonus Token.",
-        lvRewardsNote: "Sila semak di dalam game untuk melihat rupa item, kebolehan pet, dan skil bagi setiap peringkat tahap.",
+        lvRewardsNote: "Klik butang Preview pada mana-mana Starter Pack untuk lihat gambar dan hover bagi butiran skil!",
         lvNotesTag: "Polisi Pembelian & Item Pendua",
         lvNotesLimitTag: "1 Setiap Slot Watak",
         lvNotesDesc: "Setiap pakej hanya boleh dibeli sekali sahaja bagi setiap slot watak. Jika anda sudah memiliki item dalam pakej, ia akan digantikan dengan Token:",
@@ -1291,6 +1438,8 @@
         modalSuccessSub: "Ringkasan pesanan telah disalin ke papan keratan. Sila tampal terus ke dalam ruang sembang kami.",
         modalClose: "Selesai",
         limit1Badge: "Had 1",
+        emblemChoiceBadge: "Pilih 1 Sahaja",
+        switchBtn: "Tukar",
         tokensObtainedLabel: "Jumlah Token Diterima:",
         ticketHeader: "RINGKASAN PESANAN",
         ticketCharId: "Character ID",
@@ -1300,15 +1449,975 @@
         ticketClosing: "Sila sahkan butiran pembayaran. Terima kasih.",
         toastCharRequired: "Sila masukkan Character ID anda",
         toastCartEmpty: "Sila pilih sekurang-kurangnya satu pakej",
-        toastCopied: "Disalin ke papan keratan"
+        toastCopied: "Disalin ke papan keratan",
+        lvNoticeTag: "⚡ NOTIS PAKEJ LEVEL-UP STARTER PACK",
+        lvNoticeRule1: "Sila ambil perhatian bahawa pakej tidak boleh dilangkau—ia mesti dibeli mengikut urutan berturutan.",
+        lvNoticeRule2: "Anda boleh membeli beberapa pakej (atau kesemuanya) sekaligus tanpa mengira tahap watak anda. Contohnya, watak Tahap 10 boleh terus membeli pakej Tahap 10 sehingga Tahap 100 dalam satu pesanan.",
+        lvNoticeRule3: "Selagi anda membukanya mengikut urutan, tahap watak anda tidak akan menyekat pembelian anda.",
+        lvNoticeChk: "Jangan tunjuk lagi hari ini",
+        lvNoticeBtn: "Faham"
       }
     };
 
     let currentLang = 'en';
 
-    /* ---------------- CATALOG DATA WITH TOKEN COUNTS ---------------- */
+    /* ---------------- RICH LEVEL UP BUNDLE CONTENTS REPOSITORY ---------------- */
+    const LEVEL_UP_DATA = {
+      "lv-10": {
+        level: 10,
+        title: "Lv.10 Starter Pack",
+        tokens: 700,
+        items: [
+          {
+            type: "Skill",
+            name: "Kinjutsu: The Lance of God Killing",
+            rarity: "Kinjutsu",
+            rarityColor: "text-amber-300 border-amber-500/40 bg-amber-950/30",
+            icon: "⚡",
+            imgKey: "lv10_skill",
+            image: "",
+            desc: "Drains 12% of target's current HP and CP, and increases target's skill cooldowns by 1 turn.",
+            stats: "750 Damage • 10 CP • CD 12"
+          },
+          {
+            type: "Weapon",
+            name: "2022 Carnival Red Bachi",
+            rarity: "Weapon",
+            rarityColor: "text-rose-400 border-rose-500/40 bg-rose-950/20",
+            icon: "🥁",
+            imgKey: "lv10_weapon",
+            image: "",
+            desc: "Special red festival drumsticks infused with celebratory carnival energy.",
+            stats: "30 Damage"
+          },
+          {
+            type: "Back Item",
+            name: "Red Backpack",
+            rarity: "Rare",
+            rarityColor: "text-sky-400 border-sky-500/40 bg-sky-950/20",
+            icon: "🎒",
+            imgKey: "lv10_back",
+            image: "",
+            desc: "A handy utility backpack that boosts experience gained on active missions.",
+            stats: "Doubles mission XP"
+          },
+          {
+            type: "Essential",
+            name: "Chunin Magatama Fukubukuro ×15",
+            rarity: "Item Bundle",
+            rarityColor: "text-purple-400 border-purple-500/40 bg-purple-950/20",
+            icon: "🎁",
+            imgKey: "lv10_essential",
+            image: "",
+            desc: "Grab-bag parcel holding valuable magatama gems to boost ninja attributes.",
+            stats: "Chance of Magatama Lv.1–4"
+          },
+          {
+            type: "Clothing",
+            name: "Exclusive Outfit",
+            rarity: "Lv.10",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "🥋",
+            imgKey: "lv10_clothing",
+            image: "",
+            desc: "Exclusive Lv.10 Starter Pack attire specially tailored for rising shinobi.",
+            stats: "Lv.10 Exclusive Cosmetic"
+          },
+          {
+            type: "Hairstyle",
+            name: "Exclusive Hairstyle",
+            rarity: "Lv.10",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "💇",
+            imgKey: "lv10_hairstyle",
+            image: "",
+            desc: "Special festive hairstyle tailored exclusively for this level bundle.",
+            stats: "Lv.10 Exclusive Hairstyle"
+          },
+          {
+            type: "Pet",
+            name: "Mini Taiko",
+            rarity: "Companion",
+            rarityColor: "text-amber-400 border-amber-500/40 bg-amber-950/20",
+            icon: "🪘",
+            imgKey: "lv10_pet",
+            image: "",
+            desc: "Playful taiko drum spirit companion that drums rhythmically in your battles.",
+            stats: "Pet Companion"
+          },
+          {
+            type: "Essential",
+            name: "Jutsu Pill Bag ×5",
+            rarity: "Consumable",
+            rarityColor: "text-amber-300 border-amber-500/40 bg-amber-950/20",
+            icon: "💊",
+            imgKey: "lv10_jutsu_pill",
+            image: "",
+            desc: "Chance to receive 5 random Upgrade Pills across all 7 disciplines:<br><span class='text-zinc-400 leading-relaxed block mt-1'>• <strong>Ninjutsu:</strong> Wind, Fire, Lightning, Earth, Water<br>• <strong>Martial:</strong> Taijutsu &amp; Genjutsu</span>",
+            stats: "Contains 5x Skill Upgrade Pills"
+          }
+        ]
+      },
+      "lv-20": {
+        level: 20,
+        title: "Lv20 Starter Pack",
+        tokens: 2000,
+        items: [
+          {
+            type: "Skill",
+            name: "Kinjutsu: Wings of Darkness",
+            rarity: "Kinjutsu",
+            rarityColor: "text-amber-300 border-amber-500/40 bg-amber-950/30",
+            icon: "🪽",
+            imgKey: "lv20_skill",
+            image: "",
+            desc: "Increases agility by 20% and dodge chance by 40% for 3 turns.",
+            stats: "+20% Agility • +40% Dodge • 3 turns"
+          },
+          {
+            type: "Weapon",
+            name: "Vermilion Bird Axe",
+            rarity: "Weapon",
+            rarityColor: "text-rose-400 border-rose-500/40 bg-rose-950/20",
+            icon: "🪓",
+            imgKey: "lv20_weapon",
+            image: "",
+            desc: "A blazing battle axe honoring the fiery Vermilion Bird.",
+            stats: "215 Damage • +26% Accuracy"
+          },
+          {
+            type: "Back Item",
+            name: "2022 Carnival Jiegu",
+            rarity: "Rare",
+            rarityColor: "text-sky-400 border-sky-500/40 bg-sky-950/20",
+            icon: "🥁",
+            imgKey: "lv20_back",
+            image: "",
+            desc: "Ceremonial carnival drum worn on the back, restoring vitality every turn.",
+            stats: "+100 HP / CP per turn"
+          },
+          {
+            type: "Accessory",
+            name: "Sealed Fire Scroll",
+            rarity: "Accessory",
+            rarityColor: "text-amber-400 border-amber-500/40 bg-amber-950/20",
+            icon: "📜",
+            imgKey: "lv20_accessory",
+            image: "",
+            desc: "An ancient parchment charged with primordial fire chakra.",
+            stats: "+2% CP Regen • +350 Bonus XP"
+          },
+          {
+            type: "Essential",
+            name: "Taijutsu Upgrade Pill ×5",
+            rarity: "Consumable",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "💊",
+            imgKey: "lv20_essential",
+            image: "",
+            desc: "Medicinal pills that enable instant, free upgrades for Taijutsu techniques.",
+            stats: "Free Taijutsu upgrades"
+          },
+          {
+            type: "Clothing",
+            name: "Exclusive Outfit",
+            rarity: "Lv.20",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "🥋",
+            imgKey: "lv20_clothing",
+            image: "",
+            desc: "Exclusive Lv.20 Starter Pack attire specially tailored for rising shinobi.",
+            stats: "Lv.20 Exclusive Cosmetic"
+          },
+          {
+            type: "Hairstyle",
+            name: "Exclusive Hairstyle",
+            rarity: "Lv.20",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "💇",
+            imgKey: "lv20_hairstyle",
+            image: "",
+            desc: "Special festive hairstyle tailored exclusively for this level bundle.",
+            stats: "Lv.20 Exclusive Hairstyle"
+          },
+          {
+            type: "Pet",
+            name: "Tanuki",
+            rarity: "Companion",
+            rarityColor: "text-amber-400 border-amber-500/40 bg-amber-950/20",
+            icon: "🦝",
+            imgKey: "lv20_pet",
+            image: "",
+            desc: "Mischievous raccoon dog familiar providing loyal combat support.",
+            stats: "Pet Companion"
+          }
+        ]
+      },
+      "lv-30": {
+        level: 30,
+        title: "Lv30 Starter Pack",
+        tokens: 2500,
+        items: [
+          {
+            type: "Skill",
+            name: "Full Turkey",
+            rarity: "Exclusive Skill",
+            rarityColor: "text-amber-300 border-amber-500/40 bg-amber-950/30",
+            icon: "🍗",
+            imgKey: "lv30_skill",
+            image: "",
+            desc: "Recover user's HP by 900 for 3 turns. The user is infected with Darkness as well. (Darkness: decrease 15% dodge rate).",
+            stats: "Damage: 0 • CP: 150 • CD: 15"
+          },
+          {
+            type: "Weapon",
+            name: "Ninja War Fan",
+            rarity: "Weapon",
+            rarityColor: "text-rose-400 border-rose-500/40 bg-rose-950/20",
+            icon: "🪭",
+            imgKey: "lv30_weapon",
+            image: "",
+            desc: "A reinforced war fan that delivers quick wind strikes with high precision.",
+            stats: "100 Damage • +35% Accuracy • -5% Crit"
+          },
+          {
+            type: "Back Item",
+            name: "Sakura Fan",
+            rarity: "Rare",
+            rarityColor: "text-sky-400 border-sky-500/40 bg-sky-950/20",
+            icon: "🌸",
+            imgKey: "lv30_back",
+            image: "",
+            desc: "Ornamental back fan radiating soothing cherry blossom chakra.",
+            stats: "+20 HP / +150 CP per turn"
+          },
+          {
+            type: "Essential",
+            name: "Jutsu Pill Bag",
+            rarity: "Consumable",
+            rarityColor: "text-amber-300 border-amber-500/40 bg-amber-950/20",
+            icon: "💊",
+            imgKey: "lv30_jutsu_pill",
+            image: "",
+            desc: "A mystery bag containing an upgrade pill across disciplines:<br><span class='text-zinc-400 leading-relaxed block mt-1'>• Ninjutsu, Taijutsu, or Genjutsu</span>",
+            stats: "Random Upgrade Pill"
+          },
+          {
+            type: "Essential",
+            name: "Genjutsu Upgrade Pill ×5",
+            rarity: "Consumable",
+            rarityColor: "text-purple-400 border-purple-500/40 bg-purple-950/20",
+            icon: "💊",
+            imgKey: "lv30_genjutsu_pill",
+            image: "",
+            desc: "Special medicinal pills that allow instant, free upgrades for Genjutsu techniques.",
+            stats: "Free Genjutsu upgrades"
+          },
+          {
+            type: "Clothing",
+            name: "Exclusive Outfit",
+            rarity: "Lv.30",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "🥋",
+            imgKey: "lv30_clothing",
+            image: "",
+            desc: "Exclusive Lv.30 Starter Pack attire specially tailored for skilled shinobi.",
+            stats: "Lv.30 Exclusive Cosmetic"
+          },
+          {
+            type: "Hairstyle",
+            name: "Exclusive Hairstyle",
+            rarity: "Lv.30",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "💇",
+            imgKey: "lv30_hairstyle",
+            image: "",
+            desc: "Special festive hairstyle tailored exclusively for this level bundle.",
+            stats: "Lv.30 Exclusive Hairstyle"
+          },
+          {
+            type: "Pet",
+            name: "Origami Panda",
+            rarity: "Companion",
+            rarityColor: "text-amber-400 border-amber-500/40 bg-amber-950/20",
+            icon: "🐼",
+            imgKey: "lv30_pet",
+            image: "",
+            desc: "An enchanted paper-folded panda companion bringing good fortune in combat.",
+            stats: "Pet Companion"
+          }
+        ]
+      },
+      "lv-40": {
+        level: 40,
+        title: "Lv40 Starter Pack",
+        tokens: 3000,
+        items: [
+          {
+            type: "Skill",
+            name: "Kinjutsu: Tenson Omi Korin",
+            rarity: "Kinjutsu",
+            rarityColor: "text-amber-300 border-amber-500/40 bg-amber-950/30",
+            icon: "✨",
+            imgKey: "lv40_skill",
+            image: "",
+            desc: "Legendary Genjutsu, summon Tenson Omi Korin for a team protection. The team recover 500 HP every turn and will not be affected by any negative status (2 turns).",
+            stats: "Damage: 0 • CP: 200 • CD: 14"
+          },
+          {
+            type: "Weapon",
+            name: "Black Bat Wand",
+            rarity: "Weapon",
+            rarityColor: "text-rose-400 border-rose-500/40 bg-rose-950/20",
+            icon: "🪄",
+            imgKey: "lv40_weapon",
+            image: "",
+            desc: "An eerie wand adorned with bat wings that channels precise dark strikes.",
+            stats: "220 Damage • +15% Accuracy"
+          },
+          {
+            type: "Back Item",
+            name: "Guardian Palm",
+            rarity: "Rare",
+            rarityColor: "text-sky-400 border-sky-500/40 bg-sky-950/20",
+            icon: "✋",
+            imgKey: "lv40_back",
+            image: "",
+            desc: "Mystical protective palm guarding the wielder's back, purifying toxins and dampening incoming hits.",
+            stats: "+4% Purify • -180 Damage Taken"
+          },
+          {
+            type: "Essential",
+            name: "Sage Talent Pill",
+            rarity: "Consumable",
+            rarityColor: "text-amber-300 border-amber-500/40 bg-amber-950/20",
+            icon: "💊",
+            imgKey: "lv40_sage_pill",
+            image: "",
+            desc: "Special alchemical pills granting massive talent points to accelerate secret mastery.",
+            stats: "+200 TP x10"
+          },
+          {
+            type: "Essential",
+            name: "Taijutsu Upgrade Pill",
+            rarity: "Consumable",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "💊",
+            imgKey: "lv40_taijutsu_pill",
+            image: "",
+            desc: "Medicinal pill that provides a free technique upgrade for Taijutsu mastery.",
+            stats: "Free Taijutsu upgrade"
+          },
+          {
+            type: "Clothing",
+            name: "Exclusive Outfit",
+            rarity: "Lv.40",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "🥋",
+            imgKey: "lv40_clothing",
+            image: "",
+            desc: "Exclusive Lv.40 Starter Pack attire specially tailored for veteran shinobi.",
+            stats: "Lv.40 Exclusive Cosmetic"
+          },
+          {
+            type: "Hairstyle",
+            name: "Exclusive Hairstyle",
+            rarity: "Lv.40",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "💇",
+            imgKey: "lv40_hairstyle",
+            image: "",
+            desc: "Special festive hairstyle tailored exclusively for this level bundle.",
+            stats: "Lv.40 Exclusive Hairstyle"
+          },
+          {
+            type: "Pet",
+            name: "The Ghost Lights",
+            rarity: "Companion",
+            rarityColor: "text-amber-400 border-amber-500/40 bg-amber-950/20",
+            icon: "👻",
+            imgKey: "lv40_pet",
+            image: "",
+            desc: "Ethereal will-o'-the-wisps floating around the master, confounding opponents.",
+            stats: "Pet Companion"
+          }
+        ]
+      },
+      "lv-50": {
+        level: 50,
+        title: "Lv50 Starter Pack",
+        tokens: 4100,
+        items: [
+          {
+            type: "Skill",
+            name: "Kinjutsu: Phantom Impulse",
+            rarity: "Kinjutsu",
+            rarityColor: "text-amber-300 border-amber-500/40 bg-amber-950/30",
+            icon: "⚡",
+            imgKey: "lv50_skill",
+            image: "",
+            desc: "(Kinjutsu) Deals target's 10% max HP as damage. Damage done isn't affected by any status.",
+            stats: "Damage: 10 • CP: 10 • CD: 10"
+          },
+          {
+            type: "Weapon",
+            name: "Christmas Sweet Sword",
+            rarity: "Weapon",
+            rarityColor: "text-rose-400 border-rose-500/40 bg-rose-950/20",
+            icon: "🍬",
+            imgKey: "lv50_weapon",
+            image: "",
+            desc: "Festive confectionery blade packing surprising power and massive vitality boosts.",
+            stats: "330 Damage • +20% Accuracy • +1,225 Max HP / CP"
+          },
+          {
+            type: "Back Item",
+            name: "Celestial Chains of Radiance",
+            rarity: "Rare",
+            rarityColor: "text-sky-400 border-sky-500/40 bg-sky-950/20",
+            icon: "⛓️",
+            imgKey: "lv50_back",
+            image: "",
+            desc: "Luminous chains radiating celestial energy to boost combat accuracy, damage output, and purify ailments.",
+            stats: "+5% Accuracy • Damage • Purify"
+          },
+          {
+            type: "Essential",
+            name: "Jonin Magatama Fukubukuro",
+            rarity: "Item Bundle",
+            rarityColor: "text-purple-400 border-purple-500/40 bg-purple-950/20",
+            icon: "🎁",
+            imgKey: "lv50_jonin_magatama",
+            image: "",
+            desc: "High-tier grab-bag containing valuable Jonin-grade Magatama jewels.",
+            stats: "Chance of Magatama Lv.5–8"
+          },
+          {
+            type: "Essential",
+            name: "Dragon Coin",
+            rarity: "Consumable",
+            rarityColor: "text-amber-300 border-amber-500/40 bg-amber-950/20",
+            icon: "🪙",
+            imgKey: "lv50_dragon_coin",
+            image: "",
+            desc: "Special token coin required to play and draw from the Dragon Gacha.",
+            stats: "Dragon Gacha"
+          },
+          {
+            type: "Clothing",
+            name: "Exclusive Outfit",
+            rarity: "Lv.50",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "🥋",
+            imgKey: "lv50_clothing",
+            image: "",
+            desc: "Exclusive Lv.50 Starter Pack attire specially tailored for expert shinobi.",
+            stats: "Lv.50 Exclusive Cosmetic"
+          },
+          {
+            type: "Hairstyle",
+            name: "Exclusive Hairstyle",
+            rarity: "Lv.50",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "💇",
+            imgKey: "lv50_hairstyle",
+            image: "",
+            desc: "Special festive hairstyle tailored exclusively for this level bundle.",
+            stats: "Lv.50 Exclusive Hairstyle"
+          },
+          {
+            type: "Pet",
+            name: "Silver Monkey King",
+            rarity: "Companion",
+            rarityColor: "text-amber-400 border-amber-500/40 bg-amber-950/20",
+            icon: "🐒",
+            imgKey: "lv50_pet",
+            image: "",
+            desc: "A spirited primate monarch companion who fights valiantly at your side.",
+            stats: "Pet Companion"
+          }
+        ]
+      },
+      "lv-60": {
+        level: 60,
+        title: "Lv60 Starter Pack",
+        tokens: 5200,
+        items: [
+          {
+            type: "Skill",
+            name: "Kinjutsu: Bijuu Bomb",
+            rarity: "Kinjutsu",
+            rarityColor: "text-amber-300 border-amber-500/40 bg-amber-950/30",
+            icon: "💣",
+            imgKey: "lv60_skill",
+            image: "",
+            desc: "(Kinjutsu) Summon a Tailed Beast to destroy everything around the enemy. Target will be restricted and 6% of his or her HP will also be reduced in the next 3 turns.",
+            stats: "Damage: 0 • CP: 300 • CD: 20"
+          },
+          {
+            type: "Weapon",
+            name: "Legendary Ocean Longsword",
+            rarity: "Weapon",
+            rarityColor: "text-rose-400 border-rose-500/40 bg-rose-950/20",
+            icon: "⚔️",
+            imgKey: "lv60_weapon",
+            image: "",
+            desc: "Increase 30% accuracy and attack damage by 8%. Recovers 5% HP every turn.",
+            stats: "360 Damage • +30% Accuracy • +8% Attack"
+          },
+          {
+            type: "Back Item",
+            name: "Senbu Taiko",
+            rarity: "Rare",
+            rarityColor: "text-sky-400 border-sky-500/40 bg-sky-950/20",
+            icon: "🥁",
+            imgKey: "lv60_back",
+            image: "",
+            desc: "Each turn recover 200 HP and 200 CP.",
+            stats: "+200 HP / CP per turn"
+          },
+          {
+            type: "Essential",
+            name: "Protection Sealing Scroll ×20",
+            rarity: "Consumable",
+            rarityColor: "text-purple-400 border-purple-500/40 bg-purple-950/20",
+            icon: "📜",
+            imgKey: "lv60_sealing_scroll",
+            image: "",
+            desc: "A special scroll, containing various chakras inside. Can be used for sealing monsters in Events and Dragon Hunt. (If the sealing process fails, this scroll doesn't get spent).",
+            stats: "Event & Dragon Hunt Sealing"
+          },
+          {
+            type: "Clothing",
+            name: "Oni Slayer Armor",
+            rarity: "Limited Suit",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "🥋",
+            imgKey: "lv60_clothing",
+            image: "",
+            desc: "Limited Oni Slayer armor suit forged for high-ranking samurai and shinobi.",
+            stats: "Lv.60 Exclusive Cosmetic"
+          },
+          {
+            type: "Hairstyle",
+            name: "Kanagawa Hat",
+            rarity: "Lv.60",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "👒",
+            imgKey: "lv60_hairstyle",
+            image: "",
+            desc: "Oni Armor woven straw hat and braided hair honoring Kanagawa traditions.",
+            stats: "Lv.60 Exclusive Hairstyle"
+          },
+          {
+            type: "Essential",
+            name: "Big Energy Capsule Bag",
+            rarity: "Consumable",
+            rarityColor: "text-amber-300 border-amber-500/40 bg-amber-950/20",
+            icon: "🎒",
+            imgKey: "lv60_energy_bag",
+            image: "",
+            desc: "Chance to receive high-tier energy refills:<br><span class='text-zinc-400 leading-relaxed block mt-1'>• Big Arena, PvP, Pet Arena, Event & PvE Capsules<br>• Twin Stamina Rolls, Twin Golden Rolls, 2x Vitality Gourd</span>",
+            stats: "Contains High-Tier Energy Refills"
+          },
+          {
+            type: "Pet",
+            name: "Falcon",
+            rarity: "Companion",
+            rarityColor: "text-amber-400 border-amber-500/40 bg-amber-950/20",
+            icon: "🦅",
+            imgKey: "lv60_pet",
+            image: "",
+            desc: "Swift aerial bird of prey companion tracking opponents from above.",
+            stats: "Pet Companion"
+          }
+        ]
+      },
+      "lv-70": {
+        level: 70,
+        title: "Lv70 Starter Pack",
+        tokens: 8000,
+        items: [
+          {
+            type: "Skill",
+            name: "Kinjutsu: Batarizord's Revenge",
+            rarity: "Kinjutsu",
+            rarityColor: "text-amber-300 border-amber-500/40 bg-amber-950/30",
+            icon: "🤖",
+            imgKey: "lv70_skill",
+            image: "",
+            desc: "Summons robotic zords to burn your opponents to ashes. Reduces all targets HP by 10% for 2 turns. (Base on maximum HP)",
+            stats: "Damage: 0 • CP: 900 • CD: 15"
+          },
+          {
+            type: "Weapon",
+            name: "Cherry Blossom",
+            rarity: "Weapon",
+            rarityColor: "text-rose-400 border-rose-500/40 bg-rose-950/20",
+            icon: "🌸",
+            imgKey: "lv70_weapon",
+            image: "",
+            desc: "An elegant fan with Cherry Blossom pattern. Increases accuracy by 25%. Increases agility by 2 points. Increase maximum CP by 700.",
+            stats: "330 Damage • +25% Acc • +2 Agi • +700 Max CP"
+          },
+          {
+            type: "Back Item",
+            name: "Pirate Skull Flag",
+            rarity: "Rare",
+            rarityColor: "text-sky-400 border-sky-500/40 bg-sky-950/20",
+            icon: "🏴‍☠️",
+            imgKey: "lv70_back",
+            image: "",
+            desc: "Increase 6% purify chance. Reduce damage taken by 5%.",
+            stats: "+6% Purify • -5% Damage Taken"
+          },
+          {
+            type: "Essential",
+            name: "Energy Upgrade Capsule Bag",
+            rarity: "Consumable",
+            rarityColor: "text-amber-300 border-amber-500/40 bg-amber-950/20",
+            icon: "🎒",
+            imgKey: "lv70_energy_bag",
+            image: "",
+            desc: "Chance to get:<br><span class='text-zinc-400 leading-relaxed block mt-1'>• Arena, PVP, Pet Arena, Event, PVE, Clan, &amp; Crew Upgrade Capsules</span>",
+            stats: "Permanent Max Energy Capsules"
+          },
+          {
+            type: "Clothing",
+            name: "Snow Ninja Festival Armor",
+            rarity: "Limited Suit",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "🥋",
+            imgKey: "lv70_clothing",
+            image: "",
+            desc: "Summer Event 2023 Design Contest. Designed by Zeck Manlapaz.",
+            stats: "Lv.70 Exclusive Cosmetic"
+          },
+          {
+            type: "Hairstyle",
+            name: "Sky Ninja Mask",
+            rarity: "Lv.70",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "🥷",
+            imgKey: "lv70_hairstyle",
+            image: "",
+            desc: "Limited hairstyle for Valentine's Day 2023.",
+            stats: "Lv.70 Exclusive Hairstyle"
+          },
+          {
+            type: "Essential",
+            name: "Ultra Pet Essence",
+            rarity: "Consumable",
+            rarityColor: "text-purple-400 border-purple-500/40 bg-purple-950/20",
+            icon: "🧪",
+            imgKey: "lv70_pet_essence",
+            image: "",
+            desc: "Instantly finishes pet's training.",
+            stats: "Instant Pet Training"
+          },
+          {
+            type: "Pet",
+            name: "Nibi",
+            rarity: "Goated PvP",
+            rarityColor: "text-amber-400 border-amber-500/40 bg-amber-950/20",
+            icon: "🐈‍⬛",
+            imgKey: "lv70_pet",
+            image: "",
+            desc: "Goated PVP pet. Widely considered an essential top-tier beast for competitive duels, offering exceptional debuff pressure, disruptive control, and clutch utility to dominate turn tempo against tough opponents.",
+            stats: "Top-Tier PvP Pet Companion"
+          }
+        ]
+      },
+      "lv-80": {
+        level: 80,
+        title: "Lv80 Starter Pack",
+        tokens: 15000,
+        items: [
+          {
+            type: "Skill",
+            name: "Kinjutsu: Takamagahara",
+            rarity: "Kinjutsu",
+            rarityColor: "text-amber-300 border-amber-500/40 bg-amber-950/30",
+            icon: "🌌",
+            imgKey: "lv80_skill",
+            image: "",
+            desc: "(Kinjutsu) Remove all positive status effect of target. Reduce target HP & CP by 10% 10 turns. (Base on maximum HP & CP)",
+            stats: "Damage: 50 • CP: 10 • CD: 20"
+          },
+          {
+            type: "Weapon",
+            name: "Vermillion Weaver",
+            rarity: "Weapon",
+            rarityColor: "text-rose-400 border-rose-500/40 bg-rose-950/20",
+            icon: "⚔️",
+            imgKey: "lv80_weapon",
+            image: "",
+            desc: "Increases accuracy by 30%. Increase maximum HP and CP by 700.",
+            stats: "450 Damage • +30% Accuracy • +700 Max HP / CP"
+          },
+          {
+            type: "Back Item",
+            name: "Tailed Beast Chakra Crystal",
+            rarity: "Rare",
+            rarityColor: "text-sky-400 border-sky-500/40 bg-sky-950/20",
+            icon: "💎",
+            imgKey: "lv80_back",
+            image: "",
+            desc: "Increase 3% damage. Reduce 3% damage taken. Recover 2% HP each turn start.",
+            stats: "+3% Damage • -3% Damage Taken • 2% HP Regen"
+          },
+          {
+            type: "Essential",
+            name: "Legendary Taijutsu Upgrade Pill",
+            rarity: "Consumable",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "💊",
+            imgKey: "lv80_taijutsu_pill",
+            image: "",
+            desc: "This item can be used to upgrade Legendary Taijutsus for free.",
+            stats: "Free Legendary Taijutsu Upgrade"
+          },
+          {
+            type: "Clothing",
+            name: "Legendary Kyubi Suit",
+            rarity: "Limited Suit",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "🥋",
+            imgKey: "lv80_clothing",
+            image: "",
+            desc: "Summer Event 2022 Limited Edition.",
+            stats: "Lv.80 Exclusive Cosmetic"
+          },
+          {
+            type: "Hairstyle",
+            name: "Legendary Kyubi Style",
+            rarity: "Lv.80",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "💇",
+            imgKey: "lv80_hairstyle",
+            image: "",
+            desc: "Summer Event 2022 Limited Edition.",
+            stats: "Lv.80 Exclusive Hairstyle"
+          },
+          {
+            type: "Essential",
+            name: "Legendary Genjutsu Upgrade Pill",
+            rarity: "Consumable",
+            rarityColor: "text-purple-400 border-purple-500/40 bg-purple-950/20",
+            icon: "💊",
+            imgKey: "lv80_genjutsu_pill",
+            image: "",
+            desc: "This item can be used to upgrade Legendary Genjutsus for free.",
+            stats: "Free Legendary Genjutsu Upgrade"
+          },
+          {
+            type: "Pet",
+            name: "Christmas Kyubi",
+            rarity: "Companion",
+            rarityColor: "text-amber-400 border-amber-500/40 bg-amber-950/20",
+            icon: "🦊",
+            imgKey: "lv80_pet",
+            image: "",
+            desc: "Festive Kyubi spirit familiar providing mythical fox chakra support.",
+            stats: "Pet Companion"
+          }
+        ]
+      },
+      "lv-90": {
+        level: 90,
+        title: "Lv90 Starter Pack",
+        tokens: 20000,
+        items: [
+          {
+            type: "Skill",
+            name: "Kinjutsu: Shield Bash",
+            rarity: "Kinjutsu",
+            rarityColor: "text-amber-300 border-amber-500/40 bg-amber-950/30",
+            icon: "🛡️",
+            imgKey: "lv90_skill",
+            image: "",
+            desc: "(Kinjutsu) Bashing the opponent with the shield of justice. Enemy's positive status will be removed when hit and stun for 1 turn.",
+            stats: "Damage: 0 • CP: 541 • CD: 28"
+          },
+          {
+            type: "Weapon",
+            name: "Dark Kirin Halberd",
+            rarity: "Weapon",
+            rarityColor: "text-rose-400 border-rose-500/40 bg-rose-950/20",
+            icon: "🔱",
+            imgKey: "lv90_weapon",
+            image: "",
+            desc: "Increase accuracy by 37%. Recovers 12% HP when being under debuff status. 30% chances of remove target's positive status effect with weapon attack.",
+            stats: "515 Damage • +37% Acc • 12% HP Recov • Dispel"
+          },
+          {
+            type: "Back Item",
+            name: "Tengu Wings",
+            rarity: "Rare",
+            rarityColor: "text-sky-400 border-sky-500/40 bg-sky-950/20",
+            icon: "🪽",
+            imgKey: "lv90_back",
+            image: "",
+            desc: "Increases user's purify rate by 6%. Increases user's accuracy by 7%.",
+            stats: "+6% Purify • +7% Accuracy"
+          },
+          {
+            type: "Accessory",
+            name: "Kirin Tattoo",
+            rarity: "Accessory",
+            rarityColor: "text-amber-400 border-amber-500/40 bg-amber-950/20",
+            icon: "🐉",
+            imgKey: "lv90_accessory",
+            image: "",
+            desc: "Restores HP & CP by 3%. Increase 7% reactive force chance.",
+            stats: "+3% HP/CP Regen • +7% Reactive Force"
+          },
+          {
+            type: "Clothing",
+            name: "Mutoh's Samurai Armor",
+            rarity: "Limited Suit",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "🥋",
+            imgKey: "lv90_clothing",
+            image: "",
+            desc: "Limited Hunting House Package.",
+            stats: "Lv.90 Exclusive Cosmetic"
+          },
+          {
+            type: "Hairstyle",
+            name: "Mutoh's Crescent Hairstyle",
+            rarity: "Lv.90",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "💇",
+            imgKey: "lv90_hairstyle",
+            image: "",
+            desc: "Limited Hunting House Package Hairstyle.",
+            stats: "Lv.90 Exclusive Hairstyle"
+          },
+          {
+            type: "Essential",
+            name: "Big Energy Capsule Bag",
+            rarity: "Consumable",
+            rarityColor: "text-amber-300 border-amber-500/40 bg-amber-950/20",
+            icon: "🎒",
+            imgKey: "lv90_energy_bag",
+            image: "",
+            desc: "Chance to get:<br><span class='text-zinc-400 leading-relaxed block mt-1'>• Big Arena, PVP, Pet Arena, Event &amp; PVE Capsules<br>• Twin Stamina Rolls, Twin Golden Stamina Rolls, 2x Vitality Gourd</span>",
+            stats: "Contains High-Tier Energy Refills"
+          },
+          {
+            type: "Pet",
+            name: "Ultimate Kirin (IV)",
+            rarity: "PvP Pet",
+            rarityColor: "text-amber-400 border-amber-500/40 bg-amber-950/20",
+            icon: "🦄",
+            imgKey: "lv90_pet",
+            image: "",
+            desc: "Fierce mythical kirin beast providing exceptional PvP combat prowess, pressure, and defense.",
+            stats: "Elite PvP Pet Companion"
+          }
+        ]
+      },
+      "lv-100": {
+        level: 100,
+        title: "Lv100 Starter Pack",
+        tokens: 30000,
+        items: [
+          {
+            type: "Skill",
+            name: "Kinjutsu: Maple Illusion",
+            rarity: "Kinjutsu",
+            rarityColor: "text-amber-300 border-amber-500/40 bg-amber-950/30",
+            icon: "🍁",
+            imgKey: "lv100_skill",
+            image: "",
+            desc: "Disorients all targets by 40% for 4 turns.",
+            stats: "Damage: 0 • CP: 600 • CD: 18"
+          },
+          {
+            type: "Weapon",
+            name: "Tornado Jyubi's Broadsword",
+            rarity: "Weapon",
+            rarityColor: "text-rose-400 border-rose-500/40 bg-rose-950/20",
+            icon: "⚔️",
+            imgKey: "lv100_weapon",
+            image: "",
+            desc: "Increases accuracy by 35% and reduce damage taken by 270. Reduces target's 2% HP on a weapon attack instantly.",
+            stats: "470 Damage • +35% Acc • -270 Dmg • -2% HP"
+          },
+          {
+            type: "Back Item",
+            name: "Tornado Jyubi's Wings",
+            rarity: "Rare",
+            rarityColor: "text-sky-400 border-sky-500/40 bg-sky-950/20",
+            icon: "🪽",
+            imgKey: "lv100_back",
+            image: "",
+            desc: "Increase max HP/CP by 450 and agility by 2.",
+            stats: "+450 Max HP/CP • +2 Agility"
+          },
+          {
+            type: "Accessory",
+            name: "Tornado Jyubi Ring",
+            rarity: "Accessory",
+            rarityColor: "text-amber-400 border-amber-500/40 bg-amber-950/20",
+            icon: "💍",
+            imgKey: "lv100_accessory",
+            image: "",
+            desc: "Increase agility by 1. Restores 3% CP each turn.",
+            stats: "+1 Agility • +3% CP Regen per turn"
+          },
+          {
+            type: "Clothing",
+            name: "Tornado Jyubi Armor",
+            rarity: "Limited Suit",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "🥋",
+            imgKey: "lv100_clothing",
+            image: "",
+            desc: "Limited Jyubi Tornado Set.",
+            stats: "Lv.100 Exclusive Cosmetic"
+          },
+          {
+            type: "Hairstyle",
+            name: "Tornado Jyubi Hair",
+            rarity: "Lv.100",
+            rarityColor: "text-emerald-400 border-emerald-500/40 bg-emerald-950/20",
+            icon: "💇",
+            imgKey: "lv100_hairstyle",
+            image: "",
+            desc: "Limited Package Hairstyle.",
+            stats: "Lv.100 Exclusive Hairstyle"
+          },
+          {
+            type: "Essential",
+            name: "Big Energy Capsule Bag",
+            rarity: "Consumable",
+            rarityColor: "text-amber-300 border-amber-500/40 bg-amber-950/20",
+            icon: "🎒",
+            imgKey: "lv100_energy_bag",
+            image: "",
+            desc: "Chance to get:<br><span class='text-zinc-400 leading-relaxed block mt-1'>• Big Arena, PVP, Pet Arena, Event &amp; PVE Capsules<br>• Twin Stamina Rolls, Twin Golden Stamina Rolls, 2x Vitality Gourd</span>",
+            stats: "Contains High-Tier Energy Refills"
+          },
+          {
+            type: "Pet",
+            name: "Tornado Jyubi",
+            rarity: "PvP Pet",
+            rarityColor: "text-amber-400 border-amber-500/40 bg-amber-950/20",
+            icon: "🌪️",
+            imgKey: "lv100_pet",
+            image: "",
+            desc: "Legendary Ten-Tails tempest avatar delivering fierce windstorm onslaughts and battlefield command.",
+            stats: "Supreme Ten-Tails Pet Companion"
+          }
+        ]
+      }
+    };
+
+    /* ---------------- CATALOG DATA ---------------- */
     const CATALOG = [
-      /* FIRST-TIME BUYER SALE (25% OFF) */
+      /* FIRST-TIME BUYER SALE */
       { id: "ft-1", category: "first-time", name: "Package 1", desc: "31,500 Tokens + 100 Stamina Rolls + Kinjutsu + Pet", price: 150.00, oldPrice: 200.00, limit: 1, tokens: 31500 },
       { id: "ft-2", category: "first-time", name: "Package 2", desc: "14,175 Tokens + 40 Stamina Rolls + Kinjutsu + Pet", price: 75.75, oldPrice: 101.00, limit: 1, tokens: 14175 },
       { id: "ft-3", category: "first-time", name: "Package 3", desc: "5,250 Tokens + 20 Stamina Rolls + Kinjutsu + Pet", price: 30.75, oldPrice: 41.00, limit: 1, tokens: 5250 },
@@ -1325,28 +2434,28 @@
       { id: "tk-d", category: "token", name: "Package D", desc: "2,310 Tokens + Kinjutsu + Pet", price: 21.00, oldPrice: null, limit: 99, tokens: 2310 },
       { id: "tk-e", category: "token", name: "Package E", desc: "315 Tokens + Hairstyle", price: 5.00, oldPrice: null, limit: 99, tokens: 315 },
 
-      /* MARKET COINS (1:1 CONVERSION) */
+      /* MARKET COINS */
       { id: "mc-a", category: "marketcoins", name: "Market Coins Pack A", desc: "31,500 Market Coins + 100 Stamina Rolls + Kinjutsu + Pet", price: 200.00, oldPrice: null, limit: 99, tokens: 31500 },
       { id: "mc-b", category: "marketcoins", name: "Market Coins Pack B", desc: "14,175 Market Coins + 40 Stamina Rolls + Kinjutsu + Pet", price: 101.00, oldPrice: null, limit: 99, tokens: 14175 },
       { id: "mc-c", category: "marketcoins", name: "Market Coins Pack C", desc: "5,250 Market Coins + 20 Stamina Rolls + Kinjutsu + Pet", price: 41.00, oldPrice: null, limit: 99, tokens: 5250 },
       { id: "mc-d", category: "marketcoins", name: "Market Coins Pack D", desc: "2,310 Market Coins + Kinjutsu + Pet", price: 21.00, oldPrice: null, limit: 99, tokens: 2310 },
       { id: "mc-e", category: "marketcoins", name: "Market Coins Pack E", desc: "315 Market Coins + Hairstyle", price: 5.00, oldPrice: null, limit: 99, tokens: 315 },
 
-      /* CLAN PACKAGES */
+      /* CLAN */
       { id: "cl-sm", category: "clan", name: "Small Clan Pack", desc: "150 Stamina Rolls + 75 Twin Stamina Rolls + Pet", price: 21.00, oldPrice: null, limit: 99, tokens: 0 },
       { id: "cl-md", category: "clan", name: "Medium Clan Pack", desc: "500 Stamina Rolls + 50 Twin Stamina Rolls + Pet", price: 41.00, oldPrice: null, limit: 99, tokens: 0 },
       { id: "cl-lg", category: "clan", name: "Large Clan Pack", desc: "3,000 Stamina Rolls + 275 Twin Stamina Rolls + Clan Upgrade Capsule (+50 Energy) + Pet", price: 200.00, oldPrice: null, limit: 99, tokens: 0 },
 
-      /* ARENA PACKAGES */
+      /* ARENA */
       { id: "ar-sm", category: "arena", name: "Small Arena Pack", desc: "200 Arena Energy Capsules + 50 Big Arena Energy Capsules", price: 41.00, oldPrice: null, limit: 99, tokens: 0 },
       { id: "ar-lg", category: "arena", name: "Large Arena Pack", desc: "1,400 Arena Energy Capsules + 150 Big Energy Capsules + Arena Capsule Upgrade (+50 Energy) + Pet", price: 200.00, oldPrice: null, limit: 99, tokens: 0 },
 
       /* EMBLEMS */
-      { id: "em-1", category: "emblem", name: "Free -> Emblem", desc: "Unlock 3 Elements, 2,200 Bonus Tokens (1st Upgrade), Free Wisdom Scroll & Daily Tokens", price: 21.00, oldPrice: null, limit: 1, tokens: 2200 },
-      { id: "em-2", category: "emblem", name: "Emblem -> Emblem+", desc: "Upgrade to 5 Elements, 3x XP/Gold, Unlimited Party Control & All Emblem+ Perks (No Bonus Tokens)", price: 21.00, oldPrice: null, limit: 1, tokens: 0 },
-      { id: "em-3", category: "emblem", name: "Free -> Emblem+", desc: "Full Unlock: 5 Elements, 2,200 Bonus Tokens (1st Upgrade), 3x Multipliers & Emblem+ Perks", price: 41.00, oldPrice: null, limit: 1, tokens: 2200 },
+      { id: "em-1", category: "emblem", name: "Free -> Emblem", desc: "", price: 21.00, oldPrice: null, limit: 1, tokens: 2200 },
+      { id: "em-2", category: "emblem", name: "Emblem -> Emblem+", desc: "", price: 21.00, oldPrice: null, limit: 1, tokens: 0 },
+      { id: "em-3", category: "emblem", name: "Free -> Emblem+", desc: "", price: 41.00, oldPrice: null, limit: 1, tokens: 2200 },
 
-      /* LEVEL UP PACKAGES */
+      /* LEVEL UP STARTER PACKAGES */
       { id: "lv-10", category: "levelup", name: "Lv10 Starter Pack", desc: "700 Tokens + Outfit, Weapon, Skills, Hairstyle, Back Item, Accessory & Pet", price: 9.00, oldPrice: null, limit: 1, tokens: 700 },
       { id: "lv-20", category: "levelup", name: "Lv20 Starter Pack", desc: "2,000 Tokens + Outfit, Weapon, Skills, Hairstyle, Back Item, Accessory & Pet", price: 13.00, oldPrice: null, limit: 1, tokens: 2000 },
       { id: "lv-30", category: "levelup", name: "Lv30 Starter Pack", desc: "2,500 Tokens + Outfit, Weapon, Skills, Hairstyle, Back Item, Accessory & Pet", price: 17.00, oldPrice: null, limit: 1, tokens: 2500 },
@@ -1361,7 +2470,6 @@
 
     /* ---------------- CART STATE ---------------- */
     const cart = {};
-
     let currentCategory = "first-time";
     let bpSeason = 1;
     let bpTier = "Normal";
@@ -1438,7 +2546,6 @@
       setText("txt-bp-rewards-tag", t.bpRewardsTag);
       setText("txt-bp-rewards-ingame-tag", t.bpRewardsIngameTag);
       setText("txt-bp-rewards-desc", t.bpRewardsDesc);
-      setText("txt-bp-rewards-note", t.bpRewardsNote);
       setText("txt-emblem-tag", t.emblemTag);
       setText("txt-emblem-limit-tag", t.emblemLimitTag);
       setText("txt-emblem-basic-intro", t.emblemBasicIntro);
@@ -1446,11 +2553,6 @@
       setText("txt-bonus-badge", t.bonusBadge);
       setText("txt-bonus-highlight", t.bonusHighlight);
       setText("txt-bonus-desc", t.bonusDesc);
-      setText("txt-bonus-rule-eligible", t.bonusEligible);
-      setText("txt-bonus-rule-ineligible", t.bonusIneligible);
-      setText("txt-sec-core", t.secCore);
-      setText("txt-sec-multipliers", t.secMultipliers);
-      setText("txt-sec-daily", t.secDaily);
       setText("txt-lv-rewards-tag", t.lvRewardsTag);
       setText("txt-lv-rewards-ingame-tag", t.lvRewardsIngameTag);
       setText("txt-lv-rewards-desc", t.lvRewardsDesc);
@@ -1460,13 +2562,6 @@
       setText("txt-lv-notes-desc", t.lvNotesDesc);
       setText("txt-lv-dup-skill", t.lvDupSkill);
       setText("txt-lv-dup-cosmetic", t.lvDupCosmetic);
-      setText("txt-bp-rate-badge", t.bpRateBadge);
-      setText("txt-bp-limit-note", t.bpLimitNote);
-      setText("txt-bp-banner-title", t.bpBannerTitle);
-      setText("txt-bp-b1-title", t.bpB1);
-      setText("txt-bp-b2-title", t.bpB2);
-      setText("txt-bp-b3-title", t.bpB3);
-      setText("txt-bp-latest-tag", t.bpLatest);
       setText("txt-bp-tier-label", t.bpTierLabel);
       setText("txt-bp-season-label", t.bpSeasonLabel);
       setText("txt-copy-button", t.copyBtn);
@@ -1503,6 +2598,13 @@
       setText("txt-anno-closing-note", t.annoClosingNote);
       setText("txt-anno-chk-label", t.annoChkLabel);
       setText("btn-anno-confirm", t.annoConfirmBtn);
+
+      setText("txt-lvmodal-tag", t.lvNoticeTag);
+      setText("txt-lvmodal-rule1", t.lvNoticeRule1);
+      setText("txt-lvmodal-rule2", t.lvNoticeRule2);
+      setText("txt-lvmodal-rule3", t.lvNoticeRule3);
+      setText("txt-lvmodal-chk-label", t.lvNoticeChk);
+      setText("btn-lvmodal-confirm", t.lvNoticeBtn);
 
       const palCfg = PALETTE_CONFIGS[currentPaletteMode];
       const palText = document.getElementById("current-palette-text");
@@ -1631,7 +2733,7 @@
           'clan': 'bg-zinc-950 border-teal-900/40',
           'arena': 'bg-zinc-950 border-indigo-900/40',
           'emblem': 'bg-zinc-950 border-amber-900/40',
-          'levelup': 'bg-zinc-950 border-pink-900/40',
+          'levelup': 'bg-pink-950/40 border-pink-500/30',
           'default': 'bg-zinc-950 border-zinc-700'
         }
       },
@@ -1661,28 +2763,28 @@
         },
         cards: {
           'token': { inCart: 'bg-blue-950/25 border-blue-500/60 shadow-[0_0_16px_rgba(59,130,246,0.18)]', hover: 'hover:border-blue-500/40 hover:shadow-[0_0_12px_rgba(59,130,246,0.1)]' },
-          'marketcoins': { inCart: 'bg-purple-950/30 border-purple-500/70 shadow-[0_0_18px_rgba(168,85,247,0.2)]', hover: 'hover:border-purple-500/40 hover:shadow-[0_0_12px_rgba(168,85,247,0.12)]' },
-          'clan': { inCart: 'bg-cyan-950/30 border-cyan-500/70 shadow-[0_0_18px_rgba(6,182,212,0.2)]', hover: 'hover:border-cyan-500/40 hover:shadow-[0_0_12px_rgba(6,182,212,0.12)]' },
-          'arena': { inCart: 'bg-indigo-950/30 border-indigo-500/70 shadow-[0_0_18px_rgba(99,102,241,0.2)]', hover: 'hover:border-indigo-500/40 hover:shadow-[0_0_12px_rgba(99,102,241,0.12)]' },
-          'emblem': { inCart: 'bg-amber-950/30 border-amber-500/70 shadow-[0_0_18px_rgba(245,158,11,0.2)]', hover: 'hover:border-amber-500/40 hover:shadow-[0_0_12px_rgba(245,158,11,0.12)]' },
-          'levelup': { inCart: 'bg-pink-950/30 border-pink-500/70 shadow-[0_0_18px_rgba(236,72,153,0.2)]', hover: 'hover:border-pink-500/40 hover:shadow-[0_0_12px_rgba(236,72,153,0.12)]' },
+          'marketcoins': { inCart: 'bg-purple-950/30 border-purple-500/70 shadow-[0_0_18px_rgba(168,85,247,0.2)]', hover: 'hover:border-purple-500/40' },
+          'clan': { inCart: 'bg-cyan-950/30 border-cyan-500/70 shadow-[0_0_18px_rgba(6,182,212,0.2)]', hover: 'hover:border-cyan-500/40' },
+          'arena': { inCart: 'bg-indigo-950/30 border-indigo-500/70 shadow-[0_0_18px_rgba(99,102,241,0.2)]', hover: 'hover:border-indigo-500/40' },
+          'emblem': { inCart: 'bg-amber-950/30 border-amber-500/70 shadow-[0_0_18px_rgba(245,158,11,0.2)]', hover: 'hover:border-amber-500/40' },
+          'levelup': { inCart: 'bg-pink-950/30 border-pink-500/70 shadow-[0_0_18px_rgba(236,72,153,0.2)]', hover: 'hover:border-pink-500/40' },
           'default': { inCart: 'bg-emerald-950/25 border-emerald-500/60 shadow-[0_0_16px_rgba(16,185,129,0.18)]', hover: 'hover:border-emerald-500/30' }
         },
         prices: {
-          'token': 'text-blue-400 font-bold font-mono drop-shadow-[0_0_6px_rgba(96,165,250,0.35)]',
-          'marketcoins': 'text-purple-400 font-bold font-mono drop-shadow-[0_0_6px_rgba(192,132,252,0.4)]',
-          'clan': 'text-cyan-400 font-bold font-mono drop-shadow-[0_0_6px_rgba(6,182,212,0.4)]',
-          'arena': 'text-indigo-400 font-bold font-mono drop-shadow-[0_0_6px_rgba(129,140,248,0.4)]',
-          'emblem': 'text-amber-400 font-bold font-mono drop-shadow-[0_0_6px_rgba(251,191,36,0.4)]',
+          'token': 'text-blue-400 font-bold font-mono',
+          'marketcoins': 'text-purple-400 font-bold font-mono',
+          'clan': 'text-cyan-400 font-bold font-mono',
+          'arena': 'text-indigo-400 font-bold font-mono',
+          'emblem': 'text-amber-400 font-bold font-mono',
           'levelup': 'text-pink-400 font-bold font-mono drop-shadow-[0_0_6px_rgba(244,114,182,0.4)]',
           'default': 'text-emerald-400 font-bold font-mono'
         },
         buttons: {
-          'token': 'bg-blue-600 hover:bg-blue-500 active:scale-95 text-white shadow-[0_0_10px_rgba(37,99,235,0.35)]',
-          'marketcoins': 'bg-purple-600 hover:bg-purple-500 active:scale-95 text-white font-semibold shadow-[0_0_12px_rgba(168,85,247,0.4)]',
-          'clan': 'bg-cyan-500 hover:bg-cyan-400 active:scale-95 text-zinc-950 font-semibold shadow-[0_0_12px_rgba(6,182,212,0.4)]',
-          'arena': 'bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-semibold shadow-[0_0_12px_rgba(99,102,241,0.4)]',
-          'emblem': 'bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 font-semibold shadow-[0_0_12px_rgba(245,158,11,0.4)]',
+          'token': 'bg-blue-600 hover:bg-blue-500 active:scale-95 text-white',
+          'marketcoins': 'bg-purple-600 hover:bg-purple-500 active:scale-95 text-white font-semibold',
+          'clan': 'bg-cyan-500 hover:bg-cyan-400 active:scale-95 text-zinc-950 font-semibold',
+          'arena': 'bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-semibold',
+          'emblem': 'bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 font-semibold',
           'levelup': 'bg-pink-600 hover:bg-pink-500 active:scale-95 text-white font-semibold shadow-[0_0_12px_rgba(236,72,153,0.4)]',
           'default': 'bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white'
         },
@@ -1799,6 +2901,7 @@
       } else if (cat === "levelup") {
         if (lvDescBanner) lvDescBanner.classList.remove("hidden");
         if (lvNotesBanner) lvNotesBanner.classList.remove("hidden");
+        openLevelUpNoticeModal();
       }
 
       renderItems();
@@ -1919,27 +3022,15 @@
       if (tier === "Normal") {
         if (btnNorm) btnNorm.className = "p-2.5 px-3 rounded-xl border text-left transition flex items-center justify-between bg-rose-950/25 border-rose-500/50 ring-1 ring-rose-500/20 text-white shadow-sm group";
         if (btnMax) btnMax.className = "p-2.5 px-3 rounded-xl border text-left transition flex items-center justify-between bg-[#111116] border-surface-border text-zinc-400 hover:text-white hover:border-zinc-700 group";
-        if (dotNorm) {
-          dotNorm.className = "w-1.5 h-1.5 rounded-full bg-rose-400";
-          if (dotNorm.parentElement) dotNorm.parentElement.className = "w-3.5 h-3.5 rounded-full border border-rose-400 flex items-center justify-center shrink-0";
-        }
-        if (dotMax) {
-          dotMax.className = "w-1.5 h-1.5 rounded-full bg-transparent";
-          if (dotMax.parentElement) dotMax.parentElement.className = "w-3.5 h-3.5 rounded-full border border-zinc-600 flex items-center justify-center shrink-0";
-        }
+        if (dotNorm) dotNorm.className = "w-1.5 h-1.5 rounded-full bg-rose-400";
+        if (dotMax) dotMax.className = "w-1.5 h-1.5 rounded-full bg-transparent";
         if (rateNorm) rateNorm.className = "text-xs font-mono font-bold text-rose-300";
         if (rateMax) rateMax.className = "text-xs font-mono font-bold text-zinc-400";
       } else {
         if (btnMax) btnMax.className = "p-2.5 px-3 rounded-xl border text-left transition flex items-center justify-between bg-rose-950/25 border-rose-500/50 ring-1 ring-rose-500/20 text-white shadow-sm group";
         if (btnNorm) btnNorm.className = "p-2.5 px-3 rounded-xl border text-left transition flex items-center justify-between bg-[#111116] border-surface-border text-zinc-400 hover:text-white hover:border-zinc-700 group";
-        if (dotMax) {
-          dotMax.className = "w-1.5 h-1.5 rounded-full bg-rose-400";
-          if (dotMax.parentElement) dotMax.parentElement.className = "w-3.5 h-3.5 rounded-full border border-rose-400 flex items-center justify-center shrink-0";
-        }
-        if (dotNorm) {
-          dotNorm.className = "w-1.5 h-1.5 rounded-full bg-transparent";
-          if (dotNorm.parentElement) dotNorm.parentElement.className = "w-3.5 h-3.5 rounded-full border border-zinc-600 flex items-center justify-center shrink-0";
-        }
+        if (dotMax) dotMax.className = "w-1.5 h-1.5 rounded-full bg-rose-400";
+        if (dotNorm) dotNorm.className = "w-1.5 h-1.5 rounded-full bg-transparent";
         if (rateMax) rateMax.className = "text-xs font-mono font-bold text-rose-300";
         if (rateNorm) rateNorm.className = "text-xs font-mono font-bold text-zinc-400";
       }
@@ -2012,17 +3103,15 @@
       updateCartSummary();
       buildBattlepassGrid();
       syncBattlepassUI();
-      showToast(`${sWord} ${bpSeason} [${bpTier}] ${existingSeasonKey ? (isEn ? 'updated' : 'dikemaskini') : (isEn ? 'added' : 'ditambah')}`);
+      showToast(`${sWord} ${bpSeason} [${bpTier}] added`);
     }
 
-    /* ---------------- PRODUCT RENDERING ---------------- */
+    /* ---------------- PRODUCT RENDERING (WITH LEVEL UP PREVIEW BUTTON) ---------------- */
     function renderItems() {
       const list = document.getElementById("product-list");
       list.innerHTML = "";
 
-      if (currentCategory === "battlepass") {
-        return;
-      }
+      if (currentCategory === "battlepass") return;
 
       const items = CATALOG.filter(item => item.category === currentCategory);
       const palette = PALETTE_CONFIGS[currentPaletteMode];
@@ -2033,63 +3122,88 @@
         const isLimitReached = item.limit === 1 && inCartQty >= 1;
 
         const row = document.createElement("div");
-        
         const cardStyle = inCartQty > 0 
           ? palette.cards[catKey].inCart 
           : 'bg-surface-card border-surface-border ' + palette.cards[catKey].hover;
 
-        row.className = `p-4 rounded-2xl border transition-all duration-200 flex items-center justify-between gap-3 ${cardStyle}`;
+        row.className = `p-4 rounded-2xl border transition-all duration-200 flex flex-col justify-between gap-3 ${cardStyle}`;
 
         const priceColor = palette.prices[catKey];
         const addBtnStyle = palette.buttons[catKey];
         const stepperBg = palette.steppers[catKey];
 
-        row.innerHTML = `
-          <div class="flex-1 min-w-0 pr-1.5">
-            <div class="flex items-center gap-2">
-              <span class="text-xs sm:text-[13px] font-semibold text-white tracking-tight truncate">${item.name}</span>
-              ${item.limit === 1 ? `<span class="text-[9px] font-mono font-medium px-1.5 py-0.2 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700/60">${I18N[currentLang].limit1Badge}</span>` : ''}
-            </div>
-            <p class="text-[11px] sm:text-xs text-zinc-400 leading-snug break-words mt-1">${item.desc}</p>
-          </div>
+        const isLevelUp = item.category === 'levelup';
+        const isEmblem = item.category === 'emblem';
+        const otherEmblemInCart = isEmblem && Object.keys(cart).some(k => k.startsWith('em-') && k !== item.id);
 
-          <div class="flex items-center gap-3 shrink-0">
-            <div class="text-right">
+        const badgeHtml = isEmblem
+          ? `<span class="text-[9px] font-mono font-medium px-1.5 py-0.2 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">${I18N[currentLang].emblemChoiceBadge}</span>`
+          : (item.limit === 1 ? `<span class="text-[9px] font-mono font-medium px-1.5 py-0.2 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700/60">${I18N[currentLang].limit1Badge}</span>` : '');
+
+        row.innerHTML = `
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex-1 min-w-0 pr-1.5">
+              <div class="flex items-center gap-2">
+                <span class="text-xs sm:text-[13px] font-semibold text-white tracking-tight truncate">${item.name}</span>
+                ${badgeHtml}
+              </div>
+              ${item.desc && item.desc.trim() ? `<p class="text-[11px] sm:text-xs text-zinc-400 leading-snug break-words mt-1">${item.desc}</p>` : ''}
+            </div>
+
+            <div class="text-right shrink-0">
               <div class="text-xs sm:text-[13px] font-bold font-mono ${priceColor} tracking-tight">
                 RM ${item.price.toFixed(2)}
               </div>
               ${item.oldPrice ? `<div class="text-[10px] text-zinc-500 line-through font-mono">RM ${item.oldPrice.toFixed(2)}</div>` : ''}
             </div>
+          </div>
 
-            ${inCartQty === 0 ? `
+          <div class="flex items-center ${isLevelUp ? 'justify-between' : 'justify-end'} gap-2 pt-2 border-t border-zinc-800/40">
+            ${isLevelUp ? `
+              <!-- Eye-Catching Level Up Package Preview Button -->
               <button 
                 type="button" 
-                onclick="addToCart('${item.id}')"
-                class="px-3.5 py-1.5 rounded-xl active:scale-95 text-xs font-semibold transition ${addBtnStyle}">
-                + Add
+                onclick="openPackagePreview('${item.id}')"
+                class="px-2.5 py-1.5 rounded-xl bg-pink-500/15 hover:bg-pink-500/25 border border-pink-500/35 text-pink-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 group shadow-sm">
+                <svg class="w-3.5 h-3.5 text-pink-400 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <span>Preview</span>
               </button>
-            ` : `
-              <div class="flex items-center gap-1.5 ${stepperBg} border rounded-xl p-1">
+            ` : ''}
+
+            <div class="flex items-center">
+              ${inCartQty === 0 ? `
                 <button 
                   type="button" 
-                  onclick="changeQty('${item.id}', -1)" 
-                  class="w-6 h-6 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg text-xs font-mono transition">
-                  -
+                  onclick="addToCart('${item.id}')"
+                  class="px-3.5 py-1.5 rounded-xl active:scale-95 text-xs font-semibold transition ${addBtnStyle}">
+                  ${otherEmblemInCart ? I18N[currentLang].switchBtn : '+ Add'}
                 </button>
-                <span class="w-5 text-center font-mono text-xs font-bold text-white">${inCartQty}</span>
-                <button 
-                  type="button" 
-                  onclick="changeQty('${item.id}', 1)" 
-                  ${isLimitReached ? 'disabled' : ''}
-                  class="w-6 h-6 flex items-center justify-center rounded-lg text-xs font-mono transition ${
-                    isLimitReached 
-                      ? 'text-zinc-600 cursor-not-allowed' 
-                      : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
-                  }">
-                  +
-                </button>
-              </div>
-            `}
+              ` : `
+                <div class="flex items-center gap-1.5 ${stepperBg} border rounded-xl p-1">
+                  <button 
+                    type="button" 
+                    onclick="changeQty('${item.id}', -1)" 
+                    class="w-6 h-6 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg text-xs font-mono transition">
+                    -
+                  </button>
+                  <span class="w-5 text-center font-mono text-xs font-bold text-white">${inCartQty}</span>
+                  <button 
+                    type="button" 
+                    onclick="changeQty('${item.id}', 1)" 
+                    ${isLimitReached ? 'disabled' : ''}
+                    class="w-6 h-6 flex items-center justify-center rounded-lg text-xs font-mono transition ${
+                      isLimitReached 
+                        ? 'text-zinc-600 cursor-not-allowed' 
+                        : 'text-zinc-400 hover:text-white hover:bg-zinc-800'
+                    }">
+                    +
+                  </button>
+                </div>
+              `}
+            </div>
           </div>
         `;
 
@@ -2097,10 +3211,151 @@
       });
     }
 
+    /* ---------------- LEVEL UP PREVIEW MODAL LOGIC ---------------- */
+    let currentPreviewId = null;
+
+    function openPackagePreview(pkgId) {
+      currentPreviewId = pkgId;
+      const data = LEVEL_UP_DATA[pkgId];
+      if (!data) return;
+
+      const modal = document.getElementById("preview-modal");
+      const titleEl = document.getElementById("preview-pkg-title");
+      const tokensEl = document.getElementById("preview-pkg-tokens");
+      const grid = document.getElementById("preview-items-grid");
+      const quickAddBtn = document.getElementById("preview-quick-add-btn");
+      const tokenVal = document.getElementById("preview-token-value");
+      const tokenImg = document.getElementById("preview-token-img");
+
+      titleEl.innerText = data.title;
+      tokensEl.innerText = `+${data.tokens.toLocaleString()} Tokens Included`;
+      if (tokenVal) tokenVal.innerText = (data.tokens || 0).toLocaleString();
+      if (tokenImg && CUSTOM_ITEM_IMAGES["token_coin"]) {
+        tokenImg.src = CUSTOM_ITEM_IMAGES["token_coin"];
+      }
+      grid.innerHTML = "";
+
+      data.items.forEach((item, index) => {
+        const slot = document.createElement("div");
+        slot.className = "item-slot group relative bg-zinc-950/80 hover:bg-[#181822] border border-zinc-800 hover:border-pink-500/60 rounded-2xl p-3 flex flex-col items-center justify-between cursor-pointer transition shadow-md select-none hover:z-40";
+        
+        // Custom image support using either CUSTOM_ITEM_IMAGES[item.imgKey] or item.image with fallback icon
+        const customImgSrc = (item.imgKey && CUSTOM_ITEM_IMAGES[item.imgKey]) ? CUSTOM_ITEM_IMAGES[item.imgKey] : (item.image || "");
+        const imageHtml = customImgSrc && customImgSrc.trim().length > 5 
+          ? `<img src="${customImgSrc}" alt="${item.name}" class="w-12 h-12 object-contain rounded-lg drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)]" onerror="this.onerror=null;this.parentElement.innerHTML='<span class=\\'text-3xl filter drop-shadow\\'>${item.icon}</span>';">`
+          : `<span class="text-3xl filter drop-shadow-[0_4px_10px_rgba(236,72,153,0.3)] group-hover:scale-110 transition-transform">${item.icon}</span>`;
+
+        // Smart tooltip positioning:
+        // Top row (0-3) opens downwards so it NEVER covers the header!
+        // Bottom row (4-7) opens upwards.
+        const isTopRow = index < 4;
+        const positionClass = isTopRow 
+          ? "top-[104%] translate-y-1" 
+          : "bottom-[104%] -translate-y-1";
+
+        // Caret positioning matching 100% opaque solid background
+        const caretHtml = isTopRow 
+          ? `<div class="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#16161f] border-t border-l border-pink-500/50 rotate-45 z-10"></div>`
+          : `<div class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#16161f] border-b border-r border-pink-500/50 rotate-45 z-10"></div>`;
+
+        // Horizontal alignment check to avoid clipping on screen edges
+        let alignClass = "left-1/2 -translate-x-1/2";
+        if (index % 4 === 0) {
+          alignClass = "left-0"; // left edge
+        } else if (index % 4 === 3) {
+          alignClass = "right-0"; // right edge
+        }
+
+        slot.innerHTML = `
+          <!-- Item Card Face -->
+          <div class="w-full flex items-center justify-between text-[10px] font-mono text-zinc-400 mb-1">
+            <span class="truncate pr-1">${item.type}</span>
+            <span class="px-1.5 py-0.2 rounded text-[8.5px] font-bold ${item.rarityColor}">${item.rarity}</span>
+          </div>
+
+          <div class="my-2.5 flex items-center justify-center h-12">
+            ${imageHtml}
+          </div>
+
+          <div class="w-full text-center">
+            <div class="text-xs font-bold text-white tracking-tight truncate group-hover:text-pink-300 transition-colors">${item.name}</div>
+          </div>
+
+          <!-- Non-obstructive Solid Tooltip Card with elevated z-index -->
+          <div class="item-tooltip absolute ${positionClass} ${alignClass} w-64 bg-[#16161f] border border-pink-500/60 p-3.5 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.98)] text-left pointer-events-none z-50">
+            ${caretHtml}
+            <div class="flex items-center justify-between gap-1 border-b border-zinc-800 pb-1.5 mb-2">
+              <span class="text-[10px] font-mono uppercase tracking-wider text-pink-300 font-bold">${item.type}</span>
+              <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded ${item.rarityColor}">${item.rarity}</span>
+            </div>
+            <div class="text-xs font-bold text-white tracking-tight mb-1">${item.name}</div>
+            <p class="text-[11px] text-zinc-300 leading-relaxed mb-2 font-sans">${item.desc}</p>
+            <div class="pt-2 border-t border-zinc-800/80 text-[10.5px] font-mono text-emerald-400 font-medium">
+              ${item.stats}
+            </div>
+          </div>
+        `;
+
+        // Mobile tap toggle for tooltips
+        slot.addEventListener('click', (e) => {
+          if (window.innerWidth < 640) {
+            e.stopPropagation();
+            document.querySelectorAll('.item-tooltip').forEach(tt => {
+              if (tt !== slot.querySelector('.item-tooltip')) {
+                tt.style.visibility = 'hidden';
+                tt.style.opacity = '0';
+              }
+            });
+            const tt = slot.querySelector('.item-tooltip');
+            const isVisible = tt.style.visibility === 'visible';
+            tt.style.visibility = isVisible ? 'hidden' : 'visible';
+            tt.style.opacity = isVisible ? '0' : '1';
+          }
+        });
+
+        grid.appendChild(slot);
+      });
+
+      // Quick add button inside modal
+      const inCart = cart[pkgId] && cart[pkgId].qty > 0;
+      quickAddBtn.innerText = inCart ? "✓ In Order List" : "+ Add to Order";
+      quickAddBtn.className = inCart 
+        ? "flex-1 sm:flex-none px-5 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold transition shadow-sm"
+        : "flex-1 sm:flex-none px-5 py-2 rounded-xl bg-pink-600 hover:bg-pink-500 active:scale-95 text-white text-xs font-bold transition shadow-[0_0_15px_rgba(236,72,153,0.3)]";
+
+      quickAddBtn.onclick = () => {
+        addToCart(pkgId);
+        quickAddBtn.innerText = "✓ Added to Order";
+        quickAddBtn.className = "flex-1 sm:flex-none px-5 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold transition shadow-sm";
+        showToast(`${data.title} added to order`);
+      };
+
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+    }
+
+    function closePreviewModal() {
+      const modal = document.getElementById("preview-modal");
+      if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
+    }
+
     /* ---------------- CART OPERATIONS ---------------- */
     function addToCart(itemId) {
       const item = CATALOG.find(p => p.id === itemId);
       if (!item) return;
+
+      // Enforce single choice among the 3 Emblem options
+      if (item.category === "emblem") {
+        const existingEmblemKey = Object.keys(cart).find(k => k.startsWith("em-"));
+        if (existingEmblemKey && existingEmblemKey !== itemId) {
+          delete cart[existingEmblemKey];
+          const isEn = currentLang === 'en';
+          showToast(isEn ? `Switched to ${item.name} (Choose 1 only)` : `Ditukar kepada ${item.name} (Pilih 1 sahaja)`);
+        }
+      }
 
       if (!cart[itemId]) {
         cart[itemId] = {
@@ -2164,7 +3419,6 @@
       }
     }
 
-    /* ---------------- CART DRAWER MODAL ---------------- */
     function toggleCartDrawer() {
       const drawer = document.getElementById("cart-drawer");
       const isHidden = drawer.classList.contains("hidden");
@@ -2207,7 +3461,6 @@
       });
     }
 
-    /* ---------------- TOKEN CALCULATION & INTERACTION ---------------- */
     function calculateTotalTokens() {
       let total = 0;
       for (const id in cart) {
@@ -2228,7 +3481,6 @@
       showToast(isEn ? `Order includes ~${totalTokens.toLocaleString()} Tokens!` : `Pesanan ini mengandungi ~${totalTokens.toLocaleString()} Token!`);
     }
 
-    /* ---------------- CLEAN ORDER TICKET BUILDER ---------------- */
     function generateCleanOrderTicket(charId) {
       const t = I18N[currentLang];
       const regularItems = [];
@@ -2256,10 +3508,11 @@
             text: "- " + item.qty + "x " + item.name + " (RM " + lineTotal.toFixed(2) + ")"
           });
         } else {
+          const descLine = item.desc && item.desc.trim() ? "\n  " + item.desc : "";
           regularItems.push({
             isStarterPack: false,
             orderKey: 999,
-            text: "- " + item.qty + "x " + item.name + " (RM " + lineTotal.toFixed(2) + ")\n  " + item.desc
+            text: "- " + item.qty + "x " + item.name + " (RM " + lineTotal.toFixed(2) + ")" + descLine
           });
         }
       }
@@ -2288,7 +3541,6 @@
              t.ticketClosing;
     }
 
-    /* ---------------- COPY & MODAL HANDLER ---------------- */
     function handleWhatsAppOrder() {
       const charId = document.getElementById("char-id-input").value.trim();
       const t = I18N[currentLang];
@@ -2305,27 +3557,19 @@
       }
 
       const ticketText = generateCleanOrderTicket(charId);
+      fallbackCopy(ticketText);
 
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(ticketText).catch(() => fallbackCopy(ticketText));
-      } else {
-        fallbackCopy(ticketText);
-      }
-
-      const targetPhone = (typeof WHATSAPP_PHONE_NUMBER !== 'undefined' && WHATSAPP_PHONE_NUMBER) ? WHATSAPP_PHONE_NUMBER : "601121354481";
+      const targetPhone = "601121354481";
       const waUrl = `https://wa.me/${targetPhone}?text=${encodeURIComponent(ticketText)}`;
       window.open(waUrl, '_blank');
-
-      showToast(currentLang === 'en' ? 'Opening WhatsApp with your order...' : 'Membuka WhatsApp bersama pesanan anda...');
+      showToast('Opening WhatsApp with your order...');
     }
 
     function checkAnnouncementOnLoad() {
       try {
         const dismissed = localStorage.getItem('catologist_anno_dismissed');
         const today = new Date().toISOString().slice(0, 10);
-        if (dismissed === today) {
-          return;
-        }
+        if (dismissed === today) return;
       } catch(e) {}
 
       setTimeout(() => {
@@ -2356,6 +3600,38 @@
       }
     }
 
+    /* ---------------- LEVEL UP NOTICE MODAL LOGIC ---------------- */
+    function openLevelUpNoticeModal() {
+      try {
+        const dismissed = localStorage.getItem('catologist_lvnotice_dismissed');
+        const today = new Date().toISOString().slice(0, 10);
+        if (dismissed === today) {
+          return;
+        }
+      } catch(e) {}
+
+      const modal = document.getElementById("levelup-notice-modal");
+      if (modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+      }
+    }
+
+    function closeLevelUpNoticeModal() {
+      const modal = document.getElementById("levelup-notice-modal");
+      const chk = document.getElementById("chk-dont-show-lvnotice");
+      if (chk && chk.checked) {
+        try {
+          const today = new Date().toISOString().slice(0, 10);
+          localStorage.setItem('catologist_lvnotice_dismissed', today);
+        } catch(e) {}
+      }
+      if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
+    }
+
     function handleCopyOrder() {
       const charId = document.getElementById("char-id-input").value.trim();
       const t = I18N[currentLang];
@@ -2372,19 +3648,11 @@
       }
 
       const ticketText = generateCleanOrderTicket(charId);
+      fallbackCopy(ticketText);
 
-      if (navigator.clipboard && window.isSecureContext) {
-        navigator.clipboard.writeText(ticketText).catch(() => fallbackCopy(ticketText));
-      } else {
-        fallbackCopy(ticketText);
-      }
-
-      // Update tokens count inside ticket modal button
       const totalTokens = calculateTotalTokens();
       const tokensCountEl = document.getElementById("modal-tokens-count");
-      if (tokensCountEl) {
-        tokensCountEl.innerText = totalTokens.toLocaleString();
-      }
+      if (tokensCountEl) tokensCountEl.innerText = totalTokens.toLocaleString();
 
       document.getElementById("ticket-preview-box").innerText = ticketText;
       const modal = document.getElementById("ticket-modal");
@@ -2412,24 +3680,19 @@
       document.body.removeChild(ta);
     }
 
-    /* =====================================================================
-       STORE OWNER SETTINGS (WHATSAPP & PAYMENT QR)
-       ===================================================================== */
-    const WHATSAPP_PHONE_NUMBER = "601121354481";
-
-    const CUSTOM_QR_IMAGES = {
-      tng: "",
-      maybank: "",
-      cimb: ""
+    /* ---------------- PAYMENT QR LOGIC ---------------- */
+    const QR_IMAGES = {
+      tng: "https://media.discordapp.net/attachments/1507242831763210351/1567362447323562054/bcceb754-2fae-4366-bfc5-a1b1a76a2495.png?ex=6aebe787&is=6aea9607&hm=0cf8279b63a6dc07c9db67fb9de042539eab0aaf182a615db0f0881b3c99c1fc&=&format=webp&quality=lossless&width=323&height=500",
+      maybank: "https://media.discordapp.net/attachments/1507242831763210351/1567362448032403487/9e6c6616-80ae-48f3-a68c-744755814c08.png?ex=6aebe787&is=6aea9607&hm=05bf5b9680bdefba20de696b16763ca631de628040b6d12a87f0d2977545199f&=&format=webp&quality=lossless&width=385&height=500",
+      cimb: "https://media.discordapp.net/attachments/1507242831763210351/1567362446862057472/a0a30455-4564-4ec6-96f9-e718d6788e2c.png?ex=6aebe787&is=6aea9607&hm=822e14ba8b9d8b0865bdffde47ce38dfa0e11f912add1c0702cd4e8244fd924f&=&format=webp&quality=lossless&width=348&height=500"
     };
 
-    let activeQrProvider = "tng";
+    let activeQrProvider = "maybank";
 
     function openQrModal(provider) {
-      activeQrProvider = provider || "tng";
+      activeQrProvider = provider || "maybank";
       const qrModal = document.getElementById("qr-modal");
       if (!qrModal) return;
-
       renderQrView();
       qrModal.classList.remove("hidden");
       qrModal.classList.add("flex");
@@ -2454,16 +3717,16 @@
       const btnCimb = document.getElementById("tab-qr-cimb");
       const banner = document.getElementById("qr-brand-banner");
       const brandName = document.getElementById("qr-brand-name");
+      const displayImg = document.getElementById("qr-display-image");
       const guideAppName = document.getElementById("qr-guide-appname");
-      const container = document.getElementById("qr-svg-container");
 
       const tabs = [btnTng, btnMaybank, btnCimb];
       tabs.forEach(btn => {
         if (btn) btn.className = "py-1.5 rounded-lg font-semibold transition text-center text-zinc-400 hover:text-white";
       });
 
-      let brandColor = "#0066cc";
-      let appTitle = "Touch 'n Go eWallet";
+      let brandColor = "#e5a700";
+      let appTitle = "Maybank MAE / M2U";
 
       if (activeQrProvider === "tng") {
         if (btnTng) btnTng.className = "py-1.5 rounded-lg font-semibold transition text-center bg-blue-600 text-white shadow-sm";
@@ -2483,10 +3746,12 @@
       if (brandName) brandName.innerText = appTitle;
       if (guideAppName) guideAppName.innerText = appTitle;
 
-      let subtotal = 0;
-      for (const id in cart) {
-        subtotal += cart[id].price * cart[id].qty;
+      if (displayImg) {
+        displayImg.src = QR_IMAGES[activeQrProvider] || QR_IMAGES.maybank;
       }
+
+      let subtotal = 0;
+      for (const id in cart) subtotal += cart[id].price * cart[id].qty;
       const charId = document.getElementById("char-id-input").value.trim() || "-";
       
       const amtEl = document.getElementById("qr-val-amount");
@@ -2494,66 +3759,36 @@
 
       const refEl = document.getElementById("qr-val-ref");
       if (refEl) refEl.innerText = charId;
-
-      const customImg = CUSTOM_QR_IMAGES[activeQrProvider];
-      if (customImg && customImg.length > 10) {
-        container.innerHTML = `<img src="${customImg}" alt="${appTitle} QR" class="max-w-[210px] w-full h-auto rounded-xl mx-auto border border-zinc-200 shadow-sm" />`;
-      } else {
-        container.innerHTML = `
-          <div class="relative w-48 h-48 bg-zinc-100 border border-zinc-300 rounded-xl flex flex-col items-center justify-center p-3 text-center mx-auto shadow-inner">
-            <svg class="w-12 h-12 text-[#ed008c] mb-2" viewBox="0 0 100 100" fill="none">
-              <path d="M50 8 L32 36 L50 26 L68 36 Z" fill="#ed008c"/>
-              <path d="M92 50 L64 32 L74 50 L64 68 Z" fill="#ed008c"/>
-              <path d="M50 92 L68 64 L50 74 L32 64 Z" fill="#ed008c"/>
-              <path d="M8 50 L36 68 L26 50 L36 32 Z" fill="#ed008c"/>
-              <circle cx="50" cy="50" r="7" fill="#ed008c"/>
-            </svg>
-            <span class="text-xs font-bold font-mono text-zinc-800">MALAYSIAN QR</span>
-            <span class="text-[10px] text-zinc-500 font-mono mt-0.5">DuitNow QR Ready</span>
-          </div>
-        `;
-      }
     }
 
     function copyPaymentAmount() {
       let subtotal = 0;
-      for (const id in cart) {
-        subtotal += cart[id].price * cart[id].qty;
-      }
-      fallbackCopy(subtotal.toFixed(2));
-      showToast(currentLang === 'en' ? "Amount copied" : "Jumlah disalin");
+      for (const id in cart) subtotal += cart[id].price * cart[id].qty;
+      const text = subtotal.toFixed(2);
+      fallbackCopy(text);
+      showToast(`Copied amount: RM ${text}`);
     }
 
     function copyPaymentRef() {
       const charId = document.getElementById("char-id-input").value.trim();
-      if (!charId) {
-        showToast(I18N[currentLang].toastCharRequired);
+      if (!charId || charId === "-") {
+        showToast("Please enter your Character ID first");
         return;
       }
       fallbackCopy(charId);
-      showToast(currentLang === 'en' ? "Reference copied" : "Rujukan disalin");
+      showToast(`Copied reference: ${charId}`);
     }
 
-    function copyOrderAndReceiptText() {
-      const charId = document.getElementById("char-id-input").value.trim();
-      const ticket = generateCleanOrderTicket(charId || "Pending");
-      fallbackCopy(ticket);
-      showToast(I18N[currentLang].toastCopied);
-    }
-
-    function downloadMerchantQr() {
-      const customImg = CUSTOM_QR_IMAGES[activeQrProvider];
-      if (customImg && customImg.length > 10) {
-        const link = document.createElement("a");
-        link.href = customImg;
-        link.download = `${activeQrProvider}_duitnow_qr.png`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        showToast(currentLang === 'en' ? "Downloading Merchant QR..." : "Memuat turun QR Peniaga...");
-      } else {
-        showToast(currentLang === 'en' ? "QR image file not configured yet." : "Fail imej QR belum dikonfigurasi.");
-      }
+    function downloadActiveQr() {
+      const url = QR_IMAGES[activeQrProvider] || QR_IMAGES.maybank;
+      const link = document.createElement("a");
+      link.href = url;
+      link.target = "_blank";
+      link.download = `DuitNow_${activeQrProvider}_QR.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast(`Opening ${activeQrProvider.toUpperCase()} QR image...`);
     }
 
     function showToast(msg) {
