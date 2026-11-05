@@ -1,0 +1,143 @@
+body {
+  background-color: #09090c;
+  color: #f4f4f6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Modern Pill Navigation */
+.tab-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  letter-spacing: -0.01em;
+  line-height: 1rem;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+  border: 1px solid #23232b;
+  background: #111116;
+  color: #9393a2;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  cursor: pointer;
+}
+.tab-btn:hover:not(.active) {
+  color: #ffffff;
+  background: #181820;
+  border-color: #353542;
+  transform: translateY(-1px);
+}
+.tab-btn .dot-indicator {
+  width: 0.38rem;
+  height: 0.38rem;
+  border-radius: 9999px;
+  opacity: 0.45;
+  transition: all 0.22s ease-in-out;
+}
+.tab-btn.active .dot-indicator {
+  opacity: 1;
+  transform: scale(1.3);
+  filter: drop-shadow(0 0 3px currentColor);
+}
+
+/* Subtle Glassmorphism Card Glows */
+.catalog-card {
+  position: relative;
+  background: #121217;
+  border: 1px solid #23232b;
+  border-radius: 1rem;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.catalog-card:hover {
+  border-color: #32323e;
+  transform: translateY(-1px);
+}
+
+/* Custom scrollbar for modals & preview */
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scroll::-webkit-scrollbar-track {
+  background: #09090c;
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: #272732;
+  border-radius: 4px;
+}
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: #3f3f50;
+}
+
+/* Gaming Item Slot Tooltip Hover styling & Stacking Context Fix */
+.item-slot {
+  position: relative;
+  z-index: 1;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.item-slot:hover,
+.item-slot:focus-within {
+  transform: translateY(-2px);
+  z-index: 50;
+}
+.item-tooltip {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.18s ease, transform 0.18s ease, visibility 0.18s;
+  pointer-events: none;
+  z-index: 60;
+}
+.item-slot:hover .item-tooltip,
+.item-slot:focus-within .item-tooltip {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* ==============================================================
+   CRIMSON CYBER / MECHA RED THEME STYLES
+   ============================================================== */
+.crimson-gradient-border {
+  position: relative;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.65), rgba(153, 27, 27, 0.45));
+  padding: 1px;
+  box-shadow: 0 0 30px -5px rgba(239, 68, 68, 0.2), 0 0 15px -3px rgba(220, 38, 38, 0.15);
+}
+
+.crimson-gradient-content {
+  background: linear-gradient(135deg, #18090b 0%, #111116 60%, #15090b 100%);
+  border-radius: calc(1rem - 1px);
+}
+
+.crimson-pill-border {
+  position: relative;
+  border-radius: 9999px;
+  background: linear-gradient(135deg, #ef4444, #991b1b);
+  padding: 1px;
+  display: inline-flex;
+}
+
+.crimson-pill-inner {
+  border-radius: 9999px;
+  background: #1c0a0d;
+}
+
+.crimson-card-border {
+  position: relative;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.4), rgba(185, 28, 28, 0.25));
+  padding: 1px;
+}
+
+.crimson-card-inner {
+  background: #14090b;
+  border-radius: calc(0.75rem - 1px);
+}
