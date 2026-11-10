@@ -1,6 +1,7 @@
 /* ---------------- CATALOG DATA ---------------- */
     const CATALOG = [
-      /* FIRST-TIME BUYER SALE */
+      /* DEALS / SPECIAL PACKAGES */
+      { id: "pkg-halloween", category: "first-time", name: "Halloween Package", desc: "2 Kinjutsu, Weapon, Back Item, Outfit, Hairstyle, Accessory & Bag of Candy", price: 41.00, oldPrice: null, limit: 99, tokens: 0 },
       { id: "ft-1", category: "first-time", name: "Package 1", desc: "31,500 Tokens + 100 Stamina Rolls + Kinjutsu + Pet", price: 150.00, oldPrice: 200.00, limit: 1, tokens: 31500 },
       { id: "ft-2", category: "first-time", name: "Package 2", desc: "14,175 Tokens + 40 Stamina Rolls + Kinjutsu + Pet", price: 75.75, oldPrice: 101.00, limit: 1, tokens: 14175 },
       { id: "ft-3", category: "first-time", name: "Package 3", desc: "5,250 Tokens + 20 Stamina Rolls + Kinjutsu + Pet", price: 30.75, oldPrice: 41.00, limit: 1, tokens: 5250 },

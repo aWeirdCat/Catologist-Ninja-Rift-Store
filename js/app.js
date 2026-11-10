@@ -49,6 +49,7 @@ let currentLang = 'en';
       setText("txt-badge-val", t.fulfilmentVal);
       setText("txt-badge-label-m", t.fulfilmentLabel);
       setText("txt-badge-val-m", t.fulfilmentVal);
+      setText("txt-cat-deals", t.tabDeals);
       setText("txt-event-tag", t.eventTag);
       setText("txt-event-limit-note", t.eventLimitNote);
       setText("txt-event-announcement", t.eventAnnouncement);
@@ -510,7 +511,7 @@ let currentPaletteMode = 'refined';
         const addBtnStyle = palette.buttons[catKey];
         const stepperBg = palette.steppers[catKey];
 
-        const isLevelUp = item.category === 'levelup';
+        const isLevelUp = item.category === 'levelup' || !!LEVEL_UP_DATA[item.id];
         const isEmblem = item.category === 'emblem';
         const otherEmblemInCart = isEmblem && Object.keys(cart).some(k => k.startsWith('em-') && k !== item.id);
 
@@ -606,8 +607,16 @@ let currentPaletteMode = 'refined';
       const tokenImg = document.getElementById("preview-token-img");
 
       titleEl.innerText = data.title;
-      tokensEl.innerText = `+${data.tokens.toLocaleString()} Tokens Included`;
-      if (tokenVal) tokenVal.innerText = (data.tokens || 0).toLocaleString();
+      const bonusBanner = document.getElementById("preview-bonus-token-banner");
+      if (data.tokens && data.tokens > 0) {
+        tokensEl.innerText = `+${data.tokens.toLocaleString()} Tokens Included`;
+        tokensEl.classList.remove("hidden");
+        if (bonusBanner) bonusBanner.classList.remove("hidden");
+        if (tokenVal) tokenVal.innerText = (data.tokens || 0).toLocaleString();
+      } else {
+        tokensEl.classList.add("hidden");
+        if (bonusBanner) bonusBanner.classList.add("hidden");
+      }
       if (tokenImg && CUSTOM_ITEM_IMAGES["token_coin"]) {
         tokenImg.src = CUSTOM_ITEM_IMAGES["token_coin"];
       }

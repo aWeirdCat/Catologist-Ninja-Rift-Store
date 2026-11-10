@@ -949,5 +949,100 @@
             stats: "Supreme Ten-Tails Pet Companion"
           }
         ]
+      },
+      "pkg-halloween": {
+        level: 80,
+        title: "Halloween Package",
+        tokens: 0,
+        items: [
+          {
+            type: "Skill",
+            name: "Kinjutsu: No Moon",
+            rarity: "Kinjutsu",
+            rarityColor: "text-amber-300 border-amber-500/40 bg-amber-950/30",
+            icon: "🌑",
+            imgKey: "halloween_skill1",
+            image: "",
+            desc: "Reduces all targets Critical, Dodge, Combustion, Purify and Reactive Force rates by 40% for 3 turns. Applies Chaos onto all targets for 3 turns.",
+            stats: "Level 80 • 0 Damage • 300 CP • CD 15"
+          },
+          {
+            type: "Skill",
+            name: "Lunar Salvation",
+            rarity: "Passive Skill",
+            rarityColor: "text-indigo-400 border-indigo-500/40 bg-indigo-950/30",
+            icon: "🌙",
+            imgKey: "halloween_skill2",
+            image: "",
+            desc: "Grants user full immunity to incoming debuff statuses from the target's weapon attack.",
+            stats: "Level 1 • 0 Damage • 0 CP • CD 0"
+          },
+          {
+            type: "Weapon",
+            name: "Halloween Weapon",
+            rarity: "Weapon",
+            rarityColor: "text-rose-400 border-rose-500/40 bg-rose-950/20",
+            icon: "🗡️",
+            imgKey: "halloween_weapon",
+            image: "",
+            desc: "Exclusive Halloween weapon infused with spectral moonlight and chaos.",
+            stats: "Level 80 Weapon"
+          },
+          {
+            type: "Back Item",
+            name: "Salvation Shrine",
+            rarity: "Back Item",
+            rarityColor: "text-sky-400 border-sky-500/40 bg-sky-950/20",
+            icon: "⛩️",
+            imgKey: "halloween_back",
+            image: "",
+            desc: "Increases user's accuracy by 8%. Grants user 7% Chance to inflict Chaos onto target for 1 turn with a successful weapon attack. Restores user's HP, CP and SP by 170 on every turn.",
+            stats: "Level 1 • +8% Accuracy • +170 HP/CP/SP Regen"
+          },
+          {
+            type: "Accessory",
+            name: "Salvation Spirit",
+            rarity: "Accessory",
+            rarityColor: "text-teal-400 border-teal-500/40 bg-teal-950/20",
+            icon: "👻",
+            imgKey: "halloween_accessory",
+            image: "",
+            desc: "Increases user's accuracy by 5%. Grants user 5% Chance to inflict Chaos onto target for 1 turn with a successful weapon attack.",
+            stats: "Level 1 • +5% Accuracy • 5% Chaos on Hit"
+          },
+          {
+            type: "Hairstyle",
+            name: "Salvation Style",
+            rarity: "Hairstyle",
+            rarityColor: "text-pink-400 border-pink-500/40 bg-pink-950/20",
+            icon: "💇",
+            imgKey: "halloween_hairstyle",
+            image: "",
+            desc: "Exclusive Halloween themed hairstyle evoking mysterious lunar grace.",
+            stats: "Cosmetic Hairstyle"
+          },
+          {
+            type: "Clothing",
+            name: "Salvation Outfit",
+            rarity: "Exclusive Outfit",
+            rarityColor: "text-purple-400 border-purple-500/40 bg-purple-950/20",
+            icon: "🥋",
+            imgKey: "halloween_clothing",
+            image: "",
+            desc: "Increases user's accuracy by 2%. Grants user 3% Chance to inflict Chaos onto target for 1 turn with a successful weapon attack.",
+            stats: "+2% Accuracy • 3% Chaos on Hit"
+          },
+          {
+            type: "Essential",
+            name: "Bag of Candy",
+            rarity: "Limited Item",
+            rarityColor: "text-orange-400 border-orange-500/40 bg-orange-950/20",
+            icon: "🍬",
+            imgKey: "halloween_candy_bag",
+            image: "",
+            desc: "Halloween 2025 Limited Purchase Bonus.<br><span class='text-zinc-400 leading-relaxed block mt-1'>• Chance: 50, 100, or 150 Tokens<br>• Rare Chance: Clan Weapon Soul, Clan Back Item Soul</span>",
+            stats: "Halloween 2025 Limited Bonus"
+          }
+        ]
       }
     };

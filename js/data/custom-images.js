@@ -15,6 +15,16 @@
       "lv10_jutsu_pill": "images/lv10_jutsu_pill.png", // Jutsu Pill Bag X5
       "token_coin": "images/token_coin.png",
 
+      // --- Halloween Package ---
+      "halloween_skill1": "images/halloween_skill1.png",
+      "halloween_skill2": "images/halloween_skill2.png",
+      "halloween_weapon": "images/halloween_weapon.png",
+      "halloween_back": "images/halloween_back.png",
+      "halloween_hairstyle": "images/halloween_hairstyle.png",
+      "halloween_accessory": "images/halloween_accessory.png",
+      "halloween_clothing": "images/halloween_clothing.png",
+      "halloween_candy_bag": "images/halloween_candy_bag.png",
+
       // --- Lv20 Starter Pack ---
       "lv20_skill": "images/lv20_skill.png",
       "lv20_weapon": "images/lv20_weapon.png",
