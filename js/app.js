@@ -156,6 +156,7 @@ let currentLang = 'en';
 
       setText("txt-anno-rush-note", t.annoRushNote);
       setText("txt-anno-closing-note", t.annoClosingNote);
+      setText("txt-anno-community-title", t.annoCommunityTitle);
       setText("txt-anno-chk-label", t.annoChkLabel);
       setText("btn-anno-confirm", t.annoConfirmBtn);
 
@@ -225,6 +226,29 @@ let currentPaletteMode = 'refined';
           btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
         } else {
           btn.className = "tab-btn";
+        }
+      });
+
+      // Update mobile bottom quick category bar active indicators
+      const catColorMap = {
+        'first-time': 'text-emerald-400 bg-emerald-950/40 border border-emerald-500/40',
+        'token': 'text-sky-400 bg-sky-950/40 border border-sky-500/40',
+        'marketcoins': 'text-violet-400 bg-violet-950/40 border border-violet-500/40',
+        'clan': 'text-teal-400 bg-teal-950/40 border border-teal-500/40',
+        'arena': 'text-indigo-400 bg-indigo-950/40 border border-indigo-500/40',
+        'emblem': 'text-amber-400 bg-amber-950/40 border border-amber-500/40',
+        'battlepass': 'text-rose-400 bg-rose-950/40 border border-rose-500/40',
+        'levelup': 'text-pink-400 bg-pink-950/40 border border-pink-500/40',
+        'bots': 'text-red-400 bg-red-950/40 border border-red-500/40'
+      };
+
+      document.querySelectorAll(".mobile-nav-btn").forEach(btn => {
+        const mcat = btn.dataset.mcat;
+        if (mcat === cat) {
+          const activeStyle = catColorMap[cat] || 'text-white bg-zinc-800 border border-zinc-700';
+          btn.className = `mobile-nav-btn py-1 px-0.5 flex flex-col items-center justify-center rounded-lg transition active:scale-90 font-bold shadow-sm ${activeStyle}`;
+        } else {
+          btn.className = "mobile-nav-btn py-1 px-0.5 flex flex-col items-center justify-center rounded-lg transition active:scale-90 text-zinc-400 hover:text-white";
         }
       });
 
@@ -960,8 +984,38 @@ let currentPaletteMode = 'refined';
       } catch(e) {}
 
       setTimeout(() => {
-        openAnnouncementModal();
+        openLanguageModal();
       }, 350);
+    }
+
+    function openLanguageModal() {
+      const modal = document.getElementById("language-modal");
+      if (modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+      }
+    }
+
+    function closeLanguageModal() {
+      const modal = document.getElementById("language-modal");
+      if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+      }
+    }
+
+    function selectPreferredLanguage(lang) {
+      if (currentLang !== lang) {
+        currentLang = lang;
+        const btn = document.getElementById("btn-lang");
+        if (btn) btn.innerText = currentLang === 'en' ? 'ENG' : 'BM';
+        updateLanguageUI();
+        renderProducts();
+      }
+      closeLanguageModal();
+      setTimeout(() => {
+        openAnnouncementModal();
+      }, 150);
     }
 
     function openAnnouncementModal() {
