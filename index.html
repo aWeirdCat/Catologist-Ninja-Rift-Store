@@ -453,7 +453,7 @@
             <div class="crimson-pill-border">
               <span class="crimson-pill-inner px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-red-300 uppercase font-mono flex items-center gap-2" id="txt-bots-tag">
                 <img 
-                  src="images/bots.png" 
+                  src="assets/icons/bots.png" 
                   alt="Bots Icon" 
                   class="w-4 h-4 object-contain rounded-md" 
                   onerror="this.style.display='none';"
@@ -526,89 +526,62 @@
       </div>
     </div>
 
-    <!-- BATTLEPASS PICKER -->
-    <div id="bp-customizer" class="hidden mb-4 space-y-3">
+    <!-- BATTLEPASS TIER PICKER & BANNER -->
+    <div id="bp-customizer" class="hidden mb-3 space-y-3">
       <div id="bp-rewards-banner" class="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-rose-950/30 via-[#111116] to-[#121217] border border-rose-500/25 shadow-sm">
         <div class="flex items-center justify-between gap-2 mb-2">
           <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider bg-rose-500/15 text-rose-300 border border-rose-500/25 uppercase" id="txt-bp-rewards-tag">
             Battlepass Rewards Info
           </span>
-          <span class="text-[11px] font-mono text-rose-300 font-semibold" id="txt-bp-rewards-ingame-tag">Refer to In-Game</span>
+          <span class="text-[11px] font-mono text-rose-300 font-semibold" id="txt-bp-rewards-ingame-tag">Interactive Preview Enabled</span>
         </div>
         <p class="text-xs sm:text-[13px] text-zinc-200 leading-relaxed mb-2.5" id="txt-bp-rewards-desc">
-          Each Battlepass includes exclusive skills, tokens, talent training potions, weapons, back items, and accessories.
+          Choose between Standard Normal Tier or Instant Maxed Tier below. Tap or click <strong class="text-rose-300 font-bold">Preview</strong> on any Season card to inspect all 30 seasonal rewards, skills, and weapons!
         </p>
       </div>
 
-      <div class="p-4 sm:p-5 rounded-2xl bg-surface-card border border-surface-border space-y-3.5">
-        <div>
-          <div class="flex items-center justify-between text-xs mb-2">
-            <span class="font-semibold text-zinc-300 tracking-tight" id="txt-bp-tier-label">Choose Tier</span>
-            <span class="text-[11px] font-mono text-zinc-400 font-normal" id="txt-bp-tier-sub">Live Season Rates</span>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            <button 
-              type="button" 
-              id="btn-bp-normal" 
-              onclick="setBpTier('Normal')" 
-              class="p-2.5 px-3 rounded-xl border text-left transition flex items-center justify-between bg-rose-950/25 border-rose-500/50 ring-1 ring-rose-500/20 text-white shadow-sm group">
-              <div class="flex items-center gap-2.5 min-w-0">
-                <div class="w-3.5 h-3.5 rounded-full border border-rose-400 flex items-center justify-center shrink-0">
-                  <div id="dot-tier-normal" class="w-1.5 h-1.5 rounded-full bg-rose-400"></div>
-                </div>
-                <div class="min-w-0">
-                  <div class="text-xs font-bold text-white tracking-tight leading-tight" id="txt-tier-normal-name">Normal Tier</div>
-                  <div class="text-[10px] text-zinc-400 leading-tight truncate mt-0.5" id="txt-tier-normal-desc">Standard Seasonal Pass</div>
-                </div>
-              </div>
-              <div class="text-right shrink-0 pl-2">
-                <span id="tier-rate-normal" class="text-xs font-mono font-bold text-rose-300">RM 11.00</span>
-              </div>
-            </button>
-
-            <button 
-              type="button" 
-              id="btn-bp-maxed" 
-              onclick="setBpTier('Maxed')" 
-              class="p-2.5 px-3 rounded-xl border text-left transition flex items-center justify-between bg-[#111116] border-surface-border text-zinc-400 hover:text-white hover:border-zinc-700 group">
-              <div class="flex items-center gap-2.5 min-w-0">
-                <div class="w-3.5 h-3.5 rounded-full border border-zinc-600 flex items-center justify-center shrink-0">
-                  <div id="dot-tier-maxed" class="w-1.5 h-1.5 rounded-full bg-transparent"></div>
-                </div>
-                <div class="min-w-0">
-                  <div class="text-xs font-bold text-white tracking-tight flex items-center gap-1.5 leading-tight">
-                    <span id="txt-tier-maxed-name">Maxed Tier</span>
-                    <span class="text-[8.5px] font-mono font-bold px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 leading-none">MAX LV</span>
-                  </div>
-                  <div class="text-[10px] text-zinc-400 leading-tight truncate mt-0.5" id="txt-tier-maxed-desc">Instant Max Level & Rewards</div>
-                </div>
-              </div>
-              <div class="text-right shrink-0 pl-2">
-                <span id="tier-rate-maxed" class="text-xs font-mono font-bold text-zinc-400">RM 16.00</span>
-              </div>
-            </button>
-          </div>
+      <!-- TIER SELECTOR TOGGLE (NORMAL VS MAXED) -->
+      <div class="p-3 sm:p-4 rounded-2xl bg-[#111116] border border-surface-border">
+        <div class="flex items-center justify-between text-xs mb-2">
+          <span class="font-semibold text-zinc-300 tracking-tight" id="txt-bp-tier-label">Select Battlepass Tier</span>
+          <span class="text-[11px] font-mono text-zinc-400 font-normal" id="txt-bp-tier-sub">Applies to all season cards below</span>
         </div>
+        <div class="grid grid-cols-2 gap-2">
+          <button 
+            type="button" 
+            id="btn-bp-normal" 
+            onclick="setBpTier('Normal')" 
+            class="p-2.5 px-3 rounded-xl border text-left transition flex items-center justify-between bg-rose-950/25 border-rose-500/50 ring-1 ring-rose-500/20 text-white shadow-sm group">
+            <div class="flex items-center gap-2 min-w-0">
+              <div class="w-3.5 h-3.5 rounded-full border border-rose-400 flex items-center justify-center shrink-0">
+                <div id="dot-tier-normal" class="w-1.5 h-1.5 rounded-full bg-rose-400"></div>
+              </div>
+              <div class="min-w-0">
+                <div class="text-xs font-bold text-white tracking-tight leading-tight">Normal Tier</div>
+                <div class="text-[9.5px] text-zinc-400 leading-tight truncate mt-0.5">Standard Pass (from RM 11)</div>
+              </div>
+            </div>
+          </button>
 
-        <div>
-          <div class="flex items-center justify-between text-[11px] text-zinc-400 mb-2">
-            <span id="txt-bp-season-label" class="font-medium text-zinc-300">Select Season</span>
-            <span id="bp-active-bracket" class="font-mono text-zinc-400 text-[10.5px]">Season 1</span>
-          </div>
-          <div class="grid grid-cols-6 sm:grid-cols-11 gap-1.5" id="bp-season-grid">
-            <!-- Dynamic 1–22 buttons -->
-          </div>
+          <button 
+            type="button" 
+            id="btn-bp-maxed" 
+            onclick="setBpTier('Maxed')" 
+            class="p-2.5 px-3 rounded-xl border text-left transition flex items-center justify-between bg-[#111116] border-surface-border text-zinc-400 hover:text-white hover:border-zinc-700 group">
+            <div class="flex items-center gap-2 min-w-0">
+              <div class="w-3.5 h-3.5 rounded-full border border-zinc-600 flex items-center justify-center shrink-0">
+                <div id="dot-tier-maxed" class="w-1.5 h-1.5 rounded-full bg-transparent"></div>
+              </div>
+              <div class="min-w-0">
+                <div class="text-xs font-bold text-white tracking-tight flex items-center gap-1 leading-tight">
+                  <span>Maxed Tier</span>
+                  <span class="text-[8px] font-mono font-bold px-1 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">MAX</span>
+                </div>
+                <div class="text-[9.5px] text-zinc-400 leading-tight truncate mt-0.5">Instant Max Lv (from RM 16)</div>
+              </div>
+            </div>
+          </button>
         </div>
-
-        <button 
-          type="button" 
-          id="bp-add-btn"
-          onclick="addBattlepassToCart()"
-          class="w-full py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-500 active:scale-[0.99] text-xs font-bold text-white flex items-center justify-center gap-2 border border-rose-400/40 shadow-sm transition">
-          <span id="bp-add-button-label">+ Add Season 1 [Normal] (Limit 1)</span>
-          <span class="w-1 h-1 rounded-full bg-rose-200/50"></span>
-          <span id="bp-add-button-price" class="font-mono font-bold text-rose-100 text-sm">RM 11.00</span>
-        </button>
       </div>
     </div>
 
@@ -724,40 +697,34 @@
         </button>
       </div>
 
-      <!-- Item Grid with Hover Tooltips -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 py-1 relative" id="preview-items-grid">
+      <!-- Item Grid with Hover Tooltips (Optimized 3-Col on Mobile for 70+ Items) -->
+      <div class="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-3 py-1 relative" id="preview-items-grid">
         <!-- Rendered dynamically -->
       </div>
 
       <!-- Centered Bonus Token Badge Box -->
       <div id="preview-bonus-token-banner" class="flex items-center justify-center pt-1">
         <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-xl bg-sky-950/30 border border-sky-500/40 text-xs shadow-[0_0_15px_rgba(56,189,248,0.08)]">
-          <img id="preview-token-img" src="images/token_coin.png" alt="Token Coin" class="w-6 h-6 object-contain drop-shadow-[0_0_8px_rgba(56,189,248,0.7)]" />
+          <img id="preview-token-img" src="assets/icons/token_coin.png" alt="Token Coin" class="w-6 h-6 object-contain drop-shadow-[0_0_8px_rgba(56,189,248,0.7)]" />
           <span class="text-zinc-300 font-medium tracking-tight">Bonus Token :</span>
           <span id="preview-token-value" class="font-mono font-bold text-sky-300 text-sm">700</span>
         </div>
       </div>
 
-      <!-- Modal Footer with Quick Cart Action (Sticky at bottom inside modal) -->
-      <div class="sticky -bottom-4 sm:-bottom-6 bg-[#121217]/95 backdrop-blur-md pt-3 pb-1 -mx-4 sm:-mx-6 px-4 sm:px-6 border-t border-zinc-800/80 flex flex-col sm:flex-row items-center justify-between gap-2.5 z-30">
-        <div class="text-[11px] sm:text-xs text-zinc-400 flex items-center gap-1.5 w-full sm:w-auto">
-          <span class="w-2 h-2 rounded-full bg-pink-400 inline-block animate-pulse shrink-0"></span>
-          <span class="truncate">Duplicate items automatically converted to Tokens as per policy.</span>
-        </div>
-        <div class="flex items-center gap-2.5 w-full sm:w-auto">
-          <button 
-            type="button" 
-            onclick="closePreviewModal()" 
-            class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold transition">
-            Close
-          </button>
-          <button 
-            type="button" 
-            id="preview-quick-add-btn"
-            class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-500 active:scale-95 text-white text-xs font-bold transition shadow-[0_0_15px_rgba(236,72,153,0.3)]">
-            + Add to Order
-          </button>
-        </div>
+      <!-- Modal Footer with Quick Cart Action (Non-sticky, sits cleanly below items) -->
+      <div class="mt-4 pt-3 pb-1 border-t border-zinc-800/80 flex items-center justify-end gap-2.5">
+        <button 
+          type="button" 
+          onclick="closePreviewModal()" 
+          class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-xs font-semibold transition">
+          Close
+        </button>
+        <button 
+          type="button" 
+          id="preview-quick-add-btn"
+          class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-500 active:scale-95 text-white text-xs font-bold transition shadow-[0_0_15px_rgba(236,72,153,0.3)]">
+          + Add to Order
+        </button>
       </div>
     </div>
   </div>
@@ -979,26 +946,92 @@
         <pre id="ticket-preview-box" class="p-4 rounded-xl bg-zinc-950 border border-zinc-800/80 text-xs font-mono text-zinc-200 whitespace-pre-wrap leading-relaxed max-h-52 overflow-y-auto custom-scroll selection:bg-zinc-800"></pre>
       </div>
 
-      <!-- Button Showing Tokens Obtained with Custom Token Coin Image -->
-      <button 
-        type="button" 
-        id="btn-tokens-obtained" 
-        onclick="handleTokensClick()" 
-        title="Click to check token breakdown"
-        class="w-full py-2.5 px-3.5 rounded-xl bg-sky-950/25 hover:bg-sky-950/40 border border-sky-500/40 flex items-center justify-between text-xs transition active:scale-[0.99] shadow-[0_0_15px_rgba(56,189,248,0.08)] group">
-        <div class="flex items-center gap-2.5">
-          <img 
-            src="images/token_coin.png" 
-            alt="Token Coin" 
-            class="w-6 h-6 shrink-0 object-contain drop-shadow-[0_0_8px_rgba(56,189,248,0.7)] group-hover:rotate-12 transition-transform duration-300" 
-          />
-          <span class="text-zinc-200 font-semibold tracking-tight" id="txt-tokens-obtained-label">Tokens to be Received:</span>
-        </div>
-        <div class="flex items-center gap-1.5 font-mono font-bold text-sky-300 text-sm">
-          <span id="modal-tokens-count">0</span>
-          <span class="text-xs text-sky-400 font-medium">Tokens</span>
-        </div>
-      </button>
+      <!-- Rewards to be Received Stack -->
+      <div class="space-y-2" id="received-rewards-stack">
+        <!-- Button Showing Tokens Obtained -->
+        <button 
+          type="button" 
+          id="btn-tokens-obtained" 
+          onclick="handleTokensClick()" 
+          title="Click to check token breakdown"
+          class="w-full py-2.5 px-3.5 rounded-xl bg-sky-950/25 hover:bg-sky-950/40 border border-sky-500/40 flex items-center justify-between text-xs transition active:scale-[0.99] shadow-[0_0_15px_rgba(56,189,248,0.08)] group">
+          <div class="flex items-center gap-2.5">
+            <img 
+              src="assets/icons/token_coin.png" 
+              alt="Token Coin" 
+              class="w-6 h-6 shrink-0 object-contain drop-shadow-[0_0_8px_rgba(56,189,248,0.7)] group-hover:rotate-12 transition-transform duration-300" 
+            />
+            <span class="text-zinc-200 font-semibold tracking-tight" id="txt-tokens-obtained-label">Tokens to be Received:</span>
+          </div>
+          <div class="flex items-center gap-1.5 font-mono font-bold text-sky-300 text-sm">
+            <span id="modal-tokens-count">0</span>
+            <span class="text-xs text-sky-400 font-medium">Tokens</span>
+          </div>
+        </button>
+
+        <!-- Button Showing Stamina Rolls Obtained -->
+        <button 
+          type="button" 
+          id="btn-stamina-obtained" 
+          onclick="handleStaminaClick()" 
+          title="Click to check stamina rolls breakdown"
+          class="w-full py-2.5 px-3.5 rounded-xl bg-amber-950/25 hover:bg-amber-950/40 border border-amber-500/40 flex items-center justify-between text-xs transition active:scale-[0.99] shadow-[0_0_15px_rgba(245,158,11,0.08)] group hidden">
+          <div class="flex items-center gap-2.5">
+            <img 
+              src="assets/icons/stamina_roll_coin.png" 
+              alt="Stamina Roll" 
+              class="w-6 h-6 shrink-0 object-contain drop-shadow-[0_0_8px_rgba(245,158,11,0.7)] group-hover:rotate-12 transition-transform duration-300" 
+            />
+            <span class="text-zinc-200 font-semibold tracking-tight" id="txt-stamina-obtained-label">Stamina rolls to be received:</span>
+          </div>
+          <div class="flex items-center gap-1.5 font-mono font-bold text-amber-300 text-sm">
+            <span id="modal-stamina-count">0</span>
+            <span class="text-xs text-amber-400 font-medium">Rolls</span>
+          </div>
+        </button>
+
+        <!-- Button Showing Talent Points Obtained -->
+        <button 
+          type="button" 
+          id="btn-talent-obtained" 
+          onclick="handleTalentClick()" 
+          title="Click to check talent point breakdown"
+          class="w-full py-2.5 px-3.5 rounded-xl bg-rose-950/25 hover:bg-rose-950/40 border border-rose-500/40 flex items-center justify-between text-xs transition active:scale-[0.99] shadow-[0_0_15px_rgba(244,63,94,0.08)] group hidden">
+          <div class="flex items-center gap-2.5">
+            <img 
+              src="assets/icons/talent_point_coin.png" 
+              alt="Talent Point" 
+              class="w-6 h-6 shrink-0 object-contain drop-shadow-[0_0_8px_rgba(244,63,94,0.7)] group-hover:rotate-12 transition-transform duration-300" 
+            />
+            <span class="text-zinc-200 font-semibold tracking-tight" id="txt-talent-obtained-label">Talent point to be received:</span>
+          </div>
+          <div class="flex items-center gap-1.5 font-mono font-bold text-rose-300 text-sm">
+            <span id="modal-talent-count">0</span>
+            <span class="text-xs text-rose-400 font-medium">TP</span>
+          </div>
+        </button>
+
+        <!-- Button Showing Senjutsu Points Obtained -->
+        <button 
+          type="button" 
+          id="btn-senjutsu-obtained" 
+          onclick="handleSenjutsuClick()" 
+          title="Click to check senjutsu point breakdown"
+          class="w-full py-2.5 px-3.5 rounded-xl bg-indigo-950/25 hover:bg-indigo-950/40 border border-indigo-500/40 flex items-center justify-between text-xs transition active:scale-[0.99] shadow-[0_0_15px_rgba(99,102,241,0.08)] group hidden">
+          <div class="flex items-center gap-2.5">
+            <img 
+              src="assets/icons/senjutsu_coin.png" 
+              alt="Senjutsu Point" 
+              class="w-6 h-6 shrink-0 object-contain drop-shadow-[0_0_8px_rgba(99,102,241,0.7)] group-hover:rotate-12 transition-transform duration-300" 
+            />
+            <span class="text-zinc-200 font-semibold tracking-tight" id="txt-senjutsu-obtained-label">Senjutsu Point to be received:</span>
+          </div>
+          <div class="flex items-center gap-1.5 font-mono font-bold text-indigo-300 text-sm">
+            <span id="modal-senjutsu-count">0</span>
+            <span class="text-xs text-indigo-400 font-medium">Points</span>
+          </div>
+        </button>
+      </div>
 
       <!-- Choose Payment Method -->
       <div class="pt-2 border-t border-zinc-800/80 space-y-2">
@@ -1460,6 +1493,7 @@
   <script src="js/data/custom-images.js"></script>
   <script src="js/data/i18n.js"></script>
   <script src="js/data/levelup-data.js"></script>
+  <script src="js/data/battlepass-data.js"></script>
   <script src="js/data/catalog.js"></script>
   <script src="js/data/palette-presets.js"></script>
   <script src="js/data/qr-data.js"></script>
@@ -1473,7 +1507,7 @@
       <div class="flex items-center justify-between gap-2 border-b border-zinc-800/80 pb-3">
         <div class="flex items-center gap-2.5">
           <img 
-            src="images/bots.png" 
+            src="assets/icons/bots.png" 
             alt="Bots" 
             class="w-8 h-8 rounded-xl object-contain border border-red-500/40 bg-red-950/40 p-0.5 shadow-sm"
             onerror="this.onerror=null; this.outerHTML='<div class=\'w-8 h-8 rounded-xl bg-red-500/20 border border-red-500/40 flex items-center justify-center text-red-300 text-xs font-bold font-mono\'>NR</div>';"

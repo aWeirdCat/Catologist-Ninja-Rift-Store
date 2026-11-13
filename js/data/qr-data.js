@@ -1,5 +1,5 @@
 const QR_IMAGES = {
-  tng: "images/qr_tng.png",
-  maybank: "images/qr_maybank.png",
-  cimb: "images/qr_cimb.png"
+  tng: "assets/qr/qr_tng.jpeg",
+  maybank: "assets/qr/qr_maybank.jpeg",
+  cimb: "assets/qr/qr_cimb.jpeg"
 };

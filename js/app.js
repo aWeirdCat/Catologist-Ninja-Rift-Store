@@ -126,6 +126,9 @@ let currentLang = 'en';
       setText("txt-bp-season-label", t.bpSeasonLabel);
       setText("txt-copy-button", t.copyBtn);
       setText("txt-tokens-obtained-label", t.tokensObtainedLabel);
+      setText("txt-stamina-obtained-label", t.staminaObtainedLabel);
+      setText("txt-talent-obtained-label", t.talentObtainedLabel);
+      setText("txt-senjutsu-obtained-label", t.senjutsuObtainedLabel);
 
       const charInput = document.getElementById("char-id-input");
       if (charInput) charInput.placeholder = t.charIdPlaceholder;
@@ -297,8 +300,6 @@ let currentPaletteMode = 'refined';
         if (emBonusBanner) emBonusBanner.classList.remove("hidden");
       } else if (cat === "battlepass") {
         if (bpBox) bpBox.classList.remove("hidden");
-        buildBattlepassGrid();
-        syncBattlepassUI();
       } else if (cat === "levelup") {
         if (lvDescBanner) lvDescBanner.classList.remove("hidden");
         if (lvNotesBanner) lvNotesBanner.classList.remove("hidden");
@@ -368,6 +369,40 @@ let currentPaletteMode = 'refined';
     }
 
     /* ---------------- BATTLEPASS LOGIC ---------------- */
+    function getBpTokens(season, tier) {
+      if (season <= 11) return 255;
+      if (season <= 15) return 400;
+      if (season <= 19) return 510;
+      if (season === 20) return 1000;
+      if (season === 21) return 1500;
+      if (season === 22) return 1100;
+      return 255;
+    }
+
+    function getBpStaminaRolls(season) {
+      if (season <= 11) return 141;
+      if (season <= 15) return 150;
+      if (season <= 19) return 0;
+      if (season <= 22) return 18;
+      return 0;
+    }
+
+    function getBpTalentPoints(season) {
+      if (season <= 11) return 1560;
+      if (season <= 15) return 900;
+      if (season <= 19) return 1800;
+      if (season <= 22) return 2000;
+      return 0;
+    }
+
+    function getBpSenjutsuPoints(season) {
+      if (season <= 11) return 0;
+      if (season <= 15) return 1400;
+      if (season <= 19) return 1800;
+      if (season <= 22) return 0;
+      return 0;
+    }
+
     function getBpPrice(season, tier) {
       const isMaxed = tier === "Maxed";
       if (season === 22) {
@@ -419,25 +454,19 @@ let currentPaletteMode = 'refined';
       const btnMax = document.getElementById("btn-bp-maxed");
       const dotNorm = document.getElementById("dot-tier-normal");
       const dotMax = document.getElementById("dot-tier-maxed");
-      const rateNorm = document.getElementById("tier-rate-normal");
-      const rateMax = document.getElementById("tier-rate-maxed");
 
       if (tier === "Normal") {
         if (btnNorm) btnNorm.className = "p-2.5 px-3 rounded-xl border text-left transition flex items-center justify-between bg-rose-950/25 border-rose-500/50 ring-1 ring-rose-500/20 text-white shadow-sm group";
         if (btnMax) btnMax.className = "p-2.5 px-3 rounded-xl border text-left transition flex items-center justify-between bg-[#111116] border-surface-border text-zinc-400 hover:text-white hover:border-zinc-700 group";
         if (dotNorm) dotNorm.className = "w-1.5 h-1.5 rounded-full bg-rose-400";
         if (dotMax) dotMax.className = "w-1.5 h-1.5 rounded-full bg-transparent";
-        if (rateNorm) rateNorm.className = "text-xs font-mono font-bold text-rose-300";
-        if (rateMax) rateMax.className = "text-xs font-mono font-bold text-zinc-400";
       } else {
         if (btnMax) btnMax.className = "p-2.5 px-3 rounded-xl border text-left transition flex items-center justify-between bg-rose-950/25 border-rose-500/50 ring-1 ring-rose-500/20 text-white shadow-sm group";
         if (btnNorm) btnNorm.className = "p-2.5 px-3 rounded-xl border text-left transition flex items-center justify-between bg-[#111116] border-surface-border text-zinc-400 hover:text-white hover:border-zinc-700 group";
         if (dotMax) dotMax.className = "w-1.5 h-1.5 rounded-full bg-rose-400";
         if (dotNorm) dotNorm.className = "w-1.5 h-1.5 rounded-full bg-transparent";
-        if (rateMax) rateMax.className = "text-xs font-mono font-bold text-rose-300";
-        if (rateNorm) rateNorm.className = "text-xs font-mono font-bold text-zinc-400";
       }
-      syncBattlepassUI();
+      renderItems();
     }
 
     function syncBattlepassUI() {
@@ -461,6 +490,11 @@ let currentPaletteMode = 'refined';
       const existingSeasonKey = Object.keys(cart).find(k => k.startsWith(`bp-s${bpSeason}-`));
       const addBtnLabel = document.getElementById("bp-add-button-label");
       const addBtnPrice = document.getElementById("bp-add-button-price");
+
+      const previewBtnLabel = document.getElementById("bp-preview-btn-label");
+      if (previewBtnLabel) {
+        previewBtnLabel.innerText = isEn ? `Preview Season ${bpSeason} Rewards` : `Pratonton Ganjaran Musim ${bpSeason}`;
+      }
 
       if (addBtnLabel && addBtnPrice) {
         if (existingSeasonKey) {
@@ -493,6 +527,11 @@ let currentPaletteMode = 'refined';
         }
       }
 
+      const tokensObtained = getBpTokens(bpSeason, bpTier);
+      const staminaObtained = getBpStaminaRolls(bpSeason);
+      const talentObtained = getBpTalentPoints(bpSeason);
+      const senjutsuObtained = getBpSenjutsuPoints(bpSeason);
+
       cart[bpId] = {
         id: bpId,
         name: `Battlepass ${sWord} ${bpSeason} [${bpTier}]`,
@@ -500,7 +539,10 @@ let currentPaletteMode = 'refined';
         price: price,
         qty: 1,
         limit: 1,
-        tokens: 0
+        tokens: tokensObtained,
+        staminaRolls: staminaObtained,
+        talentPoints: talentObtained,
+        senjutsuPoints: senjutsuObtained
       };
 
       updateCartSummary();
@@ -509,20 +551,278 @@ let currentPaletteMode = 'refined';
       showToast(`${sWord} ${bpSeason} [${bpTier}] added`);
     }
 
-    /* ---------------- PRODUCT RENDERING (WITH LEVEL UP PREVIEW BUTTON) ---------------- */
+    /* ---------------- BATTLEPASS MODAL LOGIC ---------------- */
+    let currentBpModalFilter = 'all';
+
+    function setBattlepassModalFilter(filterKey) {
+      currentBpModalFilter = filterKey;
+
+      // Update active tab button styles
+      document.querySelectorAll('.bp-modal-filter-btn').forEach(btn => {
+        const isMatch = btn.getAttribute('data-bpfilter') === filterKey;
+        if (isMatch) {
+          btn.className = "bp-modal-filter-btn py-1.5 px-0.5 rounded-lg font-bold transition active:scale-95 bg-rose-600 text-white shadow-sm font-mono text-[9px] sm:text-[11px] text-center truncate";
+        } else {
+          btn.className = "bp-modal-filter-btn py-1.5 px-0.5 rounded-lg font-bold transition active:scale-95 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800 font-mono text-[9px] sm:text-[11px] text-center truncate";
+        }
+      });
+
+      renderBattlepassModalItems();
+    }
+
+    function renderBattlepassModalItems() {
+      const grid = document.getElementById("preview-items-grid");
+      if (!grid) return;
+
+      if (typeof BATTLEPASS_DATA === 'undefined' || !BATTLEPASS_DATA[bpSeason]) {
+        grid.innerHTML = `
+          <div class="col-span-2 sm:col-span-4 p-8 rounded-2xl bg-zinc-950/70 border border-zinc-800 text-center">
+            <span class="text-xs text-zinc-400 font-mono">Detailed item preview for Season ${bpSeason} is coming soon!</span>
+          </div>
+        `;
+        return;
+      }
+
+      const data = BATTLEPASS_DATA[bpSeason];
+      let itemsToRender = data.items;
+
+      if (currentBpModalFilter === 'gear') {
+        itemsToRender = data.items.filter(i => ['Skill', 'Weapon', 'Back Item'].includes(i.type));
+      } else if (currentBpModalFilter === 'outfit') {
+        itemsToRender = data.items.filter(i => ['Clothing', 'Hairstyle'].includes(i.type));
+      } else if (currentBpModalFilter === 'accessory') {
+        itemsToRender = data.items.filter(i => ['Accessory', 'Pet'].includes(i.type));
+      } else if (currentBpModalFilter === 'material') {
+        itemsToRender = data.items.filter(i => ['Material', 'Essential', 'Consumable', 'Seal', 'Badge'].includes(i.type));
+      } else if (currentBpModalFilter === 'currency') {
+        itemsToRender = data.items.filter(i => ['Currency', 'Points', 'EXP'].includes(i.type));
+      }
+
+      grid.innerHTML = "";
+
+      if (itemsToRender.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-2 sm:col-span-4 p-6 rounded-2xl bg-zinc-950/70 border border-zinc-800 text-center">
+            <span class="text-xs text-zinc-400 font-mono">No items found in this filter category.</span>
+          </div>
+        `;
+        return;
+      }
+
+      itemsToRender.forEach((item, index) => {
+        const slot = document.createElement("div");
+        slot.className = "item-slot group relative bg-zinc-950/80 hover:bg-[#181822] border border-zinc-800 hover:border-rose-500/60 rounded-2xl p-3 flex flex-col items-center justify-between cursor-pointer transition shadow-md select-none hover:z-40";
+
+        const customImgSrc = (item.imgKey && typeof CUSTOM_ITEM_IMAGES !== 'undefined' && CUSTOM_ITEM_IMAGES[item.imgKey]) 
+          ? CUSTOM_ITEM_IMAGES[item.imgKey] 
+          : (item.image || "");
+
+        const imageHtml = customImgSrc && customImgSrc.trim().length > 5 
+          ? `<img src="${customImgSrc}" alt="${item.name}" class="w-12 h-12 object-contain rounded-lg drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)]" onerror="this.onerror=null; this.parentElement.innerHTML='<span class=\\'text-3xl filter drop-shadow\\'>${item.icon || '🎁'}</span>';">`
+          : `<span class="text-3xl filter drop-shadow-[0_4px_10px_rgba(244,63,94,0.3)] group-hover:scale-110 transition-transform">${item.icon || '🎁'}</span>`;
+
+        // Vertical position: Top row (0-2 on mobile, 0-3 on desktop) opens downwards; all other rows open upwards
+        const isTopRow = index < 3;
+        const positionClass = isTopRow ? "top-[104%] translate-y-1" : "bottom-[104%] -translate-y-1.5";
+
+        // Smart horizontal alignment:
+        // Mobile 3-column grid (col 0: left, col 1: center, col 2: right edge aligned towards left)
+        // Desktop 4-column grid (col 0: left-0, col 3: right-0, inner cols: centered)
+        let alignClass = "left-1/2 -translate-x-1/2";
+        let caretAlign = "left-1/2 -translate-x-1/2";
+
+        const colIndexMobile = index % 3;
+        if (colIndexMobile === 0) {
+          alignClass = "left-0 translate-x-0 sm:left-1/2 sm:-translate-x-1/2";
+          caretAlign = "left-6 sm:left-1/2 sm:-translate-x-1/2";
+        } else if (colIndexMobile === 2) {
+          // Right column: shift tooltip leftwards so it NEVER gets cut off or overflows screen right
+          alignClass = "right-0 translate-x-0 sm:left-1/2 sm:-translate-x-1/2";
+          caretAlign = "right-6 sm:left-1/2 sm:-translate-x-1/2";
+        }
+
+        const colIndexDesktop = index % 4;
+        if (colIndexDesktop === 0) {
+          alignClass += " sm:left-0 sm:translate-x-0";
+          caretAlign += " sm:left-6";
+        } else if (colIndexDesktop === 3) {
+          alignClass += " sm:right-0 sm:left-auto sm:translate-x-0";
+          caretAlign += " sm:right-6 sm:left-auto";
+        }
+
+        const caretHtml = isTopRow 
+          ? `<div class="absolute -top-1.5 ${caretAlign} w-3 h-3 bg-[#16161f] border-t border-l border-rose-500/50 rotate-45 z-10"></div>`
+          : `<div class="absolute -bottom-1.5 ${caretAlign} w-3 h-3 bg-[#16161f] border-b border-r border-rose-500/50 rotate-45 z-10"></div>`;
+
+        let combatStatsHtml = "";
+        // Show combat stats / attribute grid for Weapon, Skill, and Clothing/Outfits (when item has combatStats defined)
+        const hasCombatStatsType = item.type === "Weapon" || item.type === "Skill" || item.type === "Jutsu" || item.type === "Kinjutsu" || item.type === "Clothing" || item.type === "Outfit";
+        if (hasCombatStatsType && item.combatStats && item.combatStats.length > 0) {
+          combatStatsHtml = `
+            <div class="mt-2 pt-2 border-t border-zinc-800/80 grid grid-cols-2 gap-1.5 font-mono text-[9.5px]">
+              ${item.combatStats.map(s => `
+                <div class="p-1 rounded-lg bg-zinc-950/70 border border-zinc-800/60 flex items-center justify-between">
+                  <span class="text-zinc-400 font-semibold">${s.label}:</span>
+                  <span class="text-rose-300 font-bold ml-1">${s.val}</span>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        }
+
+        slot.innerHTML = `
+          <div class="w-full flex items-center justify-center text-[10px] font-mono mb-2">
+            <span class="px-1.5 py-0.2 rounded text-[9px] font-bold border ${item.rarityColor || 'text-rose-400 border-rose-500/40 bg-rose-950/20'} text-center">${item.type}</span>
+          </div>
+          <div class="my-2 flex items-center justify-center h-12">
+            ${imageHtml}
+          </div>
+          <div class="w-full text-center mt-1">
+            <div class="text-xs font-bold text-white group-hover:text-rose-300 transition-colors truncate tracking-tight">${item.name}</div>
+            <div class="text-[10px] text-zinc-400 font-mono mt-0.5 truncate">${item.amount || ''}</div>
+          </div>
+          <!-- Clean Hover Tooltip (Adaptive alignment: shifts left when on right edge) -->
+          <div class="item-tooltip absolute ${positionClass} ${alignClass} w-[260px] sm:w-72 max-w-[85vw] bg-[#16161f] border border-rose-500/50 rounded-2xl p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.95)] transition-all duration-200 pointer-events-none z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto text-left">
+            ${caretHtml}
+            <div class="flex items-start justify-between gap-2 border-b border-zinc-800/80 pb-2 mb-2 relative z-20">
+              <div>
+                <div class="text-xs font-bold text-white tracking-tight">${item.name}</div>
+                <div class="text-[10px] text-zinc-400 font-mono mt-0.5">Tier ${item.tier} • ${item.type}</div>
+              </div>
+              ${item.amount ? `<span class="text-[9.5px] font-mono font-bold text-rose-300 px-2 py-0.5 rounded bg-rose-950/40 border border-rose-500/30 shrink-0">${item.amount}</span>` : ''}
+            </div>
+            <p class="text-[11px] text-zinc-300 leading-relaxed font-normal relative z-20">${item.desc || item.description || ''}</p>
+            ${combatStatsHtml}
+          </div>
+        `;
+
+        // Mobile tap toggle: tap anywhere on slot opens tooltip, tap elsewhere closes
+        slot.addEventListener('click', (e) => {
+          if (window.innerWidth < 640) {
+            e.stopPropagation();
+            const tt = slot.querySelector('.item-tooltip');
+            const isCurrentlyOpen = tt && tt.classList.contains('visible');
+
+            closeAllItemTooltips();
+
+            if (tt && !isCurrentlyOpen) {
+              tt.classList.remove('opacity-0', 'invisible', 'pointer-events-none');
+              tt.classList.add('opacity-100', 'visible', 'pointer-events-auto');
+              tt.style.visibility = 'visible';
+              tt.style.opacity = '1';
+            }
+          }
+        });
+
+        grid.appendChild(slot);
+      });
+    }
+
+    function openBattlepassPreview(season) {
+      if (typeof BATTLEPASS_DATA === 'undefined' || !BATTLEPASS_DATA[season]) {
+        showToast(`Preview for Season ${season} is coming soon!`);
+        return;
+      }
+      const data = BATTLEPASS_DATA[season];
+      const modal = document.getElementById("preview-modal");
+      const titleEl = document.getElementById("preview-pkg-title");
+      const tokensEl = document.getElementById("preview-pkg-tokens");
+      const subtitleEl = document.getElementById("preview-pkg-subtitle");
+      const quickAddBtn = document.getElementById("preview-quick-add-btn");
+      const bonusBanner = document.getElementById("preview-bonus-token-banner");
+
+      if (titleEl) titleEl.innerText = `Battlepass Season ${season}`;
+      if (tokensEl) {
+        const seasonTokens = getBpTokens(season, bpTier);
+        tokensEl.innerText = `+${seasonTokens.toLocaleString()} Tokens`;
+        tokensEl.className = "text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-500/30 font-semibold";
+        tokensEl.classList.remove("hidden");
+      }
+      if (subtitleEl) {
+        subtitleEl.innerText = "Select any filter below or tap on any item to view its details above.";
+      }
+      if (bonusBanner) bonusBanner.classList.add("hidden");
+      bpSeason = season;
+
+      // Inject clean filter tabs into modal if not already present
+      let filterBar = document.getElementById("bp-modal-filter-bar");
+      if (!filterBar) {
+        filterBar = document.createElement("div");
+        filterBar.id = "bp-modal-filter-bar";
+        filterBar.className = "grid grid-cols-6 gap-1 py-1 text-xs -mt-1 mb-2";
+        filterBar.innerHTML = `
+          <button type="button" onclick="setBattlepassModalFilter('all')" class="bp-modal-filter-btn py-1.5 px-0.5 rounded-lg font-bold transition active:scale-95 bg-rose-600 text-white shadow-sm font-mono text-[9px] sm:text-[11px] text-center truncate" data-bpfilter="all">All</button>
+          <button type="button" onclick="setBattlepassModalFilter('gear')" class="bp-modal-filter-btn py-1.5 px-0.5 rounded-lg font-bold transition active:scale-95 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800 font-mono text-[9px] sm:text-[11px] text-center truncate" data-bpfilter="gear">Gear</button>
+          <button type="button" onclick="setBattlepassModalFilter('outfit')" class="bp-modal-filter-btn py-1.5 px-0.5 rounded-lg font-bold transition active:scale-95 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800 font-mono text-[9px] sm:text-[11px] text-center truncate" data-bpfilter="outfit">Outfits</button>
+          <button type="button" onclick="setBattlepassModalFilter('accessory')" class="bp-modal-filter-btn py-1.5 px-0.5 rounded-lg font-bold transition active:scale-95 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800 font-mono text-[9px] sm:text-[11px] text-center truncate" data-bpfilter="accessory">Acc & Pet</button>
+          <button type="button" onclick="setBattlepassModalFilter('material')" class="bp-modal-filter-btn py-1.5 px-0.5 rounded-lg font-bold transition active:scale-95 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800 font-mono text-[9px] sm:text-[11px] text-center truncate" data-bpfilter="material">Materials</button>
+          <button type="button" onclick="setBattlepassModalFilter('currency')" class="bp-modal-filter-btn py-1.5 px-0.5 rounded-lg font-bold transition active:scale-95 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800 font-mono text-[9px] sm:text-[11px] text-center truncate" data-bpfilter="currency">Currency</button>
+        `;
+        const grid = document.getElementById("preview-items-grid");
+        if (grid && grid.parentNode) {
+          grid.parentNode.insertBefore(filterBar, grid);
+        }
+      } else {
+        filterBar.classList.remove("hidden");
+      }
+
+      // Reset to all
+      currentBpModalFilter = 'all';
+      document.querySelectorAll('.bp-modal-filter-btn').forEach(btn => {
+        if (btn.getAttribute('data-bpfilter') === 'all') {
+          btn.className = "bp-modal-filter-btn py-1.5 px-0.5 rounded-lg font-bold transition active:scale-95 bg-rose-600 text-white shadow-sm font-mono text-[9px] sm:text-[11px] text-center truncate";
+        } else {
+          btn.className = "bp-modal-filter-btn py-1.5 px-0.5 rounded-lg font-bold transition active:scale-95 bg-zinc-900 hover:bg-zinc-800 text-zinc-400 hover:text-white border border-zinc-800 font-mono text-[9px] sm:text-[11px] text-center truncate";
+        }
+      });
+
+      renderBattlepassModalItems();
+
+      if (quickAddBtn) {
+        quickAddBtn.innerText = `+ Add Season ${season} [${bpTier}]`;
+        quickAddBtn.className = "flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 active:scale-95 text-white text-xs font-bold transition shadow-[0_0_15px_rgba(244,63,94,0.3)]";
+        quickAddBtn.onclick = () => {
+          addBattlepassToCart();
+          closePreviewModal();
+        };
+      }
+
+      modal.classList.remove("hidden");
+      modal.classList.add("flex");
+
+      // Clicking modal backdrop/container closes any open tooltips
+      modal.onclick = (e) => {
+        if (!e.target.closest('.item-slot')) {
+          closeAllItemTooltips();
+        }
+      };
+    }
+
+    /* ---------------- PRODUCT RENDERING (WITH LEVEL UP & BATTLEPASS PREVIEW BUTTON) ---------------- */
     function renderItems() {
       const list = document.getElementById("product-list");
       list.innerHTML = "";
-
-      if (currentCategory === "battlepass") return;
 
       const items = CATALOG.filter(item => item.category === currentCategory);
       const palette = PALETTE_CONFIGS[currentPaletteMode];
       const catKey = currentCategory in palette.cards ? currentCategory : 'default';
 
       items.forEach(item => {
-        const inCartQty = cart[item.id] ? cart[item.id].qty : 0;
-        const isLimitReached = item.limit === 1 && inCartQty >= 1;
+        // If Battlepass, price depends on currently selected bpTier
+        const isBattlepass = item.category === 'battlepass';
+        let currentItemPrice = item.price;
+        let cartItemId = item.id;
+        let displayItemName = item.name;
+
+        if (isBattlepass) {
+          const s = item.bpSeason || 1;
+          currentItemPrice = getBpPrice(s, bpTier);
+          cartItemId = `bp-s${s}-${bpTier.toLowerCase()}`;
+          displayItemName = item.name;
+        }
+
+        const inCartQty = cart[cartItemId] ? cart[cartItemId].qty : 0;
+        const isLimitReached = (item.limit === 1 || isBattlepass) && inCartQty >= 1;
 
         const row = document.createElement("div");
         const cardStyle = inCartQty > 0 
@@ -541,13 +841,15 @@ let currentPaletteMode = 'refined';
 
         const badgeHtml = isEmblem
           ? `<span class="text-[9px] font-mono font-medium px-1.5 py-0.2 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">${I18N[currentLang].emblemChoiceBadge}</span>`
-          : (item.limit === 1 ? `<span class="text-[9px] font-mono font-medium px-1.5 py-0.2 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700/60">${I18N[currentLang].limit1Badge}</span>` : '');
+          : (isBattlepass 
+            ? `<span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40">${bpTier}</span> <span class="text-[9px] font-mono font-medium px-1.5 py-0.2 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700/60">${I18N[currentLang].limit1Badge}</span>`
+            : (item.limit === 1 ? `<span class="text-[9px] font-mono font-medium px-1.5 py-0.2 rounded-full bg-zinc-800 text-zinc-400 border border-zinc-700/60">${I18N[currentLang].limit1Badge}</span>` : ''));
 
         row.innerHTML = `
           <div class="flex items-start justify-between gap-2">
             <div class="flex-1 min-w-0 pr-1.5">
               <div class="flex items-center gap-2">
-                <span class="text-xs sm:text-[13px] font-semibold text-white tracking-tight truncate">${item.name}</span>
+                <span class="text-xs sm:text-[13px] font-semibold text-white tracking-tight truncate">${displayItemName}</span>
                 ${badgeHtml}
               </div>
               ${item.desc && item.desc.trim() ? `<p class="text-[11px] sm:text-xs text-zinc-400 leading-snug break-words mt-1">${item.desc}</p>` : ''}
@@ -555,20 +857,34 @@ let currentPaletteMode = 'refined';
 
             <div class="text-right shrink-0">
               <div class="text-xs sm:text-[13px] font-bold font-mono ${priceColor} tracking-tight">
-                RM ${item.price.toFixed(2)}
+                RM ${currentItemPrice.toFixed(2)}
               </div>
               ${item.oldPrice ? `<div class="text-[10px] text-zinc-500 line-through font-mono">RM ${item.oldPrice.toFixed(2)}</div>` : ''}
             </div>
           </div>
 
-          <div class="flex items-center ${isLevelUp ? 'justify-between' : 'justify-end'} gap-2 pt-2 border-t border-zinc-800/40">
+          <div class="flex items-center ${isLevelUp || isBattlepass ? 'justify-between' : 'justify-end'} gap-2 pt-2 border-t border-zinc-800/40">
             ${isLevelUp ? `
-              <!-- Eye-Catching Level Up Package Preview Button -->
+              <!-- Level Up / Deal Package Preview Button -->
               <button 
                 type="button" 
                 onclick="openPackagePreview('${item.id}')"
-                class="px-2.5 py-1.5 rounded-xl bg-pink-500/15 hover:bg-pink-500/25 border border-pink-500/35 text-pink-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 group shadow-sm">
-                <svg class="w-3.5 h-3.5 text-pink-400 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                class="px-2.5 py-1.5 rounded-xl ${item.category === 'first-time' ? 'bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/35 text-emerald-300' : 'bg-pink-500/15 hover:bg-pink-500/25 border border-pink-500/35 text-pink-300'} hover:text-white text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 group shadow-sm">
+                <svg class="w-3.5 h-3.5 ${item.category === 'first-time' ? 'text-emerald-400' : 'text-pink-400'} group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <span>Preview</span>
+              </button>
+            ` : ''}
+
+            ${isBattlepass ? `
+              <!-- Battlepass Season Preview Button -->
+              <button 
+                type="button" 
+                onclick="openBattlepassPreview(${item.bpSeason})"
+                class="px-2.5 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 border border-rose-500/35 text-rose-300 hover:text-white text-xs font-semibold flex items-center gap-1.5 transition active:scale-95 group shadow-sm">
+                <svg class="w-3.5 h-3.5 text-rose-400 group-hover:scale-110 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                   <circle cx="12" cy="12" r="3"></circle>
                 </svg>
@@ -580,7 +896,7 @@ let currentPaletteMode = 'refined';
               ${inCartQty === 0 ? `
                 <button 
                   type="button" 
-                  onclick="addToCart('${item.id}')"
+                  onclick="handleItemAddToCart('${item.id}', ${isBattlepass})"
                   class="px-3.5 py-1.5 rounded-xl active:scale-95 text-xs font-semibold transition ${addBtnStyle}">
                   ${otherEmblemInCart ? I18N[currentLang].switchBtn : '+ Add'}
                 </button>
@@ -588,14 +904,14 @@ let currentPaletteMode = 'refined';
                 <div class="flex items-center gap-1.5 ${stepperBg} border rounded-xl p-1">
                   <button 
                     type="button" 
-                    onclick="changeQty('${item.id}', -1)" 
+                    onclick="changeQty('${cartItemId}', -1)" 
                     class="w-6 h-6 flex items-center justify-center text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-lg text-xs font-mono transition">
                     -
                   </button>
                   <span class="w-5 text-center font-mono text-xs font-bold text-white">${inCartQty}</span>
                   <button 
                     type="button" 
-                    onclick="changeQty('${item.id}', 1)" 
+                    onclick="changeQty('${cartItemId}', 1)" 
                     ${isLimitReached ? 'disabled' : ''}
                     class="w-6 h-6 flex items-center justify-center rounded-lg text-xs font-mono transition ${
                       isLimitReached 
@@ -614,6 +930,18 @@ let currentPaletteMode = 'refined';
       });
     }
 
+    function handleItemAddToCart(itemId, isBattlepass) {
+      if (isBattlepass) {
+        const item = CATALOG.find(p => p.id === itemId);
+        if (!item) return;
+        bpSeason = item.bpSeason || 1;
+        addBattlepassToCart();
+        renderItems();
+      } else {
+        addToCart(itemId);
+      }
+    }
+
     /* ---------------- LEVEL UP PREVIEW MODAL LOGIC ---------------- */
     let currentPreviewId = null;
 
@@ -625,15 +953,27 @@ let currentPaletteMode = 'refined';
       const modal = document.getElementById("preview-modal");
       const titleEl = document.getElementById("preview-pkg-title");
       const tokensEl = document.getElementById("preview-pkg-tokens");
+      const subtitleEl = document.getElementById("preview-pkg-subtitle");
       const grid = document.getElementById("preview-items-grid");
       const quickAddBtn = document.getElementById("preview-quick-add-btn");
       const tokenVal = document.getElementById("preview-token-value");
       const tokenImg = document.getElementById("preview-token-img");
 
+      // Hide battlepass filter bar and detail banner if opened from levelup
+      const bpFilterBar = document.getElementById("bp-modal-filter-bar");
+      if (bpFilterBar) bpFilterBar.classList.add("hidden");
+      const bpBanner = document.getElementById("bp-item-detail-banner");
+      if (bpBanner) bpBanner.classList.add("hidden");
+
+      if (subtitleEl) {
+        subtitleEl.innerText = "Hover over any item slot to inspect full stats, lore, and skill descriptions.";
+      }
+
       titleEl.innerText = data.title;
       const bonusBanner = document.getElementById("preview-bonus-token-banner");
       if (data.tokens && data.tokens > 0) {
-        tokensEl.innerText = `+${data.tokens.toLocaleString()} Tokens Included`;
+        tokensEl.innerText = `+${data.tokens.toLocaleString()} Tokens`;
+        tokensEl.className = "text-[10px] font-mono px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-300 border border-sky-500/30 font-semibold";
         tokensEl.classList.remove("hidden");
         if (bonusBanner) bonusBanner.classList.remove("hidden");
         if (tokenVal) tokenVal.innerText = (data.tokens || 0).toLocaleString();
@@ -648,13 +988,13 @@ let currentPaletteMode = 'refined';
 
       data.items.forEach((item, index) => {
         const slot = document.createElement("div");
-        slot.className = "item-slot group relative bg-zinc-950/80 hover:bg-[#181822] border border-zinc-800 hover:border-pink-500/60 rounded-2xl p-3 flex flex-col items-center justify-between cursor-pointer transition shadow-md select-none hover:z-40";
+        slot.className = "item-slot group relative bg-zinc-950/80 hover:bg-[#181822] border border-zinc-800 hover:border-rose-500/60 rounded-2xl p-3 flex flex-col items-center justify-between cursor-pointer transition shadow-md select-none hover:z-40";
         
         // Custom image support using either CUSTOM_ITEM_IMAGES[item.imgKey] or item.image with fallback icon
         const customImgSrc = (item.imgKey && CUSTOM_ITEM_IMAGES[item.imgKey]) ? CUSTOM_ITEM_IMAGES[item.imgKey] : (item.image || "");
         const imageHtml = customImgSrc && customImgSrc.trim().length > 5 
-          ? `<img src="${customImgSrc}" alt="${item.name}" class="w-12 h-12 object-contain rounded-lg drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)]" onerror="if (this.src.endsWith('.png')) { this.src = this.src.replace(/\.png$/, '.jpeg'); } else if (this.src.endsWith('.jpeg')) { this.src = this.src.replace(/\.jpeg$/, '.jpg'); } else { this.onerror=null; this.parentElement.innerHTML='<span class=\\'text-3xl filter drop-shadow\\'>${item.icon}</span>'; }">`
-          : `<span class="text-3xl filter drop-shadow-[0_4px_10px_rgba(236,72,153,0.3)] group-hover:scale-110 transition-transform">${item.icon}</span>`;
+          ? `<img src="${customImgSrc}" alt="${item.name}" class="w-12 h-12 object-contain rounded-lg drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)]" onerror="if (this.src.endsWith('.png')) { this.src = this.src.replace(/\\.png$/, '.jpeg'); } else if (this.src.endsWith('.jpeg')) { this.src = this.src.replace(/\\.jpeg$/, '.jpg'); } else { this.onerror=null; this.parentElement.innerHTML='<span class=\\'text-3xl filter drop-shadow\\'>${item.icon}</span>'; }">`
+          : `<span class="text-3xl filter drop-shadow-[0_4px_10px_rgba(244,63,94,0.3)] group-hover:scale-110 transition-transform">${item.icon}</span>`;
 
         // Smart tooltip positioning:
         // Top row (0-3) opens downwards so it NEVER covers the header!
@@ -664,63 +1004,126 @@ let currentPaletteMode = 'refined';
           ? "top-[104%] translate-y-1" 
           : "bottom-[104%] -translate-y-1";
 
-        // Caret positioning matching 100% opaque solid background
-        const caretHtml = isTopRow 
-          ? `<div class="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#16161f] border-t border-l border-pink-500/50 rotate-45 z-10"></div>`
-          : `<div class="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-[#16161f] border-b border-r border-pink-500/50 rotate-45 z-10"></div>`;
-
-        // Horizontal alignment check to avoid clipping on screen edges
         let alignClass = "left-1/2 -translate-x-1/2";
-        if (index % 4 === 0) {
-          alignClass = "left-0"; // left edge
-        } else if (index % 4 === 3) {
-          alignClass = "right-0"; // right edge
+        let caretAlign = "left-1/2 -translate-x-1/2";
+
+        const colIndexMobile = index % 3;
+        if (colIndexMobile === 0) {
+          alignClass = "left-0 translate-x-0 sm:left-1/2 sm:-translate-x-1/2";
+          caretAlign = "left-6 sm:left-1/2 sm:-translate-x-1/2";
+        } else if (colIndexMobile === 2) {
+          alignClass = "right-0 translate-x-0 sm:left-1/2 sm:-translate-x-1/2";
+          caretAlign = "right-6 sm:left-1/2 sm:-translate-x-1/2";
+        }
+
+        const colIndexDesktop = index % 4;
+        if (colIndexDesktop === 0) {
+          alignClass += " sm:left-0 sm:translate-x-0";
+          caretAlign += " sm:left-6";
+        } else if (colIndexDesktop === 3) {
+          alignClass += " sm:right-0 sm:left-auto sm:translate-x-0";
+          caretAlign += " sm:right-6 sm:left-auto";
+        }
+
+        const caretHtml = isTopRow 
+          ? `<div class="absolute -top-1.5 ${caretAlign} w-3 h-3 bg-[#16161f] border-t border-l border-rose-500/50 rotate-45 z-10"></div>`
+          : `<div class="absolute -bottom-1.5 ${caretAlign} w-3 h-3 bg-[#16161f] border-b border-r border-rose-500/50 rotate-45 z-10"></div>`;
+
+        let combatStatsHtml = "";
+        if (item.combatStats && item.combatStats.length > 0) {
+          combatStatsHtml = `
+            <div class="mt-2 pt-2 border-t border-zinc-800/80 grid grid-cols-2 gap-1.5 font-mono text-[9.5px]">
+              ${item.combatStats.map(s => `
+                <div class="p-1 rounded-lg bg-zinc-950/70 border border-zinc-800/60 flex items-center justify-between">
+                  <span class="text-zinc-400 font-semibold">${s.label}:</span>
+                  <span class="text-rose-300 font-bold ml-1">${s.val}</span>
+                </div>
+              `).join('')}
+            </div>
+          `;
+        } else if (item.stats && typeof item.stats === 'string' && item.stats.trim().length > 0) {
+          const statParts = item.stats.split('•')
+            .map(p => p.trim())
+            .filter(p => p && !/^(?:Lv\.\d+\s+)?Exclusive\s+(?:Cosmetic|Hairstyle)$/i.test(p) && !/^Cosmetic\s+Hairstyle$/i.test(p) && !/^Pet\s+Companion$/i.test(p));
+          if (statParts.length > 0) {
+            combatStatsHtml = `
+              <div class="mt-2 pt-2 border-t border-zinc-800/80 flex flex-wrap gap-1.5 font-mono text-[9.5px]">
+                ${statParts.map(part => {
+                  const colonIdx = part.indexOf(':');
+                  if (colonIdx > 0) {
+                    const lbl = part.slice(0, colonIdx).trim();
+                    const val = part.slice(colonIdx + 1).trim();
+                    return `
+                      <div class="px-2 py-1 rounded-lg bg-zinc-950/70 border border-zinc-800/60 flex items-center gap-1.5">
+                        <span class="text-zinc-400 font-semibold">${lbl}:</span>
+                        <span class="text-rose-300 font-bold">${val}</span>
+                      </div>
+                    `;
+                  } else {
+                    return `
+                      <div class="px-2 py-1 rounded-lg bg-zinc-950/70 border border-zinc-800/60 flex items-center gap-1.5">
+                        <span class="text-rose-300 font-bold">${part}</span>
+                      </div>
+                    `;
+                  }
+                }).join('')}
+              </div>
+            `;
+          }
+        }
+
+        let itemAmount = item.amount;
+        if (!itemAmount) {
+          const m = (item.name || '').match(/[×x](\d+)/i);
+          if (m) itemAmount = 'x' + m[1];
+          else itemAmount = 'x1';
         }
 
         slot.innerHTML = `
-          <!-- Item Card Face -->
-          <div class="w-full flex items-center justify-between text-[10px] font-mono text-zinc-400 mb-1">
-            <span class="truncate pr-1">${item.type}</span>
-            <span class="px-1.5 py-0.2 rounded text-[8.5px] font-bold ${item.rarityColor}">${item.rarity}</span>
+          <!-- Item Card Face with Centered Tag -->
+          <div class="w-full flex items-center justify-center text-[10px] font-mono mb-2">
+            <span class="px-1.5 py-0.2 rounded text-[9px] font-bold border ${item.rarityColor || 'text-rose-400 border-rose-500/40 bg-rose-950/20'} text-center">${item.type}</span>
           </div>
 
-          <div class="my-2.5 flex items-center justify-center h-12">
+          <div class="my-2 flex items-center justify-center h-12">
             ${imageHtml}
           </div>
 
-          <div class="w-full text-center">
-            <div class="text-xs font-bold text-white tracking-tight truncate group-hover:text-pink-300 transition-colors">${item.name}</div>
+          <div class="w-full text-center mt-1">
+            <div class="text-xs font-bold text-white group-hover:text-rose-300 transition-colors truncate tracking-tight">${item.name}</div>
+            <div class="text-[10px] text-zinc-400 font-mono mt-0.5 truncate">${itemAmount !== 'x1' ? itemAmount : ''}</div>
           </div>
 
-          <!-- Non-obstructive Solid Tooltip Card with elevated z-index -->
-          <div class="item-tooltip absolute ${positionClass} ${alignClass} w-64 bg-[#16161f] border border-pink-500/60 p-3.5 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.98)] text-left pointer-events-none z-50">
+          <!-- Non-obstructive Solid Tooltip Card matching Battlepass format -->
+          <div class="item-tooltip absolute ${positionClass} ${alignClass} w-[260px] sm:w-72 max-w-[85vw] bg-[#16161f] border border-rose-500/50 rounded-2xl p-3.5 shadow-[0_12px_40px_rgba(0,0,0,0.95)] transition-all duration-200 pointer-events-none z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible group-hover:pointer-events-auto text-left">
             ${caretHtml}
-            <div class="flex items-center justify-between gap-1 border-b border-zinc-800 pb-1.5 mb-2">
-              <span class="text-[10px] font-mono uppercase tracking-wider text-pink-300 font-bold">${item.type}</span>
-              <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded ${item.rarityColor}">${item.rarity}</span>
+            <div class="flex items-start justify-between gap-2 border-b border-zinc-800/80 pb-2 mb-2 relative z-20">
+              <div>
+                <div class="text-xs font-bold text-white tracking-tight">${item.name}</div>
+                <div class="text-[10px] text-zinc-400 font-mono mt-0.5">${item.rarity ? `${item.rarity} • ` : ''}${item.type}</div>
+              </div>
+              <span class="text-[9.5px] font-mono font-bold text-rose-300 px-2 py-0.5 rounded bg-rose-950/40 border border-rose-500/30 shrink-0">${itemAmount}</span>
             </div>
-            <div class="text-xs font-bold text-white tracking-tight mb-1">${item.name}</div>
-            <p class="text-[11px] text-zinc-300 leading-relaxed mb-2 font-sans">${item.desc}</p>
-            <div class="pt-2 border-t border-zinc-800/80 text-[10.5px] font-mono text-emerald-400 font-medium">
-              ${item.stats}
-            </div>
+            <p class="text-[11px] text-zinc-300 leading-relaxed font-normal relative z-20">${item.desc || item.description || ''}</p>
+            ${combatStatsHtml}
           </div>
         `;
 
-        // Mobile tap toggle for tooltips
+        // Mobile tap toggle: tap anywhere on slot opens tooltip, tap elsewhere closes
         slot.addEventListener('click', (e) => {
           if (window.innerWidth < 640) {
             e.stopPropagation();
-            document.querySelectorAll('.item-tooltip').forEach(tt => {
-              if (tt !== slot.querySelector('.item-tooltip')) {
-                tt.style.visibility = 'hidden';
-                tt.style.opacity = '0';
-              }
-            });
             const tt = slot.querySelector('.item-tooltip');
-            const isVisible = tt.style.visibility === 'visible';
-            tt.style.visibility = isVisible ? 'hidden' : 'visible';
-            tt.style.opacity = isVisible ? '0' : '1';
+            const isCurrentlyOpen = tt && tt.classList.contains('visible');
+
+            closeAllItemTooltips();
+
+            if (tt && !isCurrentlyOpen) {
+              tt.classList.remove('opacity-0', 'invisible', 'pointer-events-none');
+              tt.classList.add('opacity-100', 'visible', 'pointer-events-auto');
+              tt.style.visibility = 'visible';
+              tt.style.opacity = '1';
+            }
           }
         });
 
@@ -729,10 +1132,13 @@ let currentPaletteMode = 'refined';
 
       // Quick add button inside modal
       const inCart = cart[pkgId] && cart[pkgId].qty > 0;
+      const isHalloween = pkgId === 'pkg-halloween';
       quickAddBtn.innerText = inCart ? "✓ In Order List" : "+ Add to Order";
       quickAddBtn.className = inCart 
-        ? "flex-1 sm:flex-none px-5 py-2 rounded-xl bg-emerald-600 text-white text-xs font-bold transition shadow-sm"
-        : "flex-1 sm:flex-none px-5 py-2 rounded-xl bg-pink-600 hover:bg-pink-500 active:scale-95 text-white text-xs font-bold transition shadow-[0_0_15px_rgba(236,72,153,0.3)]";
+        ? "flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-bold transition shadow-sm"
+        : (isHalloween 
+            ? "flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-xs font-bold transition shadow-[0_0_15px_rgba(16,185,129,0.3)]"
+            : "flex-1 sm:flex-none px-5 py-2.5 rounded-xl bg-pink-600 hover:bg-pink-500 active:scale-95 text-white text-xs font-bold transition shadow-[0_0_15px_rgba(236,72,153,0.3)]");
 
       quickAddBtn.onclick = () => {
         addToCart(pkgId);
@@ -743,6 +1149,22 @@ let currentPaletteMode = 'refined';
 
       modal.classList.remove("hidden");
       modal.classList.add("flex");
+
+      // Clicking modal backdrop/container closes any open tooltips
+      modal.onclick = (e) => {
+        if (!e.target.closest('.item-slot')) {
+          closeAllItemTooltips();
+        }
+      };
+    }
+
+    function closeAllItemTooltips() {
+      document.querySelectorAll('#preview-items-grid .item-tooltip').forEach(tt => {
+        tt.classList.remove('opacity-100', 'visible', 'pointer-events-auto');
+        tt.classList.add('opacity-0', 'invisible', 'pointer-events-none');
+        tt.style.removeProperty('visibility');
+        tt.style.removeProperty('opacity');
+      });
     }
 
     function closePreviewModal() {
@@ -751,6 +1173,7 @@ let currentPaletteMode = 'refined';
         modal.classList.add("hidden");
         modal.classList.remove("flex");
       }
+      closeAllItemTooltips();
     }
 
     /* ---------------- CART OPERATIONS ---------------- */
@@ -769,6 +1192,24 @@ let currentPaletteMode = 'refined';
       }
 
       if (!cart[itemId]) {
+        let stamina = item.staminaRolls || 0;
+        if (!stamina && item.desc) {
+          const m = item.desc.match(/([\d,]+)\s*Stamina\s*Rolls/i);
+          if (m) stamina = parseInt(m[1].replace(/,/g, ''), 10) || 0;
+        }
+
+        let talent = item.talentPoints || 0;
+        if (!talent && item.desc) {
+          const m = item.desc.match(/([\d,]+)\s*(?:Talent\s*Points|TP)/i);
+          if (m) talent = parseInt(m[1].replace(/,/g, ''), 10) || 0;
+        }
+
+        let senjutsu = item.senjutsuPoints || 0;
+        if (!senjutsu && item.desc) {
+          const m = item.desc.match(/([\d,]+)\s*(?:Senjutsu\s*Points|Senjutsu)/i);
+          if (m) senjutsu = parseInt(m[1].replace(/,/g, ''), 10) || 0;
+        }
+
         cart[itemId] = {
           id: item.id,
           name: item.name,
@@ -776,7 +1217,10 @@ let currentPaletteMode = 'refined';
           price: item.price,
           qty: 1,
           limit: item.limit || 99,
-          tokens: item.tokens || 0
+          tokens: item.tokens || 0,
+          staminaRolls: stamina,
+          talentPoints: talent,
+          senjutsuPoints: senjutsu
         };
       } else {
         if (cart[itemId].limit === 1 && cart[itemId].qty >= 1) return;
@@ -890,6 +1334,66 @@ let currentPaletteMode = 'refined';
       const totalTokens = calculateTotalTokens();
       const isEn = currentLang === 'en';
       showToast(isEn ? `Order includes ~${totalTokens.toLocaleString()} Tokens!` : `Pesanan ini mengandungi ~${totalTokens.toLocaleString()} Token!`);
+    }
+
+    function calculateTotalStaminaRolls() {
+      let total = 0;
+      for (const id in cart) {
+        const item = cart[id];
+        let s = item.staminaRolls;
+        if (s === undefined) {
+          const match = (item.desc || "").match(/([\d,]+)\s*Stamina\s*Rolls/i);
+          s = match ? parseInt(match[1].replace(/,/g, ''), 10) || 0 : 0;
+        }
+        total += s * (item.qty || 1);
+      }
+      return total;
+    }
+
+    function calculateTotalTalentPoints() {
+      let total = 0;
+      for (const id in cart) {
+        const item = cart[id];
+        let t = item.talentPoints;
+        if (t === undefined) {
+          const match = (item.desc || "").match(/([\d,]+)\s*(?:Talent\s*Points|TP)/i);
+          t = match ? parseInt(match[1].replace(/,/g, ''), 10) || 0 : 0;
+        }
+        total += t * (item.qty || 1);
+      }
+      return total;
+    }
+
+    function calculateTotalSenjutsuPoints() {
+      let total = 0;
+      for (const id in cart) {
+        const item = cart[id];
+        let sj = item.senjutsuPoints;
+        if (sj === undefined) {
+          const match = (item.desc || "").match(/([\d,]+)\s*(?:Senjutsu\s*Points|Senjutsu)/i);
+          sj = match ? parseInt(match[1].replace(/,/g, ''), 10) || 0 : 0;
+        }
+        total += sj * (item.qty || 1);
+      }
+      return total;
+    }
+
+    function handleStaminaClick() {
+      const total = calculateTotalStaminaRolls();
+      const isEn = currentLang === 'en';
+      showToast(isEn ? `Order includes ${total.toLocaleString()} Stamina Rolls!` : `Pesanan ini mengandungi ${total.toLocaleString()} Stamina Rolls!`);
+    }
+
+    function handleTalentClick() {
+      const total = calculateTotalTalentPoints();
+      const isEn = currentLang === 'en';
+      showToast(isEn ? `Order includes ${total.toLocaleString()} Talent Points!` : `Pesanan ini mengandungi ${total.toLocaleString()} Talent Point!`);
+    }
+
+    function handleSenjutsuClick() {
+      const total = calculateTotalSenjutsuPoints();
+      const isEn = currentLang === 'en';
+      showToast(isEn ? `Order includes ${total.toLocaleString()} Senjutsu Points!` : `Pesanan ini mengandungi ${total.toLocaleString()} Senjutsu Point!`);
     }
 
     function generateCleanOrderTicket(charId) {
@@ -1092,13 +1596,49 @@ let currentPaletteMode = 'refined';
       fallbackCopy(ticketText);
 
       const totalTokens = calculateTotalTokens();
+      const totalStamina = calculateTotalStaminaRolls();
+      const totalTalent = calculateTotalTalentPoints();
+      const totalSenjutsu = calculateTotalSenjutsuPoints();
+
+      const btnTokens = document.getElementById("btn-tokens-obtained");
+      const btnStamina = document.getElementById("btn-stamina-obtained");
+      const btnTalent = document.getElementById("btn-talent-obtained");
+      const btnSenjutsu = document.getElementById("btn-senjutsu-obtained");
+
       const tokensCountEl = document.getElementById("modal-tokens-count");
+      const staminaCountEl = document.getElementById("modal-stamina-count");
+      const talentCountEl = document.getElementById("modal-talent-count");
+      const senjutsuCountEl = document.getElementById("modal-senjutsu-count");
+
       if (tokensCountEl) tokensCountEl.innerText = totalTokens.toLocaleString();
+      if (staminaCountEl) staminaCountEl.innerText = totalStamina.toLocaleString();
+      if (talentCountEl) talentCountEl.innerText = totalTalent.toLocaleString();
+      if (senjutsuCountEl) senjutsuCountEl.innerText = totalSenjutsu.toLocaleString();
+
+      const hasAnyReward = totalTokens > 0 || totalStamina > 0 || totalTalent > 0 || totalSenjutsu > 0;
+      if (!hasAnyReward) {
+        if (btnTokens) btnTokens.classList.remove("hidden");
+        if (btnStamina) btnStamina.classList.add("hidden");
+        if (btnTalent) btnTalent.classList.add("hidden");
+        if (btnSenjutsu) btnSenjutsu.classList.add("hidden");
+      } else {
+        if (btnTokens) btnTokens.classList.toggle("hidden", totalTokens <= 0);
+        if (btnStamina) btnStamina.classList.toggle("hidden", totalStamina <= 0);
+        if (btnTalent) btnTalent.classList.toggle("hidden", totalTalent <= 0);
+        if (btnSenjutsu) btnSenjutsu.classList.toggle("hidden", totalSenjutsu <= 0);
+      }
 
       document.getElementById("ticket-preview-box").innerText = ticketText;
       const modal = document.getElementById("ticket-modal");
       modal.classList.remove("hidden");
       modal.classList.add("flex");
+
+      // Clicking modal backdrop/container closes any open tooltips
+      modal.onclick = (e) => {
+        if (!e.target.closest('.item-slot')) {
+          closeAllItemTooltips();
+        }
+      };
 
       showToast(t.toastCopied);
     }
@@ -1304,6 +1844,13 @@ let activeQrProvider = "maybank";
 
       modal.classList.remove("hidden");
       modal.classList.add("flex");
+
+      // Clicking modal backdrop/container closes any open tooltips
+      modal.onclick = (e) => {
+        if (!e.target.closest('.item-slot')) {
+          closeAllItemTooltips();
+        }
+      };
     }
 
     function closeBotVideoModal() {

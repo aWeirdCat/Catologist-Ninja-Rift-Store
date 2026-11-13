@@ -32,6 +32,7 @@
           'clan': { inCart: 'bg-teal-950/25 border-teal-500/45 shadow-sm', hover: 'hover:border-teal-500/30 hover:bg-[#15151b]' },
           'arena': { inCart: 'bg-indigo-950/25 border-indigo-500/45 shadow-sm', hover: 'hover:border-indigo-500/30 hover:bg-[#15151b]' },
           'emblem': { inCart: 'bg-amber-950/25 border-amber-500/45 shadow-sm', hover: 'hover:border-amber-500/30 hover:bg-[#15151b]' },
+          'battlepass': { inCart: 'bg-rose-950/25 border-rose-500/45 shadow-sm', hover: 'hover:border-rose-500/30 hover:bg-[#15151b]' },
           'levelup': { inCart: 'bg-pink-950/25 border-pink-500/45 shadow-sm', hover: 'hover:border-pink-500/30 hover:bg-[#15151b]' },
           'bots': { inCart: 'bg-red-950/30 border-red-500/50 shadow-sm', hover: 'hover:border-red-500/40 hover:bg-[#160d0f]' },
           'default': { inCart: 'bg-emerald-950/25 border-emerald-500/45 shadow-sm', hover: 'hover:border-emerald-500/30 hover:bg-[#15151b]' }
@@ -42,6 +43,7 @@
           'clan': 'text-teal-300 font-bold font-mono',
           'arena': 'text-indigo-300 font-bold font-mono',
           'emblem': 'text-amber-300 font-bold font-mono',
+          'battlepass': 'text-rose-300 font-bold font-mono',
           'levelup': 'text-pink-300 font-bold font-mono',
           'bots': 'text-red-400 font-bold font-mono',
           'default': 'text-emerald-400 font-bold font-mono'
@@ -52,6 +54,7 @@
           'clan': 'bg-teal-600 hover:bg-teal-500 active:scale-95 text-white font-medium shadow-sm',
           'arena': 'bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-medium shadow-sm',
           'emblem': 'bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 font-semibold shadow-sm',
+          'battlepass': 'bg-rose-600 hover:bg-rose-500 active:scale-95 text-white font-medium shadow-sm',
           'levelup': 'bg-pink-600 hover:bg-pink-500 active:scale-95 text-white font-medium shadow-sm',
           'bots': 'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-500 hover:to-red-600 active:scale-95 text-white font-bold shadow-md shadow-red-950/50',
           'default': 'bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white font-medium shadow-sm'
@@ -99,6 +102,7 @@
           'clan': { inCart: 'bg-teal-950/20 border-teal-500/35', hover: 'hover:border-teal-500/30' },
           'arena': { inCart: 'bg-blue-950/20 border-blue-500/35', hover: 'hover:border-blue-500/30' },
           'emblem': { inCart: 'bg-amber-950/20 border-amber-500/35', hover: 'hover:border-amber-500/30' },
+          'battlepass': { inCart: 'bg-rose-950/20 border-rose-500/35', hover: 'hover:border-rose-500/30' },
           'levelup': { inCart: 'bg-pink-950/20 border-pink-500/35', hover: 'hover:border-pink-500/30' },
           'bots': { inCart: 'bg-red-950/25 border-red-500/40', hover: 'hover:border-red-500/30 hover:bg-[#140b0d]' },
           'default': { inCart: 'bg-emerald-950/20 border-emerald-500/35', hover: 'hover:border-emerald-500/30' }
@@ -109,6 +113,7 @@
           'clan': 'text-teal-300 font-mono font-medium',
           'arena': 'text-blue-300 font-mono font-medium',
           'emblem': 'text-amber-300 font-mono font-medium',
+          'battlepass': 'text-rose-300 font-mono font-medium',
           'levelup': 'text-pink-300 font-mono font-medium',
           'bots': 'text-red-300 font-mono font-medium',
           'default': 'text-emerald-300 font-mono font-medium'
@@ -119,6 +124,7 @@
           'clan': 'bg-teal-700/80 hover:bg-teal-600 text-white',
           'arena': 'bg-blue-700/80 hover:bg-blue-600 text-white',
           'emblem': 'bg-amber-600/80 hover:bg-amber-500 text-zinc-950 font-medium',
+          'battlepass': 'bg-rose-700/80 hover:bg-rose-600 text-white font-medium',
           'levelup': 'bg-pink-700/80 hover:bg-pink-600 text-white',
           'bots': 'bg-red-700/80 hover:bg-red-600 text-white font-medium',
           'default': 'bg-emerald-700/80 hover:bg-emerald-600 text-white'
@@ -166,6 +172,7 @@
           'clan': { inCart: 'bg-cyan-950/30 border-cyan-500/70 shadow-[0_0_18px_rgba(6,182,212,0.2)]', hover: 'hover:border-cyan-500/40' },
           'arena': { inCart: 'bg-indigo-950/30 border-indigo-500/70 shadow-[0_0_18px_rgba(99,102,241,0.2)]', hover: 'hover:border-indigo-500/40' },
           'emblem': { inCart: 'bg-amber-950/30 border-amber-500/70 shadow-[0_0_18px_rgba(245,158,11,0.2)]', hover: 'hover:border-amber-500/40' },
+          'battlepass': { inCart: 'bg-rose-950/30 border-rose-500/70 shadow-[0_0_18px_rgba(244,63,94,0.2)]', hover: 'hover:border-rose-500/40' },
           'levelup': { inCart: 'bg-pink-950/30 border-pink-500/70 shadow-[0_0_18px_rgba(236,72,153,0.2)]', hover: 'hover:border-pink-500/40' },
           'bots': { inCart: 'bg-red-950/40 border-red-500/80 shadow-[0_0_20px_rgba(239,68,68,0.3)]', hover: 'hover:border-red-500/60 hover:shadow-[0_0_14px_rgba(239,68,68,0.2)]' },
           'default': { inCart: 'bg-emerald-950/25 border-emerald-500/60 shadow-[0_0_16px_rgba(16,185,129,0.18)]', hover: 'hover:border-emerald-500/30' }
@@ -176,6 +183,7 @@
           'clan': 'text-cyan-400 font-bold font-mono',
           'arena': 'text-indigo-400 font-bold font-mono',
           'emblem': 'text-amber-400 font-bold font-mono',
+          'battlepass': 'text-rose-400 font-bold font-mono',
           'levelup': 'text-pink-400 font-bold font-mono drop-shadow-[0_0_6px_rgba(244,114,182,0.4)]',
           'bots': 'text-red-400 font-bold font-mono drop-shadow-[0_0_6px_rgba(239,68,68,0.5)]',
           'default': 'text-emerald-400 font-bold font-mono'
@@ -186,6 +194,7 @@
           'clan': 'bg-cyan-500 hover:bg-cyan-400 active:scale-95 text-zinc-950 font-semibold',
           'arena': 'bg-indigo-600 hover:bg-indigo-500 active:scale-95 text-white font-semibold',
           'emblem': 'bg-amber-500 hover:bg-amber-400 active:scale-95 text-zinc-950 font-semibold',
+          'battlepass': 'bg-rose-600 hover:bg-rose-500 active:scale-95 text-white font-semibold shadow-[0_0_12px_rgba(244,63,94,0.4)]',
           'levelup': 'bg-pink-600 hover:bg-pink-500 active:scale-95 text-white font-semibold shadow-[0_0_12px_rgba(236,72,153,0.4)]',
           'bots': 'bg-gradient-to-r from-red-600 via-red-500 to-rose-600 hover:brightness-110 active:scale-95 text-white font-bold shadow-[0_0_14px_rgba(239,68,68,0.5)]',
           'default': 'bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white'

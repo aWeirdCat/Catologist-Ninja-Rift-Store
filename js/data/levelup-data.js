@@ -58,7 +58,7 @@
             imgKey: "lv10_clothing",
             image: "",
             desc: "Exclusive Lv.10 Starter Pack attire specially tailored for rising shinobi.",
-            stats: "Lv.10 Exclusive Cosmetic"
+            stats: ""
           },
           {
             type: "Hairstyle",
@@ -69,7 +69,7 @@
             imgKey: "lv10_hairstyle",
             image: "",
             desc: "Special festive hairstyle tailored exclusively for this level bundle.",
-            stats: "Lv.10 Exclusive Hairstyle"
+            stats: ""
           },
           {
             type: "Pet",
@@ -164,7 +164,7 @@
             imgKey: "lv20_clothing",
             image: "",
             desc: "Exclusive Lv.20 Starter Pack attire specially tailored for rising shinobi.",
-            stats: "Lv.20 Exclusive Cosmetic"
+            stats: ""
           },
           {
             type: "Hairstyle",
@@ -175,7 +175,7 @@
             imgKey: "lv20_hairstyle",
             image: "",
             desc: "Special festive hairstyle tailored exclusively for this level bundle.",
-            stats: "Lv.20 Exclusive Hairstyle"
+            stats: ""
           },
           {
             type: "Pet",
@@ -259,7 +259,7 @@
             imgKey: "lv30_clothing",
             image: "",
             desc: "Exclusive Lv.30 Starter Pack attire specially tailored for skilled shinobi.",
-            stats: "Lv.30 Exclusive Cosmetic"
+            stats: ""
           },
           {
             type: "Hairstyle",
@@ -270,7 +270,7 @@
             imgKey: "lv30_hairstyle",
             image: "",
             desc: "Special festive hairstyle tailored exclusively for this level bundle.",
-            stats: "Lv.30 Exclusive Hairstyle"
+            stats: ""
           },
           {
             type: "Pet",
@@ -354,7 +354,7 @@
             imgKey: "lv40_clothing",
             image: "",
             desc: "Exclusive Lv.40 Starter Pack attire specially tailored for veteran shinobi.",
-            stats: "Lv.40 Exclusive Cosmetic"
+            stats: ""
           },
           {
             type: "Hairstyle",
@@ -365,7 +365,7 @@
             imgKey: "lv40_hairstyle",
             image: "",
             desc: "Special festive hairstyle tailored exclusively for this level bundle.",
-            stats: "Lv.40 Exclusive Hairstyle"
+            stats: ""
           },
           {
             type: "Pet",
@@ -449,7 +449,7 @@
             imgKey: "lv50_clothing",
             image: "",
             desc: "Exclusive Lv.50 Starter Pack attire specially tailored for expert shinobi.",
-            stats: "Lv.50 Exclusive Cosmetic"
+            stats: ""
           },
           {
             type: "Hairstyle",
@@ -460,7 +460,7 @@
             imgKey: "lv50_hairstyle",
             image: "",
             desc: "Special festive hairstyle tailored exclusively for this level bundle.",
-            stats: "Lv.50 Exclusive Hairstyle"
+            stats: ""
           },
           {
             type: "Pet",
@@ -533,7 +533,7 @@
             imgKey: "lv60_clothing",
             image: "",
             desc: "Limited Oni Slayer armor suit forged for high-ranking samurai and shinobi.",
-            stats: "Lv.60 Exclusive Cosmetic"
+            stats: ""
           },
           {
             type: "Hairstyle",
@@ -544,7 +544,7 @@
             imgKey: "lv60_hairstyle",
             image: "",
             desc: "Oni Armor woven straw hat and braided hair honoring Kanagawa traditions.",
-            stats: "Lv.60 Exclusive Hairstyle"
+            stats: ""
           },
           {
             type: "Essential",
@@ -628,7 +628,7 @@
             imgKey: "lv70_clothing",
             image: "",
             desc: "Summer Event 2023 Design Contest. Designed by Zeck Manlapaz.",
-            stats: "Lv.70 Exclusive Cosmetic"
+            stats: ""
           },
           {
             type: "Hairstyle",
@@ -639,7 +639,7 @@
             imgKey: "lv70_hairstyle",
             image: "",
             desc: "Limited hairstyle for Valentine's Day 2023.",
-            stats: "Lv.70 Exclusive Hairstyle"
+            stats: ""
           },
           {
             type: "Essential",
@@ -723,7 +723,7 @@
             imgKey: "lv80_clothing",
             image: "",
             desc: "Summer Event 2022 Limited Edition.",
-            stats: "Lv.80 Exclusive Cosmetic"
+            stats: ""
           },
           {
             type: "Hairstyle",
@@ -734,7 +734,7 @@
             imgKey: "lv80_hairstyle",
             image: "",
             desc: "Summer Event 2022 Limited Edition.",
-            stats: "Lv.80 Exclusive Hairstyle"
+            stats: ""
           },
           {
             type: "Essential",
@@ -818,7 +818,7 @@
             imgKey: "lv90_clothing",
             image: "",
             desc: "Limited Hunting House Package.",
-            stats: "Lv.90 Exclusive Cosmetic"
+            stats: ""
           },
           {
             type: "Hairstyle",
@@ -829,7 +829,7 @@
             imgKey: "lv90_hairstyle",
             image: "",
             desc: "Limited Hunting House Package Hairstyle.",
-            stats: "Lv.90 Exclusive Hairstyle"
+            stats: ""
           },
           {
             type: "Essential",
@@ -913,7 +913,7 @@
             imgKey: "lv100_clothing",
             image: "",
             desc: "Limited Jyubi Tornado Set.",
-            stats: "Lv.100 Exclusive Cosmetic"
+            stats: ""
           },
           {
             type: "Hairstyle",
@@ -924,7 +924,7 @@
             imgKey: "lv100_hairstyle",
             image: "",
             desc: "Limited Package Hairstyle.",
-            stats: "Lv.100 Exclusive Hairstyle"
+            stats: ""
           },
           {
             type: "Essential",
@@ -1019,7 +1019,7 @@
             imgKey: "halloween_hairstyle",
             image: "",
             desc: "Exclusive Halloween themed hairstyle evoking mysterious lunar grace.",
-            stats: "Cosmetic Hairstyle"
+            stats: ""
           },
           {
             type: "Clothing",
